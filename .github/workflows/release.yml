@@ -43,6 +43,8 @@ jobs:
             release/*.exe
             release/*.dmg
             release/*.zip
+            release/*.yml
+            release/*.blockmap
           retention-days: 14
 
   release:
@@ -56,7 +58,7 @@ jobs:
       - name: Package artifacts
         run: |
           mkdir -p release-artifacts
-          find ./artifacts -type f \( -name '*.exe' -o -name '*.dmg' -o -name '*.zip' \) | while read f; do cp "$f" release-artifacts/; done
+          find ./artifacts -type f \( -name '*.exe' -o -name '*.dmg' -o -name '*.zip' -o -name '*.yml' -o -name '*.blockmap' \) | while read f; do cp "$f" release-artifacts/; done
           ls -lah release-artifacts
 
       - uses: softprops/action-gh-release@v2
@@ -66,4 +68,4 @@ jobs:
           name: KnightTrader BloFin ${{ github.ref_name }}
           generate_release_notes: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_UPLOAD_TOKEN }}
