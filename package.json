@@ -11,14 +11,6 @@
   "build": {
     "appId": "com.knighttrader.app",
     "productName": "KnightTrader",
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "mknig",
-        "repo": "hermes-trader",
-        "releaseType": "release"
-      }
-    ],
     "win": {
       "target": "nsis",
       "icon": "assets/icon.ico"
