@@ -53,7 +53,15 @@ const NOUS_INFERENCE_URL = 'https://inference-api.nousresearch.com/v1/chat/compl
 const NOUS_INFERENCE_BASE = 'https://inference-api.nousresearch.com/v1';
 const NOUS_RECOMMENDED_MODELS_URL = 'https://portal.nousresearch.com/api/nous/recommended-models';
 const DASHBOARD_PORT = 9119;
-const DASHBOARD_URL = `http://127.0.0.1:${DASHBOARD_PORT}`;
+const DASHBOARD_PORT_CANDIDATES = [DASHBOARD_PORT, 9120];
+const DASHBOARD_PORT_PROBE_TIMEOUT = 1200;
+const DASHBOARD_PORT_START_TIMEOUT = 20000;
+const GATEWAY_READY_TIMEOUT = 90000;
+let activeDashboardPort = null;
+function getDashboardBaseUrl(port) {
+  return `http://127.0.0.1:${port || activeDashboardPort || DASHBOARD_PORT}`;
+}
+const DASHBOARD_URL = getDashboardBaseUrl();
 
 // ── Sandboxed Hermes paths (inside app userData — never system-wide) ────────
 // All Hermes files live under: <AppData>/Roaming/KnightTrader/hermes/
@@ -833,9 +841,9 @@ function ensureHermesExecutableRunnable(exePath) {
 }
 
 // ── Start sandboxed Hermes dashboard ──────────────────────────────────────
-function probeDashboardPort(timeoutMs = 1500) {
+function probeDashboardPort(port, timeoutMs = 1500) {
   return new Promise((resolve) => {
-    const req = http.get(`${DASHBOARD_URL}/api/health`, (res) => {
+    const req = http.get(`http://127.0.0.1:${port}/api/health`, (res) => {
       res.resume();
       resolve(true);
     });
@@ -845,6 +853,15 @@ function probeDashboardPort(timeoutMs = 1500) {
       resolve(false);
     });
   });
+}
+
+async function findAvailableDashboardPort() {
+  for (const port of DASHBOARD_PORT_CANDIDATES) {
+    if (await probeDashboardPort(port, DASHBOARD_PORT_PROBE_TIMEOUT)) {
+      return port;
+    }
+  }
+  return null;
 }
 
 function hermesWebDistReady() {
@@ -1916,8 +1933,8 @@ function setupAutoUpdater() {
   autoUpdater.autoDownload = true;
   autoUpdater.setFeedURL({
     provider: 'github',
-    owner: 'mknig',
-    repo: 'hermes-trader',
+    owner: 'mknight2690-sys',
+    repo: 'KnightTrader-BloFin',
     releaseType: 'release',
   });
   autoUpdater.on('update-available', (info) => {

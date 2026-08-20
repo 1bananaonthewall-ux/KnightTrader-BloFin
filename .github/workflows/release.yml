@@ -30,40 +30,14 @@ jobs:
 
       - name: Build Windows
         if: matrix.os == 'windows-latest'
-        run: npm run build:win
+        run: npm run build:win -- --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Mac
         if: matrix.os == 'macos-latest'
-        run: npm run build:mac
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.os }}-installer
-          path: |
-            release/*.exe
-            release/*.dmg
-            release/*.zip
-          retention-days: 14
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: ./artifacts
-
-      - name: Package artifacts
-        run: |
-          mkdir -p release-artifacts
-          find ./artifacts -type f \( -name '*.exe' -o -name '*.dmg' -o -name '*.zip' \) | while read f; do cp "$f" release-artifacts/; done
-          ls -lah release-artifacts
-
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: release-artifacts/*
-          tag_name: ${{ github.ref_name }}
-          name: KnightTrader BloFin ${{ github.ref_name }}
-          generate_release_notes: true
+        run: npm run build:mac -- --publish always
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
