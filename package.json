@@ -1,6 +1,6 @@
 {
   "name": "knight-trader",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "KnightTrader — Hermes credential manager & launcher for Windows",
   "main": "main.js",
   "scripts": {
