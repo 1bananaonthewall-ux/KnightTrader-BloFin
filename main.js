@@ -916,10 +916,11 @@ function fetchDashboardSessionToken(forceRefresh = false) {
 
 function hermesApiRequest(method, apiPath, body, token) {
   return new Promise((resolve, reject) => {
+    const port = activeDashboardPort || DASHBOARD_PORT;
     const payload = body == null ? null : JSON.stringify(body);
     const req = http.request({
       hostname: '127.0.0.1',
-      port: DASHBOARD_PORT,
+      port,
       path: apiPath,
       method,
       headers: {
