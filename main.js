@@ -61,7 +61,6 @@ let activeDashboardPort = null;
 function getDashboardBaseUrl(port) {
   return `http://127.0.0.1:${port || activeDashboardPort || DASHBOARD_PORT}`;
 }
-const DASHBOARD_URL = getDashboardBaseUrl();
 
 // ── Sandboxed Hermes paths (inside app userData — never system-wide) ────────
 // All Hermes files live under: <AppData>/Roaming/KnightTrader/hermes/
@@ -889,7 +888,7 @@ function scrapeDashboardSessionToken(html) {
 function fetchDashboardSessionToken(forceRefresh = false) {
   if (dashboardSessionToken && !forceRefresh) return Promise.resolve(dashboardSessionToken);
   return new Promise((resolve, reject) => {
-    const req = http.get(DASHBOARD_URL, (res) => {
+    const req = http.get(getDashboardBaseUrl(), (res) => {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
@@ -965,7 +964,7 @@ function dashboardSpawnEnv() {
 
 function fetchHermesStatus() {
   return new Promise((resolve, reject) => {
-    const req = http.get(`${DASHBOARD_URL}/api/status`, (res) => {
+    const req = http.get(`${getDashboardBaseUrl()}/api/status`, (res) => {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
@@ -1139,7 +1138,7 @@ async function getDashboardStatus() {
     running: !!hermesDashProcess || portUp,
     ready: dashboardReady,
     gatewayRunning,
-    url: DASHBOARD_URL,
+    url: getDashboardBaseUrl(),
   };
 }
 
@@ -1208,10 +1207,11 @@ async function startHermesDashboard() {
 function signalDashboardReady(status) {
   if (dashboardReady) return;
   dashboardReady = true;
+  const baseUrl = getDashboardBaseUrl();
   const gatewayNote = status?.gateway_running ? ' — gateway running, cron can fire' : '';
-  appendLog(`✅ Hermes ready at ${DASHBOARD_URL}${gatewayNote}`, 'success');
+  appendLog(`✅ Hermes ready at ${baseUrl}${gatewayNote}`, 'success');
   mainWindow?.webContents?.send('dashboard-ready', {
-    url: DASHBOARD_URL,
+    url: baseUrl,
     gatewayRunning: !!status?.gateway_running,
   });
 }
