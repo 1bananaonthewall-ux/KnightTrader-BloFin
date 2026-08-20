@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KnightTrader Walkthru — Hermes on Coinbase: Complete Beginner Setup (Windows & Mac)</title>
+  <meta name="description" content="A complete beginner setup guide for Hermes on Coinbase, for both Windows and Mac. Text, picture, and video walkthroughs for every step." />
+  <style>
+    body { margin: 0; background: #0b0d10; color: #e6e9ee; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.65; }
+    a { color: #7bd2ff; }
+    code, pre { font-family: ui-monospace, SF Mono, Menlo, Consolas, monospace; }
+    pre { background: #14171c; border: 1px solid #262c34; border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-size: 13px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 22px 80px; }
+    header { border-bottom: 1px solid #262c34; background: #14171c; padding: 12px 22px; }
+    .brand { font-weight: 700; }
+    .brand .walkthru { color: #ffd166; }
+    .brand small { display: block; color: #9aa3ad; font-size: 12px; margin-top: 4px; }
+    h1 { font-size: clamp(28px, 4.6vw, 52px); line-height: 1.08; margin: 8px 0 10px; }
+    h1 .coinbase { color: #7bd2ff; }
+    h1 .hermes { color: #ffd166; }
+    .lede { font-size: 19px; color: #9aa3ad; max-width: 780px; }
+    .step { border: 1px solid #262c34; border-radius: 14px; background: #14171c; margin-top: 22px; }
+    .step-head { padding: 18px 22px 14px; border-bottom: 1px solid #262c34; background: #1b1f25; }
+    .step-head h2 { margin: 0; font-size: 20px; }
+    .step-body { padding: 18px 22px 22px; }
+    .step-body h3 { font-size: 16px; margin: 20px 0 6px; }
+    .step-body p { color: #9aa3ad; margin: 8px 0; }
+    .step-body ul { margin: 8px 0; padding-left: 20px; }
+    .step-body li { margin: 4px 0; color: #9aa3ad; }
+    .copybtn { background: #1b1f25; border: 1px solid #262c34; color: #e6e9ee; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+    .copybtn:hover { border-color: #7bd2ff; }
+    .box { border-radius: 12px; padding: 16px 18px; border: 1px solid #262c34; background: #1b1f25; margin: 14px 0; }
+    .box h4 { margin: 0 0 6px; font-size: 14px; }
+    .box p { margin: 6px 0; }
+    .tabs-small { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
+    .tab { border: 1px solid #262c34; background: #1b1f25; border-radius: 10px; padding: 8px 14px; font-size: 13px; cursor: pointer; color: #9aa3ad; }
+    .tab.active { background: #14171c; color: #e6e9ee; border-color: #7bd2ff; }
+    .video { border: 1px solid #262c34; border-radius: 12px; overflow: hidden; background: #000; margin: 14px 0; }
+    .video .frame { aspect-ratio: 16 / 9; width: 100%; display: block; background: #000; }
+    .video figcaption { padding: 10px 14px; border-top: 1px solid #262c34; font-size: 13px; color: #9aa3ad; }
+    .screenshots { margin: 14px 0; display: flex; gap: 16px; flex-wrap: wrap; }
+    .screenshots .shot { flex: 1 1 280px; border: 1px solid #262c34; border-radius: 12px; overflow: hidden; background: #1b1f25; }
+    .screenshots .shot img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #000; }
+    .caption { font-size: 13px; color: #9aa3ad; margin-top: 8px; }
+    .finish { border: 1px solid #8fe0a6; background: #14171c; border-radius: 14px; padding: 24px; margin-top: 28px; }
+    .finish h2 { margin: 0 0 8px; color: #8fe0a6; font-size: 24px; }
+    .finish p { color: #9aa3ad; margin: 8px 0; }
+    .glossary dt { color: #7bd2ff; font-weight: 600; margin-top: 12px; }
+    .glossary dd { margin: 0 0 6px; color: #9aa3ad; }
+    .footer-note { margin-top: 30px; border-top: 1px solid #262c34; padding-top: 16px; color: #9aa3ad; font-size: 13px; }
+    @media (max-width: 720px) { .wrap { padding: 18px 14px 60px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        KnightTrader <span class="walkthru">Walkthru</span>
+        <small>AI-assisted crypto setup, made gentle enough for a first-timer</small>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div style="font-size:13px; color:#9aa3ad; letter-spacing:1.5px; text-transform:uppercase;">KnightTrader Walkthru · Complete beginner setup</div>
+    <h1>Hermes on <span class="coinbase">Coinbase</span> — text, picture, and video walkthrough for <span class="hermes">Windows</span> or <span class="hermes">Mac</span></h1>
+    <p class="lede">This is the full beginner path for getting Hermes running on Coinbase, step by step. Pick the computer you actually own below and the whole page changes to your operating system.</p>
+
+    <div class="step" id="step-0">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">0</span><h2>Before you start — meet your tutorial</h2></div>
+      <div class="step-body">
+        <p class="lead">A couple of tiny things first, so the rest of this page feels less foreign.</p>
+        <div class="tabs-small" id="osTips">
+          <div class="tab active" data-os="windows" data-target="step0Content">Windows</div>
+          <div class="tab" data-os="mac" data-target="step0Content">Mac</div>
+        </div>
+        <div id="step0Content">
+          <div data-panel="windows">
+            <p><b>Browser</b> — the app you use for websites. Windows often uses Edge.</p>
+            <p><b>PowerShell</b> — the text window where you paste install commands.</p>
+            <p><b>Start menu</b> — the Windows key or Start button.</p>
+          </div>
+          <div data-panel="mac" hidden>
+            <p><b>Browser</b> — the app you use for websites. Mac often uses Safari.</p>
+            <p><b>Terminal</b> — the text window where you paste install commands.</p>
+            <p><b>Spotlight</b> — press Cmd + Space, type the app name, press Enter.</p>
+          </div>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/intro-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/intro-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> a calm intro that says exactly what this page is, how the Windows/Mac choice works, and what “follow every step in order” means.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-1">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">1</span><h2>Set your computer to never sleep, and make sure your internet stays on</h2></div>
+      <div class="step-body">
+        <p class="lead">If the computer sleeps, Hermes stops for that time. If the internet drops, Hermes can’t reach Coinbase.</p>
+        <div class="tabs-small" id="sleepTabs">
+          <div class="tab active" data-os="windows" data-target="sleepContent">Windows</div>
+          <div class="tab" data-os="mac" data-target="sleepContent">Mac</div>
+        </div>
+        <div id="sleepContent">
+          <div data-panel="windows">
+            <p><b>Click path:</b></p>
+            <ul>
+              <li>Click <b>Start</b>, then type <b>Power and sleep</b> or <b>Power & battery</b>.</li>
+              <li>Set <b>Turn off my screen after</b> to <b>Never</b> when plugged in.</li>
+              <li>Set <b>Put my device to sleep after</b> to <b>Never</b> when plugged in.</li>
+              <li>Optional: Start → type <b>Choose what closing the lid does</b> → set <b>When I close the lid</b> to <b>Do nothing</b> while plugged in.</li>
+            </ul>
+            <pre><code>powercfg /change standby-timeout-ac 0
+powercfg /change standby-timeout-dc 0
+powercfg /change monitor-timeout-ac 0
+powercfg /change monitor-timeout-dc 0
+powercfg /change hibernate-timeout-ac 0
+powercfg /change hibernate-timeout-dc 0</code><button class="copybtn" data-copy="powercfg /change standby-timeout-ac 0
+powercfg /change standby-timeout-dc 0
+powercfg /change monitor-timeout-ac 0
+powercfg /change monitor-timeout-dc 0
+powercfg /change hibernate-timeout-ac 0
+powercfg /change hibernate-timeout-dc 0">Copy</button></pre>
+          </div>
+          <div data-panel="mac" hidden>
+            <p><b>Click path:</b></p>
+            <ul>
+              <li>Click the <b>Apple menu ()</b> → <b>System Settings</b>.</li>
+              <li>Open <b>Lock Screen</b> or <b>Battery / Energy Saver</b>.</li>
+              <li>Set display sleep to <b>Never</b> on power adapter while you are learning.</li>
+              <li>Keep the MacBook lid open while Hermes runs, if you can.</li>
+            </ul>
+            <pre><code>caffeinate -dimsu</code><button class="copybtn" data-copy="caffeinate -dimsu">Copy</button></pre>
+          </div>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/never-sleep-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/never-sleep-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the exact settings clicks for your OS, plus a quick internet check.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-2">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">2</span><h2>Sign up for a Coinbase account</h2></div>
+      <div class="step-body">
+        <p class="lead">Coinbase is where your money and your account live in this setup.</p>
+        <div class="box">
+          <h4>Copy this link and paste it into your browser address bar</h4>
+          <pre><code>https://www.coinbase.com</code><button class="copybtn" data-copy="https://www.coinbase.com">Copy</button></pre>
+          <p>Then press Enter. If you already have a Coinbase account, you can skip to sign-in and move on.</p>
+        </div>
+        <ul>
+          <li>Click <b>Sign up</b> or <b>Get started</b>.</li>
+          <li>Use a real email and a password you will remember.</li>
+          <li>Verify your email and phone when Coinbase asks.</li>
+          <li>Complete the identity check if Coinbase asks for a photo ID. That is normal.</li>
+        </ul>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/coinbase-signup-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/coinbase-signup-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the real sign-up flow on your OS, with narration pointing at each button.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-3">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">3</span><h2>Put money into Coinbase</h2></div>
+      <div class="step-body">
+        <p class="lead">Now you are going to buy a little crypto on Coinbase. You do not have to buy a lot.</p>
+        <div class="box">
+          <h4>A good first buy</h4>
+          <p>On Coinbase, choose <b>Buy</b> or <b>Trade</b>, pick the crypto Coinbase is offering you for a first purchase, and use the payment method Coinbase shows you.</p>
+        </div>
+        <div class="box">
+          <h4>Watch the fee preview</h4>
+          <p>Coinbase shows you a fee preview before you confirm. Take a look at it. It is normal for a first buy to have a fee.</p>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/fund-coinbase-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/fund-coinbase-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the buy flow and the wallet showing the balance after it lands.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-4">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">4</span><h2>Get a Nous Portal API key</h2></div>
+      <div class="step-body">
+        <p class="lead">Hermes needs a model to think with. In this tutorial we use a free option from Nous.</p>
+        <div class="box">
+          <h4>Copy this link and paste it into your browser address bar</h4>
+          <pre><code>https://portal.nousresearch.com</code><button class="copybtn" data-copy="https://portal.nousresearch.com">Copy</button></pre>
+          <p>This is the Nous Portal. If you do not yet have an account there, sign up once. It is free.</p>
+        </div>
+        <ul>
+          <li>A place to create or view an API key.</li>
+          <li>A key you can copy once and save carefully.</li>
+          <li>If Nous Portal asks you to sign in through your browser and allow access, finish that once.</li>
+        </ul>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/nous-key-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/nous-key-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the Nous Portal page, the place where the key lives, and the moment you copy it.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-5">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">5</span><h2>Save the key in a text file on your computer</h2></div>
+      <div class="step-body">
+        <p class="lead">Hermes will read a small text file later. We make that file now.</p>
+        <div class="tabs-small" id="keysTabs">
+          <div class="tab active" data-os="windows" data-target="keysContent">Windows</div>
+          <div class="tab" data-os="mac" data-target="keysContent">Mac</div>
+        </div>
+        <div id="keysContent">
+          <div data-panel="windows">
+            <p>Open <b>Notepad</b>, paste the key and the other values, and save it somewhere simple like your Downloads folder.</p>
+          </div>
+          <div data-panel="mac" hidden>
+            <p>Open <b>TextEdit</b>, make sure it is plain text, paste the key and the other values, and save it somewhere simple like your Downloads folder.</p>
+          </div>
+        </div>
+        <div class="box">
+          <h4>Where this file lives</h4>
+          <p>Save it somewhere simple while you are learning. Do not email it. This file is the little keyring for your setup.</p>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/save-key-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/save-key-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the text editor on your OS, the file being saved as a plain text file, and the file visible in Downloads.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-6">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">6</span><h2>Install Hermes on your computer</h2></div>
+      <div class="step-body">
+        <p class="lead">Hermes is free. Pick your computer type and follow only that column.</p>
+        <div class="tabs-small" id="installTabs">
+          <div class="tab active" data-os="windows" data-target="installContent">Windows</div>
+          <div class="tab" data-os="mac" data-target="installContent">Mac</div>
+        </div>
+        <div id="installContent">
+          <div data-panel="windows">
+            <pre><code>winget install HermesProject.Hermes</code><button class="copybtn" data-copy="winget install HermesProject.Hermes">Copy</button></pre>
+            <p>If you are new, open PowerShell, paste the command with right-click, then press Enter.</p>
+          </div>
+          <div data-panel="mac" hidden>
+            <pre><code>brew install hermes</code><button class="copybtn" data-copy="brew install hermes">Copy</button></pre>
+            <p>If Mac pops up a request to install developer tools, let it. It is part of the normal install path on many Macs.</p>
+          </div>
+        </div>
+        <div class="box">
+          <h4>How you’ll know Hermes is installed</h4>
+          <p>You can run <code>hermes --version</code> and <code>hermes doctor</code> and they respond instead of saying the command was not found.</p>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/install-hermes-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/install-hermes-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the exact install command, the copy/paste, the wait, and the version check.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-7">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">7</span><h2>Set provider and model</h2></div>
+      <div class="step-body">
+        <p class="lead">In this tutorial, Hermes uses a free Nous model. If Hermes asks you to sign into Nous Portal during this, finish that once in the same browser and come back.</p>
+        <div class="box">
+          <h4>The settings you want</h4>
+          <ul>
+            <li><b>Provider:</b> Nous</li>
+            <li><b>Model:</b> tencent/hy free</li>
+          </ul>
+          <p>These are the same settings used in the original tutorial. If the dashboard wording changes a little over time, look for the same idea.</p>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/provider-model-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/provider-model-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the dashboard settings screen with the right provider and model chosen.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-8">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">8</span><h2>Bring up the Hermes browser dashboard</h2></div>
+      <div class="step-body">
+        <p class="lead">Now you make Hermes show its control page in your browser. Leave the text window open that started it.</p>
+        <div class="box">
+          <h4>Command to open the dashboard</h4>
+          <pre><code>hermes dashboard</code><button class="copybtn" data-copy="hermes dashboard">Copy</button></pre>
+          <p>Run that in the same PowerShell or Terminal where Hermes is available.</p>
+        </div>
+        <div class="box">
+          <h4>If the browser does not open automatically</h4>
+          <pre><code>http://127.0.0.1:9119</code><button class="copybtn" data-copy="http://127.0.0.1:9119">Copy</button></pre>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/dashboard-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/dashboard-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the dashboard opening in the browser and the command window on the side.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-9">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">9</span><h2>Set up the 10-minute cron job</h2></div>
+      <div class="step-body">
+        <p class="lead">This is the heartbeat of the setup. You create a repeating job in the Hermes dashboard and give it the Coinbase prompt from the file you have. This tutorial sets it to run every 10 minutes.</p>
+        <div class="box">
+          <h4>What to do in the dashboard</h4>
+          <ul>
+            <li>Open the <b>Cron</b> section, or the section the dashboard calls Jobs / Scheduled.</li>
+            <li>Create a new scheduled job.</li>
+            <li><b>Schedule:</b> every 10 minutes.</li>
+            <li><b>Name:</b> <code>coinbase-equity-vertical</code></li>
+            <li><b>Provider:</b> Nous</li>
+            <li><b>Model:</b> tencent/hy free</li>
+            <li>Paste the prompt from the next part into the prompt box, then save.</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h4>The cron prompt</h4>
+          <pre style="position:relative;"><code id="cronPrompt">=== COINBASE PERPETUALS — 10-MIN AUTONOMOUS TRADING CRON ===
+
+UNIVERSE (read this once, act on it)
+There are at least 160 Coinbase perpetual futures. They are NOT found by guessing symbols — they are enumerated from the correct endpoint with the right product filter. The "right spot" is:
+  GET https://api.coinbase.com/api/v3/brokerage/products?product_type=PERPETUAL
+If that returns an empty/short perp list (US-retail restriction), the perps actually live on Coinbase International Exchange — switch host to:
+  https://api.international.coinbase.com  (same /api/v3/brokerage/... path, product_type=PERPETUAL)
+Do NOT stop until you have enumerated the full perpetual list (target >=160). A short list means wrong host/filter, not "they don't exist."
+
+DEMO / MENTAL-TRADE MANDATE (always on, even while trading real money)
+Take mental trades on the perpetual futures you'd trade/want to follow, and follow those imaginary trades to completion, so you learn whether your methodology was right — as if you traded real money. This builds conviction and removes "what-ifs." Log each mental trade (entry/TP/SL/R:R + trigger) in the lessons file so later ticks can mark it TP/SL-hit and you learn from it.
+
+LEARNING ACROSS CRON TICKS (mandatory loop)
+Each cron run is a fresh session. Before trading: read your durable lessons file and apply it. After each cycle: append what worked, what failed, and the exact rule to reuse. Next tick MUST load and use those updated lessons. Learning that stays only in this reply is wasted.
+Lessons file (create if missing): C:\Users\mknig\AppData\Roaming\knight-trader\hermes\lessons\coinbase_perps_trading.md
+
+MISSION
+Scan and manually trade the live Coinbase perpetual universe. YOU are the trading automation: you decide, you place, you attach TP/SL, you monitor. Zero external order-bots, zero auto-scanners that submit orders, zero "run-agent" wrappers. Your own reasoning places every order.
+
+CREDENTIALS
+Use exactly: C:\Users\mknig\OneDrive\Documents\Coinbase MK API Keys.txt
+Confirm which key type is loaded BEFORE the first private call:
+  • MODERN Coinbase Cloud API key = "Key Name" + "Private Key" (a PEM, usually -----BEGIN EC PRIVATE KEY-----). There is NO passphrase.
+  • LEGACY key = API key + secret + passphrase (old Pro style; perps are NOT on this API).
+If the file has a passphrase line, it is legacy — do not use it for perps; get a Cloud API key.
+
+SCOREBOARD
+Keep the Coinbase equity curve vertical. No rushing. No forced entries. Isolated margin. Leverage only within account tier / per-instrument max (default cap 10x, smaller if thin). Take longs AND shorts when the edge is real. Do not deny a good edge just because other positions are open. Never be in a rush to lose money.
+
+--- HOW TO ACTUALLY GET TRADES THROUGH (COINBASE API BLOCKERS) ---
+Symptom: 401/403, HTML error pages, "invalid signature", "timestamp expired", or empty/blocked responses. That is an auth/transport/clock problem, NOT "Coinbase banned you" and NOT invalid keys.
+Why it happens:
+  1) Wrong auth for the endpoint: modern Cloud key needs an ES256 JWT (see below); legacy needs CB-ACCESS-* HMAC headers. Mixing them = 401.
+  2) Clock skew: Coinbase tolerates <30s drift. Sync NTP first.
+  3) PEM private-key formatting: Python must load the key WITH its newlines intact. Stripped `\n` = invalid signature.
+  4) Rate limits: Advance/Brokerage enforces strict req/s. Batch reads, sleep between signed calls.
+  5) Wrong host/base: Live = https://api.coinbase.com/api/v3/brokerage/ (Advance) or https://api.international.coinbase.com (Coinbase International perps). Not deprecated Pro/Legacy hosts.
+What is true here: with correct signing + synced clock + correct host, REST/WS returns clean JSON. Do NOT conclude "impossible" — fix the signing path until JSON comes back.
+REQUIRED FIX ORDER:
+  A) Sync clock (NTP). Verify connectivity.
+  B) Load creds; detect key type (Cloud PEM vs Legacy).
+  C) Prove step-by-step: (1) GET .../brokerage/time  (2) GET .../brokerage/products?product_type=PERPETUAL  (3) SIGNED GET .../brokerage/accounts (balances)  (4) positions/orders.
+  D) MODERN CLOUD KEY SIGNING (recommended): build an ES256 JWT — header {alg:ES256, typ:JWT, kid:<Key Name>}; claims {iss:"cdp", sub:<Key Name>, uri:"<METHOD> <path>?<query>", nbf, iat, exp(now+120)}; sign with the EC private key. Send header `Authorization: Bearer <jwt>`. Easiest/safest: use the official `coinbase` / `cdp-sdk` Python package which handles JWT + PEM for you.
+  E) If 401: re-check PEM newlines + clock + that `uri` claim matches method+path+query exactly (lowercase host, no trailing slash).
+  F) Parse strictly JSON. HTML/non-JSON body = transport error → fix host/auth/base URL.
+  G) Never fall back to a fake demo balance. Refuse phantom numbers. Fix the pipe, then trade.
+SUCCESS CRITERIA ("API works"):
+  • Balances endpoint returns JSON with real USD/USDT equity + available.
+  • Product/ticker/order-history return valid JSON.
+  • A manual order you place (API or Coinbase UI) shows in account state with attached TP/SL.
+Only then scale activity.
+
+--- TRADING STRATEGY (YOUR EDGE — apply every tick) ---
+Scan the FULL perp universe each tick for candidate flags; deep-dive the liquid top ~40 by 24h volume with this multi-timeframe gate (1m→5m/15m/1h resample). Take a trade ONLY when a gate FULLY fires; otherwise HOLD.
+  LONG mean-reversion: 1h RSI < 32  AND  price >1.2 ATR below 1h EMA20  AND  5m candle bull_body (close>open)  AND  5m RSI turning up  AND  5m volume ratio > 1.3x  AND  live R:R >= 2 (TP = 1h EMA20, SL = below 5m swing low). Compute R:R in ONE snapshot — if it is <2 the bounce already happened, do NOT chase.
+  SHORT continuation: 15m TRUE stepped lower-high (not just red candles)  AND  15m RSI 40–65  AND  15m volume ratio > 1.3x  AND  R:R >= 2 confirmable to a real support.
+  BREAKOUT-long: only a 5m CLOSE holding above the 20-period 5m high on sustained volume >1.4x with R:R >= 2. REJECT wick-only / snap-back / volume-collapse fakeouts.
+HARD REJECTS (documented traps): high-volume drops with no 5m bull turn = CAPITULATION FLUSH (don't catch the knife); micro-cap pumps (>15% on thin vol) = manipulation; selling into deep oversold bottoms where R:R < 2. If NO gate fires → HOLD. Forcing = losing money.
+SIZING: isolated margin, risk <= ~1–1.5 USDT-equivalent margin per trade at this account size; min notional per instrument respected; attach TP/SL at placement, never a standalone "stop" ordertype if the API lacks it (verify TP/SL exists via a follow-up query).
+
+RULES (MANUAL, AUTONOMOUS)
+Scan EVERY universe asset with your own judgment. Choose entries, place orders, attach TP/SL, monitor. Prefer clarity over activity; compound wins; do not force rotations on thin capital. If something breaks mid-session: troubleshoot per the blocker playbook, verify JSON, resume. Do not stop at "blocked."
+
+PROCEED NOW
+Confirm credentials path → detect key type → prove JSON balance read (sync clock, JWT/PEM) → enumerate the >=160 perps → scan universe → take righteous trades by hand when a gate fires (else HOLD) → manage/monitor positions + TP/SL → append the tick's decision + mental-trade log to the lessons file. Keep the equity curve vertical.</code><button class="copybtn" data-copy-element="cronPrompt">Copy</button></pre>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/cron-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/cron-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the dashboard Cron section, the exact fields being filled, and the prompt being pasted.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-10">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">10</span><h2>Leave the three tabs open</h2></div>
+      <div class="step-body">
+        <p class="lead">At the end of this setup, you want three browser tabs open so you can watch what is happening without hunting around later.</p>
+        <div class="box">
+          <h4>The three tabs</h4>
+          <ul>
+            <li><b>Coinbase portfolio overview dashboard</b> — your overall account and balances.</li>
+            <li><b>Coinbase Advanced Trading dashboard</b> — the place where trades and positions live, so you can watch for trades Hermes takes.</li>
+            <li><b>Hermes browser dashboard UI, with chats selected</b> — the Hermes dashboard open to the chats area, so you can see the cron firing.</li>
+          </ul>
+        </div>
+        <div class="video">
+          <video class="frame" controls muted playsinline preload="metadata">
+            <source src="/Polly-Poly-Bot/video/three-tabs-windows.mp4" type="video/mp4" data-os="windows" />
+            <source src="/Polly-Poly-Bot/video/three-tabs-mac.mp4" type="video/mp4" data-os="mac" />
+          </video>
+          <figcaption><b>What you should see:</b> the three tabs open together, each one pointed out by the narration.</figcaption>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" id="step-11">
+      <div class="step-head"><span class="step-num" style="background:#7bd2ff; color:#06121a; border-radius:8px; padding:4px 10px; font-size:13px; font-weight:700;">11</span><h2>Glossary + what to watch for</h2></div>
+      <div class="step-body">
+        <p class="lead">A small dictionary for the words you met today. If a word feels fuzzy, come back here.</p>
+        <div class="glossary">
+          <dl>
+            <dt>API</dt><dd>A way for one program to ask another program to do something.</dd>
+            <dt>API key</dt><dd>A permission token that lets a program act on your behalf without using your login password.</dd>
+            <dt>Balance</dt><dd>How much of something you have in an account.</dd>
+            <dt>Brokerage API</dt><dd>A Coinbase API path used for account, product, and order actions.</dd>
+            <dt>Cron</dt><dd>A repeating job or timer. In this tutorial, Hermes runs on a 10-minute loop.</dd>
+            <dt>Dashboard</dt><dd>The main control page for a program. Here, the Hermes dashboard in your browser.</dd>
+            <dt>Exchange</dt><dd>A place where you can buy, sell, or trade crypto.</dd>
+            <dt>Hermes</dt><dd>The AI trading helper you installed on your computer.</dd>
+            <dt>Leverage</dt><dd>Using borrowed buying power to open a larger position than your balance alone would allow.</dd>
+            <dt>Margin</dt><dd>The collateral or risked amount behind a leveraged position.</dd>
+            <dt>Model</dt><dd>The AI brain Hermes uses to think and respond.</dd>
+            <dt>Nous Portal</dt><dd>The place where you can get a Nous API key so Hermes can use a Nous model.</dd>
+            <dt>Perpetual futures</dt><dd>A type of futures contract that does not have a fixed expiry date.</dd>
+            <dt>Portfolio</dt><dd>The collection of assets and balances you hold.</dd>
+            <dt>Provider</dt><dd>The source of the model Hermes uses. This tutorial uses Nous.</dd>
+            <dt>TP / SL</dt><dd>Take-profit and stop-loss — the price levels where a trade may close in profit or to limit downside.</dd>
+            <dt>WebSocket</dt><dd>A live data connection some exchanges and programs use for streaming prices and updates.</dd>
+          </dl>
+        </div>
+        <div class="box">
+          <h4>What to watch for after setup</h4>
+          <ul>
+            <li>Refresh Hermes chats now and then. Fresh cron chats mean the loop is alive.</li>
+            <li>Keep the Coinbase portfolio and Advanced Trading tabs handy when you want to check what is happening.</li>
+            <li>If a screen ever looks like an error page instead of numbers, that usually means a connection or settings issue, not a reason to panic.</li>
+            <li>Take your time. The first trades, if any, are not a test you have to ace today.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="finish">
+      <h2>You set up Hermes.</h2>
+      <p>You did the hard part. You plugged in your computer, kept it awake, got yourself into Coinbase, saved your keys carefully, installed Hermes, opened the dashboard, and started the 10-minute cron. That is a real setup.</p>
+      <p>What you have now is a computer running Hermes on Coinbase, with three tabs you can come back to whenever you want to see what is going on.</p>
+      <p style="margin-top:14px; color:#9aa3ad; font-size:13px;">Reminder: trading can lose money. Use only what you can afford to lose. This page is a setup guide, not financial advice.</p>
+    </div>
+
+    <div class="footer-note">
+      KnightTrader Walkthru · Hermes on Coinbase beginner setup for Windows and Mac.<br/>
+      This page is a tutorial and setup guide, not financial, legal, or tax advice.
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      function applyOS(os) {
+        document.querySelectorAll('[data-os]').forEach(function(el) {
+          var allowed = el.getAttribute('data-os');
+          if (!allowed) return;
+          el.hidden = allowed !== os;
+        });
+        document.querySelectorAll('[data-panel]').forEach(function(el) {
+          el.hidden = el.getAttribute('data-panel') !== os;
+        });
+        document.querySelectorAll('.os-tag').forEach(function(tag) {
+          if (tag.id && tag.id.startsWith('step')) {
+            tag.textContent = os === 'windows' ? 'Windows' : 'Mac';
+          }
+        });
+      }
+
+      document.querySelectorAll('.tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          var group = tab.parentElement;
+          group.querySelectorAll('.tab').forEach(function(t) { t.classList.toggle('active', t === tab); });
+          var targetId = tab.getAttribute('data-target');
+          if (targetId) {
+            var container = document.getElementById(targetId);
+            if (container) {
+              container.querySelectorAll('[data-panel]').forEach(function(panel) {
+                panel.hidden = panel.getAttribute('data-panel') !== tab.getAttribute('data-os');
+              });
+            }
+          }
+          applyOS(tab.getAttribute('data-os'));
+        });
+      });
+
+      applyOS('windows');
+
+      document.querySelectorAll('.video').forEach(function(videoBlock) {
+        var video = videoBlock.querySelector('video');
+        if (!video) return;
+        var sources = Array.from(video.querySelectorAll('source'));
+        var checked = 0;
+        var hasValid = false;
+        sources.forEach(function(source) {
+          var img = new Image();
+          img.src = source.src;
+          checked++;
+          img.onload = function() { hasValid = true; checkDone(); };
+          img.onerror = function() { checkDone(); };
+        });
+        if (checked === 0) showFallback(videoBlock);
+        function checkDone() {
+          if (hasValid || --checked > 0) return;
+          if (!video.querySelector('source[src]')) showFallback(videoBlock);
+        }
+        function showFallback(block) {
+          var msg = document.createElement('div');
+          msg.style.cssText = 'aspect-ratio:16/9;width:100%;display:flex;align-items:center;justify-content:center;color:#9aa3ad;background:#0f1115;border-top:1px solid #262c34;padding:18px;text-align:center;';
+          msg.textContent = 'Video walkthrough will appear here once the published assets are added for this step.';
+          block.appendChild(msg);
+          video.style.display = 'none';
+        }
+      });
+
+      document.querySelectorAll('.copybtn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var text = btn.getAttribute('data-copy');
+          var sourceId = btn.getAttribute('data-copy-element');
+          if (!text && sourceId) {
+            var source = document.getElementById(sourceId);
+            if (source) text = source.textContent.trim();
+          }
+          if (!text) return;
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          document.body.removeChild(ta);
+          var original = btn.textContent.trim();
+          btn.textContent = 'Copied';
+          setTimeout(function() { btn.textContent = original; }, 1400);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,51 +1,25 @@
 {
-  "name": "knight-trader",
-  "version": "1.0.5",
-  "description": "KnightTrader — Hermes credential manager & launcher for Windows",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "dev": "electron . --dev",
-    "build": "electron-builder",
-    "build:win": "electron-builder --win --publish always",
-    "build:mac": "electron-builder --mac --publish always"
+  "name": "blohunter-desktop",
+  "version": "4.3.0",
+  "description": "BloHunter Desktop — Electron trading application for Windows",
+  "main": "src/main.js",
+  "author": "BloHunter",
+  "license": "SEE LICENSE IN LICENSE",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
   },
-  "build": {
-    "appId": "com.knighttrader.blofin",
-    "productName": "KnightTrader Blofin",
-    "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    },
-    "mac": {
-      "target": "dmg",
-      "icon": "assets/icon.icns",
-      "category": "public.app-category.finance"
-    }
+  "scripts": {
+    "start": "npm run --prefix KnightTrader start",
+    "dev": "npm run --prefix KnightTrader dev",
+    "build": "npm run --prefix KnightTrader build"
   },
   "dependencies": {
-    "electron-store": "^8.1.0",
     "electron-updater": "^6.8.9",
-    "eventsource": "^5.1.0",
-    "node-cron": "^3.0.3"
+    "eventsource": "^4.1.0"
   },
-  "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-builder": "^24.9.1"
-  },
-  "keywords": [
-    "electron",
-    "trading",
-    "hermes",
-    "blofin"
-  ],
-  "author": "KnightTrader",
-  "license": "MIT",
   "allowScripts": {
-    "electron@28.3.3": true
+    "electron@43.1.0": true,
+    "electron-winstaller@5.4.0": true
   }
 }

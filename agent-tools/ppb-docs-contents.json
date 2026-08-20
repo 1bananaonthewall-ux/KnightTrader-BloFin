@@ -1,0 +1,146 @@
+[
+  {
+    "name": "bundle-buy.html",
+    "path": "docs/bundle-buy.html",
+    "sha": "55337573b714b1d18d26378188f0f19824b10cf5",
+    "size": 5435,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/bundle-buy.html?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/bundle-buy.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/55337573b714b1d18d26378188f0f19824b10cf5",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/bundle-buy.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/bundle-buy.html?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/55337573b714b1d18d26378188f0f19824b10cf5",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/bundle-buy.html"
+    }
+  },
+  {
+    "name": "bundle-unlock.html",
+    "path": "docs/bundle-unlock.html",
+    "sha": "2d14ea65d9d951eedb79a5b012011d7c0770cd76",
+    "size": 1333,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/bundle-unlock.html?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/bundle-unlock.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/2d14ea65d9d951eedb79a5b012011d7c0770cd76",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/bundle-unlock.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/bundle-unlock.html?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/2d14ea65d9d951eedb79a5b012011d7c0770cd76",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/bundle-unlock.html"
+    }
+  },
+  {
+    "name": "email-sequences",
+    "path": "docs/email-sequences",
+    "sha": "e0068928176911595f0c7e2648800ad63af0c54e",
+    "size": 0,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/email-sequences?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/tree/main/docs/email-sequences",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/trees/e0068928176911595f0c7e2648800ad63af0c54e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/email-sequences?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/trees/e0068928176911595f0c7e2648800ad63af0c54e",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/tree/main/docs/email-sequences"
+    }
+  },
+  {
+    "name": "hermes-name-ideas.html",
+    "path": "docs/hermes-name-ideas.html",
+    "sha": "c8ad7a7da433d111b6dd787ac3606ea68967144c",
+    "size": 16916,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/hermes-name-ideas.html?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-name-ideas.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/c8ad7a7da433d111b6dd787ac3606ea68967144c",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/hermes-name-ideas.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/hermes-name-ideas.html?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/c8ad7a7da433d111b6dd787ac3606ea68967144c",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-name-ideas.html"
+    }
+  },
+  {
+    "name": "hermes-setup-buy.html",
+    "path": "docs/hermes-setup-buy.html",
+    "sha": "bf7981aca19be53346f73f87017e3500a822cdc4",
+    "size": 12147,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/hermes-setup-buy.html?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-setup-buy.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/bf7981aca19be53346f73f87017e3500a822cdc4",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/hermes-setup-buy.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/hermes-setup-buy.html?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/bf7981aca19be53346f73f87017e3500a822cdc4",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-setup-buy.html"
+    }
+  },
+  {
+    "name": "hermes-windows-1min-cron.html",
+    "path": "docs/hermes-windows-1min-cron.html",
+    "sha": "54cd4d0b615518a2582f0585b8f6ff9d74620b99",
+    "size": 59210,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/hermes-windows-1min-cron.html?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-windows-1min-cron.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/54cd4d0b615518a2582f0585b8f6ff9d74620b99",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/hermes-windows-1min-cron.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/hermes-windows-1min-cron.html?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/54cd4d0b615518a2582f0585b8f6ff9d74620b99",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-windows-1min-cron.html"
+    }
+  },
+  {
+    "name": "index.html",
+    "path": "docs/index.html",
+    "sha": "9cfcdef620fff81c77dd71cb36ac1201a2227025",
+    "size": 5272,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/index.html?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/index.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/9cfcdef620fff81c77dd71cb36ac1201a2227025",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/index.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/index.html?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/9cfcdef620fff81c77dd71cb36ac1201a2227025",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/index.html"
+    }
+  },
+  {
+    "name": "poly-alert-deck-setup.html",
+    "path": "docs/poly-alert-deck-setup.html",
+    "sha": "586fee28eab17e2a8b421d997632205fbadcb8e4",
+    "size": 10107,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/poly-alert-deck-setup.html?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/poly-alert-deck-setup.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/586fee28eab17e2a8b421d997632205fbadcb8e4",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/poly-alert-deck-setup.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/poly-alert-deck-setup.html?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/586fee28eab17e2a8b421d997632205fbadcb8e4",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/poly-alert-deck-setup.html"
+    }
+  },
+  {
+    "name": "poly-setup-buy.html",
+    "path": "docs/poly-setup-buy.html",
+    "sha": "8092a665498c8f176b13f5caf361cf307c440dcd",
+    "size": 6599,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/poly-setup-buy.html?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/poly-setup-buy.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/8092a665498c8f176b13f5caf361cf307c440dcd",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/poly-setup-buy.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/contents/docs/poly-setup-buy.html?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot/git/blobs/8092a665498c8f176b13f5caf361cf307c440dcd",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/poly-setup-buy.html"
+    }
+  }
+]

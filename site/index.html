@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KnightTrader BloFin — Local Autonomous Trading Assistant</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo">
+        <span class="logo-mark">KT</span>
+        <span class="logo-text">KnightTrader</span>
+        <span class="logo-badge">BloFin</span>
+      </div>
+      <nav class="site-nav">
+        <a href="#what">What it is</a>
+        <a href="#getting">Get started</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="what" class="section">
+      <div class="container">
+        <h2>What is KnightTrader BloFin?</h2>
+        <p class="section-lead">It turns your local Hermes runtime into a disciplined, inspectable trading assistant for BloFin.</p>
+
+        <div class="audience-cards">
+          <div class="audience-card">
+            <div class="audience-icon">🧭</div>
+            <h3>Beginners</h3>
+            <p>You do not need to make trading decisions. Install, follow the in-app How-To tab, and let the assistant handle the workflow.</p>
+          </div>
+          <div class="audience-card">
+            <div class="audience-icon">⚡</div>
+            <h3>Active traders</h3>
+            <p>You own the assistant, not a black box. Inspect the dashboard, review logs, and steer strategy over time.</p>
+          </div>
+          <div class="audience-card">
+            <div class="audience-icon">🔐</div>
+            <h3>Local-first operation</h3>
+            <p>Credentials stay on your machine. The assistant runs locally and talks to BloFin directly.</p>
+          </div>
+        </div>
+
+        <div class="info-block">
+          <h3>What is Hermes?</h3>
+          <p>Hermes is the local AI assistant runtime on your machine. In this setup, it becomes your trading assistant on BloFin.</p>
+          <p>If you are new to AI agents, think of it like a local assistant that you can review and steer. If you have used agents or automation before, think of it as a configurable local runtime with persistent memory and scheduled execution.</p>
+          <p>It is not a hosted bot you cannot inspect. It runs on your computer, keeps your credentials local, and executes scheduled trading checks through the Hermes dashboard.</p>
+        </div>
+
+        <div class="info-block">
+          <h3>What you are getting</h3>
+          <ul class="feature-list">
+            <li>A local trading assistant that runs every <strong>5 minutes</strong>.</li>
+            <li>Continuous operation while your PC is awake and online.</li>
+            <li>A simple How-To tab inside the app.</li>
+            <li>A local dashboard and logs you can watch.</li>
+            <li>Persistent memory and strategy refinement across runs.</li>
+            <li>One-time setup, not a subscription or hosted service.</li>
+          </ul>
+        </div>
+
+        <div class="info-block">
+          <h3>Persistent learning</h3>
+          <p>Hermes is built to remember. It writes durable memory notes for important trades and outcomes, so later runs can learn from earlier ones instead of starting blind.</p>
+          <p>That means the assistant can refine strategy over time and keep a trace of what it did, rather than treating each tick as a fresh unknown.</p>
+        </div>
+
+        <div class="info-block">
+          <h3>Strategy improvement</h3>
+          <ul class="feature-list">
+            <li>It remembers past trades and context.</li>
+            <li>You can edit prompts and strategy notes.</li>
+            <li>It can converge on better behavior after fewer turns.</li>
+            <li>Skills and lessons are kept locally.</li>
+            <li>You are effectively training your own assistant.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="download">
+      <div class="container">
+        <h2>Download</h2>
+        <p class="section-lead">Choose your platform below. The download button is intentionally placed after the explanation so you know what you are getting before installing.</p>
+        <div class="platform-selector">
+          <button class="platform-btn active" data-platform="windows">
+            <span class="platform-icon">🪟</span>
+            <span class="platform-label">Windows</span>
+          </button>
+          <button class="platform-btn" data-platform="mac">
+            <span class="platform-icon">🍎</span>
+            <span class="platform-label">macOS</span>
+          </button>
+        </div>
+        <div class="download-area" id="download-area">
+          <a class="btn-primary" id="btn-download" href="https://github.com/mknig/hermes-trader/releases/latest" target="_blank" rel="noopener">Download for Windows</a>
+          <p class="download-note" id="download-note">.exe installer — Windows 10/11</p>
+        </div>
+        <div class="mac-note" id="mac-note">
+          <h3>macOS build</h3>
+          <p>Use this path if you want a native macOS app experience. These steps package the same Hermes-powered assistant for Mac.</p>
+          <pre><code>git clone https://github.com/mknig/hermes-trader.git
+cd hermes-trader/KnightTrader
+npm install
+npm run build</code></pre>
+          <p class="small">After building, open the app bundle from the Electron output folder. If macOS blocks it, open <strong>System Settings → Privacy & Security</strong> and allow the app. For distribution, sign/notarize the app bundle and package it as a <strong>.dmg</strong> before sharing.</p>
+        </div>
+        <p class="hero-disclaimer">This is a trading assistant, not financial advice. Review your setup, API permissions, and risk before use.</p>
+      </div>
+    </section>
+
+    <section id="getting" class="section">
+      <div class="container">
+        <h2>Onboard your trading assistant</h2>
+        <ol class="steps">
+          <li>
+            <span class="step-number">1</span>
+            <div>
+              <strong>Download the installer</strong>
+              <p class="step-detail">Use the button above to download the installer for your platform.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">2</span>
+            <div>
+              <strong>Install and open the app</strong>
+              <p class="step-detail">Run the installer, then launch KnightTrader BloFin.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">3</span>
+            <div>
+              <strong>Open the How-To tab</strong>
+              <p class="step-detail">Follow the steps for Hermes setup, API keys, first-time configuration, and keeping your computer awake.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">4</span>
+            <div>
+              <strong>Watch it run</strong>
+              <p class="step-detail">Once configured, the assistant trades on BloFin every 5 minutes while your computer stays awake and online.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="container">
+        <h2>FAQ</h2>
+        <div class="faq">
+          <details>
+            <summary>I am new to crypto. Is this for me?</summary>
+            <p>Yes. The app includes a How-To tab that explains each step. You can follow along even if you have not used a trading bot or AI assistant before.</p>
+          </details>
+          <details>
+            <summary>I have used trading bots before. Is this different?</summary>
+            <p>It is local-first and inspectable. You can review logs, prompts, and memory files instead of treating it as an opaque hosted service.</p>
+          </details>
+          <details>
+            <summary>Do I need a VPN?</summary>
+            <p>No. KnightTrader BloFin runs locally and talks to BloFin directly.</p>
+          </details>
+          <details>
+            <summary>Do I have to place trades myself?</summary>
+            <p>No. After setup, the assistant can trade on your behalf. You can inspect logs and the dashboard anytime.</p>
+          </details>
+          <details>
+            <summary>Where do my API keys go?</summary>
+            <p>They stay on your machine. The app stores credentials locally and syncs them into your local Hermes setup.</p>
+          </details>
+          <details>
+            <summary>What if I need help?</summary>
+            <p>Open the How-To tab inside the app. It walks through Hermes setup, API keys, first-time configuration, and keeping your computer awake.</p>
+          </details>
+          <details>
+            <summary>Is this a subscription or hosted service?</summary>
+            <p>No. It is a local app with one-time setup. There is no ongoing account with us beyond the BloFin API you control.</p>
+          </details>
+          <details>
+            <summary>What should I do if the download button breaks?</summary>
+            <p>Use the <a href="https://github.com/mknig/hermes-trader/releases/latest" target="_blank" rel="noopener">Open release page</a> link below the main download button and grab the latest installer manually from the latest release.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>KnightTrader BloFin — local-first trading assistant.</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,4 +1,10 @@
-node_modules/
-dist/
-.DS_Store
-*.log
+.venv/
+__pycache__/
+*.pyc
+.env
+data/journal.sqlite
+data/journal.sqlite-*
+data/hermes.log
+*.egg-info/
+.pytest_cache/
+.coverage

@@ -1,0 +1,6 @@
+{
+  "os": "windows",
+  "slug": "never-sleep",
+  "caption": "Set the computer to never sleep and confirm internet is connected. On Windows, that means Power and sleep set to Never, lid closed behavior set to Do nothing while plugged in, and a quick site load to prove internet is there.",
+  "frame": "C:\\Users\\mknig\\hermes-trader\\tutorial-assets\\video\\windows-never-sleep-frame.jpg"
+}

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermes Trader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg0: #0b1220;
+            --bg1: #121a2b;
+            --line: #243149;
+            --text: #e8eefc;
+            --muted: #8fa0bf;
+            --accent: #3dd6c6;
+            --good: #3ecf8e;
+            --bad: #ff6b7a;
+            --warn: #f0c14a;
+        }
+        body {
+            font-family: "DM Sans", system-ui, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 600px at 10% -10%, #1a2a4a 0%, transparent 55%),
+                radial-gradient(900px 500px at 90% 0%, #14352f 0%, transparent 50%),
+                var(--bg0);
+            min-height: 100vh;
+        }
+        .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+        .panel {
+            background: color-mix(in srgb, var(--bg1) 88%, transparent);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            backdrop-filter: blur(8px);
+        }
+        .status-pulse { animation: pulse 1.2s ease-in-out infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.45; }
+        }
+        .slide-num {
+            display: inline-block;
+            transition: transform 280ms cubic-bezier(.2,.8,.2,1), color 280ms ease, opacity 280ms ease;
+            will-change: transform;
+        }
+        .slide-num.bump {
+            transform: translateY(-6px);
+            opacity: 0.55;
+        }
+        .row-in {
+            animation: rowIn 420ms cubic-bezier(.2,.8,.2,1) both;
+        }
+        @keyframes rowIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .log-container {
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+            font-size: 12px;
+            line-height: 1.45;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: #3a4b66 transparent;
+        }
+        .badge-live {
+            background: linear-gradient(90deg, #5a1d2a, #3b1d4a);
+            border: 1px solid #a33d55;
+            color: #ffc9d3;
+        }
+        .badge-demo {
+            background: linear-gradient(90deg, #164e4a, #1d3b5c);
+            border: 1px solid #2f6f68;
+            color: #9ff3e8;
+        }
+    </style>
+</head>
+<body>
+    <header class="border-b border-[var(--line)] px-6 py-4 sticky top-0 z-20 bg-[color-mix(in_srgb,var(--bg0)_85%,transparent)] backdrop-blur">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-wrap">
+                <h1 class="text-2xl font-bold tracking-tight">Hermes Trader</h1>
+                <span id="modeBadge" class="badge-live px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">live</span>
+                <span id="statusBadge" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-800 text-slate-300">
+                    <span id="statusDot" class="w-2 h-2 mr-2 bg-slate-400 rounded-full"></span>
+                    <span id="statusText">Stopped</span>
+                </span>
+                <span class="text-xs text-[var(--muted)] mono" id="refreshHint">500ms</span>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="launchBot()" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">Launch</button>
+                <button onclick="stopBot()" class="bg-rose-700 hover:bg-rose-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Stop</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="panel p-5">
+                <div class="text-[var(--muted)] text-sm">Equity</div>
+                <div id="equity" class="text-3xl font-bold mt-2 slide-num mono">--</div>
+                <div class="text-[var(--muted)] text-xs mt-1" id="equityHint">Blofin live equity</div>
+            </div>
+            <div class="panel p-5">
+                <div class="text-[var(--muted)] text-sm">Unrealized P&amp;L</div>
+                <div id="sessionPnl" class="text-3xl font-bold mt-2 slide-num mono">--</div>
+                <div class="text-[var(--muted)] text-xs mt-1">open position MTM</div>
+            </div>
+            <div class="panel p-5">
+                <div class="text-[var(--muted)] text-sm">Open Positions</div>
+                <div id="openLots" class="text-3xl font-bold mt-2 slide-num">--</div>
+                <div class="text-[var(--muted)] text-xs mt-1">live Blofin lots</div>
+            </div>
+            <div class="panel p-5">
+                <div class="text-[var(--muted)] text-sm">Universe</div>
+                <div id="universeCount" class="text-3xl font-bold mt-2 slide-num">--</div>
+                <div class="text-[var(--muted)] text-xs mt-1">Blofin USDT perps</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="panel p-4">
+                <div class="text-[var(--muted)] text-xs">Available</div>
+                <div id="available" class="text-xl font-semibold mt-1 slide-num mono">--</div>
+            </div>
+            <div class="panel p-4">
+                <div class="text-[var(--muted)] text-xs">Margin used</div>
+                <div id="marginUsed" class="text-xl font-semibold mt-1 slide-num mono">--</div>
+            </div>
+            <div class="panel p-4">
+                <div class="text-[var(--muted)] text-xs">Unrealized</div>
+                <div id="unrealized" class="text-xl font-semibold mt-1 slide-num mono">--</div>
+            </div>
+            <div class="panel p-4">
+                <div class="text-[var(--muted)] text-xs">Trades / tick</div>
+                <div class="text-xl font-semibold mt-1 mono">
+                    <span id="totalTrades" class="slide-num">--</span>
+                    <span class="text-[var(--muted)] text-sm"> / </span>
+                    <span id="lastTick" class="slide-num text-[var(--muted)]">--</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="panel p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">Account</h2>
+                    <span id="updatedAgo" class="text-xs text-[var(--muted)] mono"></span>
+                </div>
+                <div id="accountInfo" class="space-y-2 text-sm text-[var(--muted)]">Waiting for live Blofin account…</div>
+            </div>
+            <div class="panel p-6">
+                <h2 class="text-lg font-semibold mb-4">Open Positions</h2>
+                <div id="positionsInfo" class="space-y-2 max-h-72 overflow-y-auto scroll-container">
+                    <div class="text-[var(--muted)]">No open positions</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="panel p-6">
+                <h2 class="text-lg font-semibold mb-4">Journal</h2>
+                <div id="journalInfo" class="space-y-2 max-h-80 overflow-y-auto scroll-container">
+                    <div class="text-[var(--muted)]">No trades yet</div>
+                </div>
+            </div>
+            <div class="panel p-6">
+                <h2 class="text-lg font-semibold mb-4">Live Logs</h2>
+                <div id="logContainer" class="log-container scroll-container bg-black/30 rounded-xl p-4 h-80 overflow-y-auto text-slate-300">
+                    Waiting for logs…
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-[var(--line)] mt-10">
+        <div class="max-w-7xl mx-auto px-6 py-4 text-center text-sm text-[var(--muted)]">
+            Hermes LIVE — real Blofin USDT account · full universe · UI 500ms
+        </div>
+    </footer>
+
+    <script>
+        const REFRESH_MS = 500;
+        let timer = null;
+        let prev = {};
+        let inFlight = false;
+        let slideTimers = {};
+
+        function init() {
+            updateOverview();
+            // Overlap-safe cadence: schedule next after each finish, target ~500ms.
+            scheduleRefresh();
+        }
+
+        function scheduleRefresh() {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(async () => {
+                await updateOverview();
+                scheduleRefresh();
+            }, REFRESH_MS);
+        }
+
+        function setSlide(id, value, { colorize = false } = {}) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const next = value == null || value === undefined || Number.isNaN(value) ? "--" : String(value);
+            if (prev[id] === next) {
+                // Still refresh color if needed, but skip animation.
+                return;
+            }
+            const changed = prev[id] !== undefined;
+            prev[id] = next;
+            // Apply value immediately so 500ms polls never show stale deferred text.
+            el.textContent = next;
+            if (colorize && next !== "--") {
+                const n = parseFloat(String(next).replace(/[^0-9.\-+]/g, ""));
+                el.style.color = n > 0 ? "var(--good)" : n < 0 ? "var(--bad)" : "var(--text)";
+            }
+            if (!changed) return;
+            el.classList.remove("bump");
+            // Retrigger CSS transition.
+            void el.offsetWidth;
+            el.classList.add("bump");
+            if (slideTimers[id]) clearTimeout(slideTimers[id]);
+            slideTimers[id] = setTimeout(() => el.classList.remove("bump"), 280);
+        }
+
+        function fmtMoney(v, digits = 2) {
+            if (v === null || v === undefined || Number.isNaN(Number(v))) return "--";
+            const n = Number(v);
+            const sign = n >= 0 ? "+" : "";
+            return `${sign}${n.toFixed(digits)}`;
+        }
+
+        function fmtPlain(v, digits = 2) {
+            if (v === null || v === undefined || Number.isNaN(Number(v))) return "--";
+            return Number(v).toFixed(digits);
+        }
+
+        async function updateOverview() {
+            if (inFlight) return;
+            inFlight = true;
+            const t0 = performance.now();
+            try {
+                const res = await fetch("/api/overview?_=" + Date.now(), { cache: "no-store" });
+                if (!res.ok) return;
+                const data = await res.json();
+                const a = data.account || {};
+                const s = data.stats || {};
+
+                const modeBadge = document.getElementById("modeBadge");
+                modeBadge.textContent = (data.mode || "live").toUpperCase();
+                modeBadge.className = data.mode === "live"
+                    ? "badge-live px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide"
+                    : "badge-demo px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide";
+
+                const statusBadge = document.getElementById("statusBadge");
+                const statusDot = document.getElementById("statusDot");
+                const statusText = document.getElementById("statusText");
+                if (data.running) {
+                    statusBadge.className = "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-900 text-emerald-100";
+                    statusDot.className = "w-2 h-2 mr-2 bg-emerald-400 rounded-full status-pulse";
+                    statusText.textContent = "Running";
+                } else {
+                    statusBadge.className = "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-800 text-slate-300";
+                    statusDot.className = "w-2 h-2 mr-2 bg-slate-400 rounded-full";
+                    statusText.textContent = "Stopped";
+                }
+
+                // More decimals so small MTM moves still trigger slides every poll.
+                setSlide("equity", a.equity != null ? `$${fmtPlain(a.equity, 4)}` : "--");
+                const pnlLabel = data.mode === "live" ? a.unrealized_pnl : a.session_pnl;
+                setSlide("sessionPnl", pnlLabel != null ? `${fmtMoney(pnlLabel, 4)} USDT` : "--", { colorize: true });
+                setSlide("openLots", s.open_lots ?? 0);
+                setSlide("universeCount", a.universe_count ?? 0);
+                setSlide("available", a.available != null ? `$${fmtPlain(a.available, 4)}` : "--");
+                setSlide("marginUsed", a.margin_used != null ? `$${fmtPlain(a.margin_used, 4)}` : "--");
+                setSlide("unrealized", a.unrealized_pnl != null ? `${fmtMoney(a.unrealized_pnl, 4)}` : "--", { colorize: true });
+                setSlide("totalTrades", s.total_trades ?? 0);
+                setSlide("lastTick", a.last_tick ?? 0);
+
+                const latency = Math.round(performance.now() - t0);
+                const ago = a.updated_at ? `${Math.max(0, Date.now()/1000 - a.updated_at).toFixed(1)}s` : "";
+                document.getElementById("updatedAgo").textContent = ago ? `marks ${ago} · poll ${latency}ms` : `poll ${latency}ms`;
+                document.getElementById("refreshHint").textContent = `500ms · ${latency}ms`;
+
+                const eqHint = document.getElementById("equityHint");
+                if (eqHint) eqHint.textContent = data.mode === "live" ? "Blofin live equity" : "paper equity";
+
+                document.getElementById("accountInfo").innerHTML = `
+                    <div class="grid grid-cols-2 gap-y-2">
+                        <div class="text-[var(--muted)]">Mode</div><div class="mono">${(data.mode || "live").toUpperCase()}</div>
+                        <div class="text-[var(--muted)]">Equity</div><div class="mono">$${fmtPlain(a.equity, 4)}</div>
+                        <div class="text-[var(--muted)]">Cash free</div><div class="mono">$${fmtPlain(a.available, 4)}</div>
+                        <div class="text-[var(--muted)]">Margin used</div><div class="mono">$${fmtPlain(a.margin_used, 4)}</div>
+                        <div class="text-[var(--muted)]">Unrealized</div><div class="mono">${fmtMoney(a.unrealized_pnl, 4)}</div>
+                        <div class="text-[var(--muted)]">Universe</div><div class="mono">${a.universe_count ?? 0} perps</div>
+                        <div class="text-[var(--muted)]">Playbook</div><div class="mono">3 slots · 10x · stop-risk</div>
+                    </div>
+                `;
+
+                renderPositions(data.positions || []);
+                renderJournal(data.trades || []);
+
+                const logContainer = document.getElementById("logContainer");
+                const nextLog = data.log_tail || "No log data yet";
+                if (logContainer.dataset.raw !== nextLog) {
+                    logContainer.textContent = nextLog;
+                    logContainer.dataset.raw = nextLog;
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                }
+            } catch (err) {
+                console.error("overview failed", err);
+            } finally {
+                inFlight = false;
+            }
+        }
+
+        function renderPositions(positions) {
+            const container = document.getElementById("positionsInfo");
+            if (!positions.length) {
+                container.innerHTML = '<div class="text-[var(--muted)]">No open positions</div>';
+                return;
+            }
+            container.innerHTML = positions.map((pos, i) => {
+                const upnl = Number(pos.unrealized_pnl || 0);
+                const color = upnl > 0 ? "text-emerald-400" : upnl < 0 ? "text-rose-400" : "text-slate-300";
+                return `
+                <div class="row-in text-sm py-2 border-b border-[var(--line)] last:border-0" style="animation-delay:${i*30}ms">
+                    <div class="flex justify-between gap-3">
+                        <div>
+                            <span class="font-medium">${pos.instId}</span>
+                            <span class="text-[var(--muted)] ml-2">${pos.side} · ${pos.leverage || "?"}x</span>
+                        </div>
+                        <div class="text-right mono">
+                            <div>sz=${Number(pos.sz).toPrecision(4)}</div>
+                            <div class="text-xs text-[var(--muted)]">entry ${Number(pos.entry_px).toPrecision(6)} · mark ${Number(pos.mark_px).toPrecision(6)}</div>
+                            <div class="${color} text-xs">${fmtMoney(upnl)} uPnL</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join("");
+        }
+
+        function renderJournal(trades) {
+            const container = document.getElementById("journalInfo");
+            const visible = (trades || []).filter(t => t.instId !== "(no_trade)").slice(0, 20);
+            if (!visible.length) {
+                container.innerHTML = '<div class="text-[var(--muted)]">No trades yet</div>';
+                return;
+            }
+            container.innerHTML = visible.map((trade, i) => `
+                <div class="row-in text-sm py-2 border-b border-[var(--line)] last:border-0" style="animation-delay:${i*25}ms">
+                    <div class="flex justify-between gap-3">
+                        <div>
+                            <span class="font-medium">${trade.instId}</span>
+                            <span class="text-[var(--muted)] ml-2">${trade.side} ${trade.action}</span>
+                        </div>
+                        <div class="text-right mono text-xs">
+                            <div>sz=${trade.sz}${trade.px ? ` @ ${trade.px}` : ""}</div>
+                            ${trade.pnl_usdt != null ? `<div class="${trade.pnl_usdt >= 0 ? "text-emerald-400" : "text-rose-400"}">${fmtMoney(trade.pnl_usdt)}</div>` : ""}
+                        </div>
+                    </div>
+                    ${trade.rationale ? `<div class="text-[var(--muted)] text-xs mt-1">${trade.rationale}</div>` : ""}
+                </div>
+            `).join("");
+        }
+
+        async function launchBot() {
+            try {
+                await fetch("/api/launch", { method: "POST" });
+                setTimeout(updateOverview, 800);
+            } catch (e) { console.error(e); }
+        }
+
+        async function stopBot() {
+            try {
+                await fetch("/api/stop", { method: "POST" });
+                setTimeout(updateOverview, 500);
+            } catch (e) { console.error(e); }
+        }
+
+        document.addEventListener("DOMContentLoaded", init);
+    </script>
+</body>
+</html>

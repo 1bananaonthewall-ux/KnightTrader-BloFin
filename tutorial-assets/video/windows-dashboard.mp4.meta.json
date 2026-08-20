@@ -1,0 +1,6 @@
+{
+  "os": "windows",
+  "slug": "dashboard",
+  "caption": "Bring up the Hermes dashboard on Windows. Run hermes dashboard in the same PowerShell window, or open http://127.0.0.1:9119 yourself. Keep that window open.",
+  "frame": "C:\\Users\\mknig\\hermes-trader\\tutorial-assets\\video\\windows-dashboard-frame.jpg"
+}

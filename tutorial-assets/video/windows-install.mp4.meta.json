@@ -1,0 +1,6 @@
+{
+  "os": "windows",
+  "slug": "install",
+  "caption": "Install Hermes on Windows. Open PowerShell, copy the install command, paste it, wait for it to finish, then run hermes --version and hermes doctor in a new PowerShell window.",
+  "frame": "C:\\Users\\mknig\\hermes-trader\\tutorial-assets\\video\\windows-install-frame.jpg"
+}

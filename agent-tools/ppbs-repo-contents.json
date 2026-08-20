@@ -1,0 +1,114 @@
+[
+  {
+    "name": ".env.example",
+    "path": ".env.example",
+    "sha": "82d6c8661703de9b312f500c6efef0fe5690d047",
+    "size": 233,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/.env.example?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/.env.example",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/82d6c8661703de9b312f500c6efef0fe5690d047",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/.env.example",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/.env.example?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/82d6c8661703de9b312f500c6efef0fe5690d047",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/.env.example"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "5230a3267bf1ba72f32981e53cd29275fb905719",
+    "size": 78,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/.gitignore?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/.gitignore",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/5230a3267bf1ba72f32981e53cd29275fb905719",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/.gitignore?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/5230a3267bf1ba72f32981e53cd29275fb905719",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/.gitignore"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "51173038db4d5c00eb846a2d637debc54dce32ea",
+    "size": 1182,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/README.md?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/README.md",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/51173038db4d5c00eb846a2d637debc54dce32ea",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/README.md?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/51173038db4d5c00eb846a2d637debc54dce32ea",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/README.md"
+    }
+  },
+  {
+    "name": "SHARE.md",
+    "path": "SHARE.md",
+    "sha": "339df84cb92df15a2a8c550f0d92971499a306aa",
+    "size": 1564,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/SHARE.md?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/SHARE.md",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/339df84cb92df15a2a8c550f0d92971499a306aa",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/SHARE.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/SHARE.md?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/339df84cb92df15a2a8c550f0d92971499a306aa",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/SHARE.md"
+    }
+  },
+  {
+    "name": "requirements.txt",
+    "path": "requirements.txt",
+    "sha": "4923d6fa6172ec2c9674d22ae36fe6cf8805fe72",
+    "size": 93,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/requirements.txt?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/requirements.txt",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/4923d6fa6172ec2c9674d22ae36fe6cf8805fe72",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/requirements.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/requirements.txt?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/4923d6fa6172ec2c9674d22ae36fe6cf8805fe72",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/requirements.txt"
+    }
+  },
+  {
+    "name": "server.py",
+    "path": "server.py",
+    "sha": "2b906d22fff1f484f002437cbbc93c0e87076170",
+    "size": 7661,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/server.py?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/server.py",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/2b906d22fff1f484f002437cbbc93c0e87076170",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/server.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/server.py?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/blobs/2b906d22fff1f484f002437cbbc93c0e87076170",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/server.py"
+    }
+  },
+  {
+    "name": "static",
+    "path": "static",
+    "sha": "882f7b1cf62758d2915658399b5419b53924f30c",
+    "size": 0,
+    "url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/static?ref=main",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/tree/main/static",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/trees/882f7b1cf62758d2915658399b5419b53924f30c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/contents/static?ref=main",
+      "git": "https://api.github.com/repos/mknight2690-sys/Polly-Poly-Bot-Sales/git/trees/882f7b1cf62758d2915658399b5419b53924f30c",
+      "html": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/tree/main/static"
+    }
+  }
+]

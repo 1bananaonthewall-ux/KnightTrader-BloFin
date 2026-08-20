@@ -1,0 +1,72 @@
+[
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "bundle-buy.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/bundle-buy.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/bundle-buy.html"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "bundle-unlock.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/bundle-unlock.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/bundle-unlock.html"
+  },
+  {
+    "depth": 0,
+    "kind": "dir",
+    "name": "email-sequences",
+    "download_url": null,
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/tree/main/docs/email-sequences"
+  },
+  {
+    "depth": 1,
+    "kind": "file",
+    "name": "launch-owned-list.md",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/email-sequences/launch-owned-list.md",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/email-sequences/launch-owned-list.md"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "hermes-name-ideas.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/hermes-name-ideas.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-name-ideas.html"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "hermes-setup-buy.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/hermes-setup-buy.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-setup-buy.html"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "hermes-windows-1min-cron.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/hermes-windows-1min-cron.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/hermes-windows-1min-cron.html"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "index.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/index.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/index.html"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "poly-alert-deck-setup.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/poly-alert-deck-setup.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/poly-alert-deck-setup.html"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "poly-setup-buy.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot/main/docs/poly-setup-buy.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot/blob/main/docs/poly-setup-buy.html"
+  }
+]

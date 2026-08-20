@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-07-19T13:39:21.265196+00:00",
+  "inst_id": "",
+  "strategy": "breakout",
+  "mix": "breakout+roc_momentum:AND",
+  "total_return_pct": 210.7503441740873,
+  "sharpe_like": 3.7416573867739427,
+  "max_drawdown_pct": 61.96678981459408,
+  "trades": 22,
+  "params": {
+    "window": 20,
+    "stop_loss_pct": 0.03,
+    "take_profit_pct": 0.25,
+    "leverage": 10.0,
+    "max_positions": 3,
+    "period__roc_momentum": 5,
+    "threshold__roc_momentum": 0.3,
+    "stop_loss_pct__roc_momentum": 0.03,
+    "take_profit_pct__roc_momentum": 0.1,
+    "leverage__roc_momentum": 10.0,
+    "max_positions__roc_momentum": 3
+  }
+}

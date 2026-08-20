@@ -1,0 +1,93 @@
+[
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": ".env.example",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/.env.example",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/.env.example"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": ".gitignore",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/.gitignore",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/.gitignore"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "README.md",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/README.md",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/README.md"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "SHARE.md",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/SHARE.md",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/SHARE.md"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "requirements.txt",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/requirements.txt",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/requirements.txt"
+  },
+  {
+    "depth": 0,
+    "kind": "file",
+    "name": "server.py",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/server.py",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/server.py"
+  },
+  {
+    "depth": 0,
+    "kind": "dir",
+    "name": "static",
+    "download_url": null,
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/tree/main/static"
+  },
+  {
+    "depth": 1,
+    "kind": "file",
+    "name": "buy.js",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/static/buy.js",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/static/buy.js"
+  },
+  {
+    "depth": 1,
+    "kind": "file",
+    "name": "cancel.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/static/cancel.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/static/cancel.html"
+  },
+  {
+    "depth": 1,
+    "kind": "file",
+    "name": "index.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/static/index.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/static/index.html"
+  },
+  {
+    "depth": 1,
+    "kind": "file",
+    "name": "paper-run.png",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/static/paper-run.png",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/static/paper-run.png"
+  },
+  {
+    "depth": 1,
+    "kind": "file",
+    "name": "style.css",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/static/style.css",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/static/style.css"
+  },
+  {
+    "depth": 1,
+    "kind": "file",
+    "name": "success.html",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/Polly-Poly-Bot-Sales/main/static/success.html",
+    "html_url": "https://github.com/mknight2690-sys/Polly-Poly-Bot-Sales/blob/main/static/success.html"
+  }
+]

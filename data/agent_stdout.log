@@ -1,0 +1,95 @@
+﻿
+[07/20/26 11:50:06] INFO     2026-07-20 11:50:06,002 INFO hermes_trader.loop:  
+                             starting Hermes in LIVE mode                      
+                    INFO     2026-07-20 11:50:06,010 INFO hermes_trader.loop:  
+                             loading instrument universe from Blofin...        
+                    INFO     2026-07-20 11:50:06,581 INFO hermes_trader.loop:  
+                             loaded 482 USDT perps                             
+[07/20/26 11:50:10] INFO     2026-07-20 11:50:10,786 INFO                      
+                             hermes_trader.playbook: seeded journal summary    
+                             with optimized playbook from                      
+                             data\backtest_best.json                           
+                    INFO     2026-07-20 11:50:10,786 INFO hermes_trader.loop:  
+                             optimized playbook loaded into agent journal      
+                             memory                                            
+                    INFO     2026-07-20 11:50:10,800 INFO hermes_trader.loop:  
+                             tick=1 start                                      
+[07/20/26 11:50:33] INFO     2026-07-20 11:50:33,571 INFO                      
+                             hermes_trader.nous_client: LLM call ok in 18399   
+                             ms, 6399 chars returned                           
+                    INFO     2026-07-20 11:50:33,571 INFO hermes_trader.loop:  
+                             live fallback producing 1 decisions               
+[07/20/26 11:50:34] WARNING  2026-07-20 11:50:34,486 WARNING                   
+                             hermes_trader.executor: rejected ACE-USDT open:   
+                             Blofin API error 200 152009: clientOrderId must be
+                             a combination of numbers, letters, or underscores,
+                             and the maximum length of characters is 32.       
+tick=1  mode=live  llm_ms=18399  decisions=1  fills=0  rejected=1  
+pnl_today=+0.00USDT equity=1.05  reason='[PLAYBOOK RISK] risk~$0.08 
+margin~$0.28 lev=10x SL=3% 24h=+78.60% '
+                    INFO     2026-07-20 11:50:34,502 INFO hermes_trader.loop:  
+                             tick=1 mode=live equity=1.0549 fills=0 rejected=1 
+                             pnl_today=+0.0000                                 
+                    INFO     2026-07-20 11:50:34,502 INFO hermes_trader.loop:  
+                             tick=1 total=23.7s                                
+Hermes is awake (LIVE). Interval: 60s (+/- 3s).
+[07/20/26 11:51:34] INFO     2026-07-20 11:51:34,519 INFO hermes_trader.loop:  
+                             tick=2 start                                      
+[07/20/26 11:51:59] INFO     2026-07-20 11:51:59,956 INFO                      
+                             hermes_trader.nous_client: LLM call ok in 20649   
+                             ms, 7218 chars returned                           
+                    INFO     2026-07-20 11:51:59,956 INFO hermes_trader.loop:  
+                             live fallback producing 1 decisions               
+[07/20/26 11:52:01] WARNING  2026-07-20 11:52:01,012 WARNING                   
+                             hermes_trader.executor: rejected ACE-USDT open:   
+                             Blofin API error 200 152009: clientOrderId must be
+                             a combination of numbers, letters, or underscores,
+                             and the maximum length of characters is 32.       
+tick=2  mode=live  llm_ms=20649  decisions=1  fills=0  rejected=1  
+pnl_today=+0.00USDT equity=1.05  reason='[PLAYBOOK RISK] risk~$0.08 
+margin~$0.28 lev=10x SL=3% 24h=+79.28% '
+                    INFO     2026-07-20 11:52:01,021 INFO hermes_trader.loop:  
+                             tick=2 mode=live equity=1.0549 fills=0 rejected=1 
+                             pnl_today=+0.0000                                 
+                    INFO     2026-07-20 11:52:01,021 INFO hermes_trader.loop:  
+                             tick=2 total=26.5s                                
+[07/20/26 11:52:34] INFO     2026-07-20 11:52:34,508 INFO hermes_trader.loop:  
+                             tick=3 start                                      
+[07/20/26 11:52:48] INFO     2026-07-20 11:52:48,929 INFO                      
+                             hermes_trader.nous_client: LLM call ok in 10192   
+                             ms, 678 chars returned                            
+                    INFO     2026-07-20 11:52:48,931 INFO hermes_trader.loop:  
+                             live fallback producing 1 decisions               
+[07/20/26 11:52:49] WARNING  2026-07-20 11:52:49,849 WARNING                   
+                             hermes_trader.executor: rejected ACE-USDT open:   
+                             Blofin API error 200 152009: clientOrderId must be
+                             a combination of numbers, letters, or underscores,
+                             and the maximum length of characters is 32.       
+tick=3  mode=live  llm_ms=10195  decisions=1  fills=0  rejected=1  
+pnl_today=+0.00USDT equity=1.05  reason='[PLAYBOOK RISK] risk~$0.08 
+margin~$0.28 lev=10x SL=3% 24h=+78.42% '
+                    INFO     2026-07-20 11:52:49,860 INFO hermes_trader.loop:  
+                             tick=3 mode=live equity=1.0549 fills=0 rejected=1 
+                             pnl_today=+0.0000                                 
+                    INFO     2026-07-20 11:52:49,860 INFO hermes_trader.loop:  
+                             tick=3 total=15.4s                                
+[07/20/26 11:53:34] INFO     2026-07-20 11:53:34,513 INFO hermes_trader.loop:  
+                             tick=4 start                                      
+[07/20/26 11:53:51] INFO     2026-07-20 11:53:51,948 INFO                      
+                             hermes_trader.nous_client: LLM call ok in 13102   
+                             ms, 822 chars returned                            
+                    INFO     2026-07-20 11:53:51,965 INFO hermes_trader.loop:  
+                             live fallback producing 1 decisions               
+[07/20/26 11:53:52] WARNING  2026-07-20 11:53:52,715 WARNING                   
+                             hermes_trader.executor: rejected ACE-USDT open:   
+                             Blofin API error 200 152009: clientOrderId must be
+                             a combination of numbers, letters, or underscores,
+                             and the maximum length of characters is 32.       
+tick=4  mode=live  llm_ms=13118  decisions=1  fills=0  rejected=1  
+pnl_today=+0.00USDT equity=1.05  reason='[PLAYBOOK RISK] risk~$0.08 
+margin~$0.27 lev=10x SL=3% 24h=+77.51% '
+                    INFO     2026-07-20 11:53:52,727 INFO hermes_trader.loop:  
+                             tick=4 mode=live equity=1.0549 fills=0 rejected=1 
+                             pnl_today=+0.0000                                 
+                    INFO     2026-07-20 11:53:52,731 INFO hermes_trader.loop:  
+                             tick=4 total=18.2s                                

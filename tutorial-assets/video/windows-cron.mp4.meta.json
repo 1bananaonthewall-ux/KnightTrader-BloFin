@@ -1,0 +1,6 @@
+{
+  "os": "windows",
+  "slug": "cron",
+  "caption": "Set up the 10-minute cron job on Windows. Create a new scheduled job in the dashboard, set schedule to every 10 minutes, name it coinbase-equity-vertical, provider Nous, model tencent/hy free, then paste the Coinbase Cron Prompt and run it once.",
+  "frame": "C:\\Users\\mknig\\hermes-trader\\tutorial-assets\\video\\windows-cron-frame.jpg"
+}

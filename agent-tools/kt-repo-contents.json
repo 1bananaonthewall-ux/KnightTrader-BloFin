@@ -1,0 +1,18 @@
+[
+  {
+    "name": "hermes-setup-coinbase-buy.html",
+    "path": "hermes-setup-coinbase-buy.html",
+    "sha": "a6a0bc07257f831675f13cf54c512c5129c280b0",
+    "size": 16784,
+    "url": "https://api.github.com/repos/mknight2690-sys/knighttrader-coinbase/contents/hermes-setup-coinbase-buy.html?ref=master",
+    "html_url": "https://github.com/mknight2690-sys/knighttrader-coinbase/blob/master/hermes-setup-coinbase-buy.html",
+    "git_url": "https://api.github.com/repos/mknight2690-sys/knighttrader-coinbase/git/blobs/a6a0bc07257f831675f13cf54c512c5129c280b0",
+    "download_url": "https://raw.githubusercontent.com/mknight2690-sys/knighttrader-coinbase/master/hermes-setup-coinbase-buy.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mknight2690-sys/knighttrader-coinbase/contents/hermes-setup-coinbase-buy.html?ref=master",
+      "git": "https://api.github.com/repos/mknight2690-sys/knighttrader-coinbase/git/blobs/a6a0bc07257f831675f13cf54c512c5129c280b0",
+      "html": "https://github.com/mknight2690-sys/knighttrader-coinbase/blob/master/hermes-setup-coinbase-buy.html"
+    }
+  }
+]

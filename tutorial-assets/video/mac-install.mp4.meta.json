@@ -1,0 +1,6 @@
+{
+  "os": "mac",
+  "slug": "install",
+  "caption": "Install Hermes on Mac. Open Terminal, copy the install command, paste it, let it finish, open a new Terminal window, then run hermes --version and hermes doctor.",
+  "frame": "C:\\Users\\mknig\\hermes-trader\\tutorial-assets\\video\\mac-install-frame.jpg"
+}
