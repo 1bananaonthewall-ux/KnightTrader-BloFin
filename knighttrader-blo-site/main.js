@@ -1,8 +1,9 @@
 (() => {
-  const releaseBase = 'https://github.com/mknight2690-sys/KnightTrader-BloFin';
-  const releaseApiUrl = `${releaseBase}/releases/latest`;
-  let windowsUrl = `${releaseBase}/releases/latest`;
-  let macUrl = `${releaseBase}/releases/latest`;
+  const releaseApiBase = 'https://api.github.com/repos/mknight2690-sys/KnightTrader-BloFin';
+  const releaseApiUrl = `${releaseApiBase}/releases/latest`;
+  const releaseWebBase = 'https://github.com/mknight2690-sys/KnightTrader-BloFin/releases';
+  let windowsUrl = `${releaseWebBase}/latest`;
+  let macUrl = `${releaseWebBase}/latest`;
   const btnWindows = document.getElementById('btn-download-windows');
   const btnMac = document.getElementById('btn-download-mac');
   const downloadNote = document.getElementById('download-note');
