@@ -638,7 +638,7 @@ function buildTray() {
     appTray = new Tray(image);
     appTray.setToolTip('KnightTrader Blofin');
     const contextMenu = Menu.buildFromTemplate([
-      { label: 'Show KnightTrader', click: () => restoreFromTray() },
+      { label: 'Show KnightTrader Blofin', click: () => restoreFromTray() },
       { label: 'Quit', click: () => quitFromTray() },
     ]);
     appTray.setContextMenu(contextMenu);
@@ -1868,7 +1868,7 @@ function createWindow() {
       contextIsolation: true, nodeIntegration: false,
       webviewTag: true
     },
-    title: 'KnightTrader'
+    title: 'KnightTrader Blofin'
   });
   mainWindow.loadFile('renderer/index.html');
   mainWindow.once('ready-to-show', () => { mainWindow.show(); mainWindow.focus(); });

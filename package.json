@@ -11,8 +11,8 @@
     "build:mac": "electron-builder --mac"
   },
   "build": {
-    "appId": "com.knighttrader.app",
-    "productName": "KnightTrader",
+    "appId": "com.knighttrader.blofin",
+    "productName": "KnightTrader Blofin",
     "win": {
       "target": "nsis",
       "icon": "assets/icon.ico"
