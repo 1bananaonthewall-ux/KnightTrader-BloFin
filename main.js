@@ -1023,7 +1023,7 @@ async function ensureGatewayRunning(token) {
       appendLog('✅ Hermes gateway already running', 'success');
       return { ok: true, status };
     }
-  } catch (e) {
+    } catch (e) {
     appendLog(`⚠ Could not read Hermes status: ${e.message}`, 'warn');
   }
 
@@ -1112,7 +1112,7 @@ async function getDashboardStatus() {
       gatewayRunning = !!status.gateway_running;
       dashboardReady = gatewayRunning;
     } catch {
-      dashboardReady = false;
+  dashboardReady = false;
     }
   } else {
     dashboardReady = false;
@@ -1174,12 +1174,12 @@ async function startHermesDashboard() {
     hermesDashProcess.stderr.on('data', (d) => rememberDashboardOutput(d, 'warn'));
     hermesDashProcess.on('error', (e) => appendLog(`Dashboard error: ${e.message}`, 'error'));
     hermesDashProcess.on('close', async (code) => {
-      hermesDashProcess = null;
+    hermesDashProcess = null;
       if (await probeDashboardPort()) return;
-      dashboardReady = false;
+    dashboardReady = false;
       appendLog(`◼ Hermes dashboard stopped (code ${normalizeProcessExitCode(code)})`, code === 0 ? 'info' : 'error');
-      mainWindow?.webContents?.send('dashboard-stopped', {});
-    });
+    mainWindow?.webContents?.send('dashboard-stopped', {});
+  });
   } else {
     appendLog('ℹ Hermes dashboard is still starting — waiting for port 9119…', 'info');
   }
@@ -1211,7 +1211,7 @@ async function stopHermesDashboard() {
 
   if (hermesDashProcess) {
     hermesDashProcess.kill();
-    hermesDashProcess = null;
+  hermesDashProcess = null;
   } else if (await probeDashboardPort()) {
     const status = checkHermesInstalled();
     if (status.installed) {
@@ -1602,7 +1602,7 @@ function httpsRequest(urlStr, { method = 'GET', headers = {}, timeout = 45000 } 
       res.on('end', () => resolve({ status: res.statusCode, raw }));
     });
     req.on('timeout', () => { req.destroy(); reject(new Error('Request timed out after 45 seconds.')); });
-    req.on('error', reject);
+        req.on('error', reject);
     req.end();
   });
 }
