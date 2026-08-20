@@ -841,8 +841,9 @@ function ensureHermesExecutableRunnable(exePath) {
 
 // ── Start sandboxed Hermes dashboard ──────────────────────────────────────
 function probeDashboardPort(port, timeoutMs = 1500) {
+  const targetPort = Number(port) || DASHBOARD_PORT;
   return new Promise((resolve) => {
-    const req = http.get(`http://127.0.0.1:${port}/api/health`, (res) => {
+    const req = http.get(`http://127.0.0.1:${targetPort}/api/health`, (res) => {
       res.resume();
       resolve(true);
     });

@@ -46,11 +46,15 @@ const el = {
 
   // Settings
   aboutHermesVer: $('about-hermes-ver'),
+  aboutAppVersion: $('about-app-version'),
 
   // Trading
   tradingWebview: $('trading-webview'),
   tradingWebviewWrap: $('trading-webview-wrap'),
   btnReloadTrading: $('btn-reload-trading'),
+
+  // Sidebar / updates
+  sidebarVersion: $('sidebar-version'),
 
   // Update popup menu
   popupLauncher: $('popup-launcher'),
@@ -109,7 +113,11 @@ async function init() {
 
   try {
     const appVersion = await window.kt.getAppVersion();
-    if (el.popupAppVersion) el.popupAppVersion.textContent = appVersion || '1.0.0';
+    const normalized = appVersion ? String(appVersion).replace(/^v/, '') : '';
+    const label = normalized ? `v${normalized}` : '1.0.0';
+    if (el.popupAppVersion) el.popupAppVersion.textContent = normalized;
+    if (el.sidebarVersion) el.sidebarVersion.textContent = label;
+    if (el.aboutAppVersion) el.aboutAppVersion.textContent = `KnightTrader ${label}`;
   } catch (e) {}
 
   // Load creds
