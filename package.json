@@ -13,14 +13,6 @@
   "build": {
     "appId": "com.knighttrader.app",
     "productName": "KnightTrader",
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "mknight2690-sys",
-        "repo": "KnightTrader-BloFin",
-        "releaseType": "release"
-      }
-    ],
     "win": {
       "target": "nsis",
       "icon": "assets/icon.ico"
