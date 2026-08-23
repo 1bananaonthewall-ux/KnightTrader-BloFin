@@ -144,7 +144,7 @@ async function handleLoginSubmit(e) {
   if (el.btnLogin) { el.btnLogin.disabled = true; el.btnLogin.textContent = 'Signing in...'; }
   try {
     const result = await window.kt.authLogin({ email, password });
-    if (!result?.ok || result.status !== 'active') {
+    if (!result?.ok || !['active', 'missing_customer', 'inactive', 'stripe_unavailable'].includes(result.status)) {
       setLoginError(result?.msg || 'Membership login failed.');
       return;
     }
@@ -182,13 +182,25 @@ async function handleForgotSubmit(e) {
 }
 function applySubscriptionLock(status) {
   authReady = false;
-  showLoginForm();
+  const lockOverlay = $('subscription-lock-overlay');
+  const lockMessage = $('lock-message');
+  if (lockOverlay) {
+    lockOverlay.classList.remove('hidden');
+  }
+  if (lockMessage) {
+    lockMessage.textContent = status?.msg || 'Your membership is not active. Trading and Hermes cron are paused.';
+  }
   if (el.statusLabel) el.statusLabel.textContent = 'Membership required';
   if (el.statusPill) el.statusPill.classList.remove('running');
   appendLogLine({ ts: new Date().toISOString(), level: 'warn', message: `🔒 ${status?.msg || 'Active membership required.'}` });
+  pauseHermesForSubscription();
+}
+function hideSubscriptionLock() {
+  const lockOverlay = $('subscription-lock-overlay');
+  if (lockOverlay) lockOverlay.classList.add('hidden');
 }
 function openStripeCheckout() {
-  const email = el.loginEmail?.value || '';
+  const email = (el.loginEmail?.value || '').trim() || (sessionStorage.getItem('kt-last-email') || '').trim();
   if (!email) {
     setLoginError('Enter your membership email before opening checkout.');
     return;
@@ -200,6 +212,27 @@ function openStripeCheckout() {
       setLoginError(result?.msg || 'Could not open checkout.');
     }
   });
+}
+async function enforceSubscriptionOnLaunch() {
+  try {
+    const status = await window.kt.authSubscriptionStatus();
+    if (status?.status !== 'active') {
+      applySubscriptionLock(status || { msg: 'Active membership required.' });
+      return false;
+    }
+    hideSubscriptionLock();
+    return true;
+  } catch {
+    return true;
+  }
+}
+function pauseHermesForSubscription() {
+  if (el.btnStopDashboard && !el.btnStopDashboard.classList.contains('hidden')) {
+    el.btnStopDashboard.click();
+  }
+  if (el.btnStopTrading && !el.btnStopTrading.classList.contains('hidden')) {
+    el.btnStopTrading.click();
+  }
 }
 
 // ── Init ──────────────────────────────────────────────────────

@@ -2019,22 +2019,37 @@ async function getMembershipStatus(email, password) {
   if (!isAllowedUser(email, password)) {
     return { ok: false, msg: 'Invalid email or password.', status: 'invalid' };
   }
-  const customer = await findStripeCustomerByEmail(email);
-  if (!customer) {
-    return { ok: true, msg: 'Membership email is valid. No Stripe customer found yet.', status: 'missing_customer' };
+  const normalizedEmail = normalizeEmail(email);
+  const isFreeAccount = ALLOWED_USERS.some(
+    (u) => normalizeEmail(u.email) === normalizedEmail
+  );
+  try {
+    const customer = await findStripeCustomerByEmail(email);
+    if (!customer) {
+      return { ok: true, msg: 'Membership email is valid. No Stripe customer found yet.', status: 'missing_customer' };
+    }
+    const subscription = await findActiveSubscriptionForCustomer(customer.id);
+    if (!subscription) {
+      return { ok: true, msg: 'Membership email is valid. No active subscription found.', status: 'inactive' };
+    }
+    return {
+      ok: true,
+      msg: 'Active membership confirmed.',
+      status: 'active',
+      customerId: customer.id,
+      subscriptionId: subscription.id,
+      currentPeriodEnd: subscription.current_period_end,
+    };
+  } catch (err) {
+    if (!isFreeAccount) {
+      return { ok: false, msg: 'Membership check failed. Try again later.', status: 'stripe_error' };
+    }
+    return {
+      ok: true,
+      msg: 'Membership email is valid. Stripe check failed; membership status will refresh later.',
+      status: 'stripe_unavailable',
+    };
   }
-  const subscription = await findActiveSubscriptionForCustomer(customer.id);
-  if (!subscription) {
-    return { ok: true, msg: 'Membership email is valid. No active subscription found.', status: 'inactive' };
-  }
-  return {
-    ok: true,
-    msg: 'Active membership confirmed.',
-    status: 'active',
-    customerId: customer.id,
-    subscriptionId: subscription.id,
-    currentPeriodEnd: subscription.current_period_end,
-  };
 }
 async function getSubscriptionStatus() {
   const session = loadAuthSession();
