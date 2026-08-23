@@ -631,10 +631,9 @@ function appendLog(msg, type = 'info') {
 function buildTray() {
   if (appTray) return;
   try {
-    const iconPaths = [
-      path.join(__dirname, 'assets', 'icon.png'),
-      path.join(__dirname, 'assets', 'icon.ico'),
-    ];
+    const iconPaths = process.platform === 'win32'
+      ? [path.join(__dirname, 'assets', 'icon.ico'), path.join(__dirname, 'assets', 'icon.png')]
+      : [path.join(__dirname, 'assets', 'icon.png'), path.join(__dirname, 'assets', 'icon.ico')];
     let image = nativeImage.createEmpty();
     for (const iconPath of iconPaths) {
       const icon = nativeImage.createFromPath(iconPath);
@@ -644,7 +643,7 @@ function buildTray() {
       }
     }
     if (image.isEmpty()) {
-      image = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5gQWESo1yI6KEwAAAFZJREFUWMPt1zEOACAIA0D+/6cj2RkhsZkx29nZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnYIAQYAw9wJf1QAAAABJRU5ErkJggg==');
+      image = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5gQWESo1yI6KEwAAAFZJREFUWMPt1zEOACAIA0D+/6cj2RkhsZkx29nZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnYIAQYAw9wJf1QAAAABJRU5ErkJggg==');
     }
     appTray = new Tray(image);
     appTray.setToolTip('KnightTrader Blofin');
@@ -655,7 +654,7 @@ function buildTray() {
     appTray.setContextMenu(contextMenu);
     appTray.on('double-click', restoreFromTray);
     trayReady = true;
-    appendLog('🧩 System tray ready — close button now minimizes to tray', 'info');
+    appendLog('🧩 System tray ready', 'info');
   } catch (e) {
     trayReady = false;
     if (appTray) {
@@ -2206,6 +2205,19 @@ function createWindow() {
     mainWindow.hide();
     buildTray();
   });
+  mainWindow.on('close', (e) => {
+    if (!mainWindow) return;
+    if (mainWindow.isDestroyed()) return;
+    if (process.getCreationTime) {
+      const openedAt = process.getCreationTime();
+      const now = Date.now();
+      if (now - openedAt < 1200) return;
+    }
+    e.preventDefault();
+    mainWindow.hide();
+    buildTray();
+    appendLog('🧩 Window closed to system tray — double-click tray icon to restore', 'info');
+  });
 }
 
 // ── Suppress harmless Chromium GPU cache console noise ─────────────────────
@@ -2297,6 +2309,7 @@ app.whenReady().then(async () => {
 
   registerIPC();
   createWindow();
+  buildTray();
   appendLog(`🚀 KnightTrader started. Hermes sandbox: ${HERMES_HOME}`, 'success');
   syncHermesCredentials(null).catch((e) => {
     appendLog(`ℹ Hermes credential sync deferred: ${e.message}`, 'info');
