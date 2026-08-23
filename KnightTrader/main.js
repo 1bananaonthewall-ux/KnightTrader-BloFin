@@ -1900,7 +1900,7 @@ const ALLOWED_USERS = [
 ];
 const AUTH_SESSION_PATH = path.join(app.getPath('userData'), 'kt-auth-session.enc');
 const SUBSCRIPTION_PATH = path.join(app.getPath('userData'), 'kt-subscription.json');
-const RENEWAL_URL = 'https://buy.stripe.com/example-renew';
+const RENEWAL_URL = 'https://buy.stripe.com/cNi3cwe6Wb0oc991JOe3e0b';
 let authSession = null;
 function loadAuthSession() {
   try {
