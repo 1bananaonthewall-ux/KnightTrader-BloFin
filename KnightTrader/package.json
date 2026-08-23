@@ -12,26 +12,32 @@
   "build": {
     "appId": "com.knighttrader.blofin",
     "productName": "KnightTrader Blofin",
-    "asar": false,
+    "asar": true,
     "asarUnpack": [
       "**/node_modules/**",
-      "**/*.node"
+      "**/*.node",
+      "**/snapshot_blob.bin",
+      "**/v8_context_snapshot.bin",
+      "**/*.dll",
+      "**/*.pak",
+      "**/*.dat"
+    ],
+    "files": [
+      "main.js",
+      "app.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*",
+      "docs/**/*",
+      "blohunter/**/*",
+      "node_modules/**/*",
+      "package.json"
     ],
     "win": {
-      "target": "zip",
+      "target": "nsis",
       "icon": "assets/icon.ico"
     },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "perMachine": false,
-      "deleteAppDataOnUninstall": false
-    },
-    "mac": {
-      "target": "dmg",
-      "icon": "assets/icon.icns",
-      "category": "public.app-category.finance"
-    },
+    "fileAssociations": [],
     "publish": {
       "provider": "github",
       "owner": "1bananaonthewall-ux",
