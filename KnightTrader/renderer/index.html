@@ -167,6 +167,147 @@
       </div>
       <!-- ── End popup menu button ─────────────────────────────── -->
 
+      <!-- ── HOW-TO TAB ─────────────────────────────────────────── -->
+      <section id="tab-howto" class="tab-panel active">
+        <div class="panel-header">
+          <h1>How-To</h1>
+          <p class="panel-sub">Follow these steps in order. If you only have a debit card and no crypto experience, start here.</p>
+        </div>
+        <div class="steps-flow">
+
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Membership and download</div>
+              <div class="step-desc">Join the membership on the landing page, then sign in on this site. Download the installer for Windows 11 or Mac. Install the app and open it. Sign in with the same membership email and password.</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Keep this computer awake</div>
+              <div class="step-desc">Hermes needs your computer to stay awake while it runs. Set power settings so it does not sleep when you are working.</div>
+              <div class="step-desc"><strong>Windows 11:</strong></div>
+              <ol class="howto-list">
+                <li>Open <strong>Settings</strong>.</li>
+                <li>Go to <strong>System → Power & battery → Screen and sleep</strong>.</li>
+                <li>Set <strong>When plugged in, turn off my screen after</strong> to <strong>Never</strong>.</li>
+                <li>Set <strong>When plugged in, put my device to sleep after</strong> to <strong>Never</strong>.</li>
+                <li>If you use battery sometimes, set the battery versions to a long timeout or Never as well.</li>
+              </ol>
+              <div class="step-desc"><strong>Mac:</strong></div>
+              <ol class="howto-list">
+                <li>Open <strong>System Settings</strong>.</li>
+                <li>Go to <strong>Displays → Advanced</strong> and set <strong>Turn display off</strong> to <strong>Never</strong> or a long timeout.</li>
+                <li>Go to <strong>Battery → Options</strong> or <strong>Power Adapter</strong> and set <strong>Turn display off</strong> and sleep timers to <strong>Never</strong> while plugged in.</li>
+                <li>You can also enable <strong>Prevent automatic sleeping when the display is off</strong> if available.</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Install ProtonVPN and reach an allowed country</div>
+              <div class="step-desc">If Blofin is blocked in your country, use free ProtonVPN. The free version may connect to the U.S. first. That is okay as a temporary state.</div>
+              <div class="step-desc"><strong>Use this exact sequence:</strong></div>
+              <ol class="howto-list">
+                <li>Install ProtonVPN from protonvpn.com and sign in with a free Proton account.</li>
+                <li>Connect. If it connects to the <strong>U.S.</strong>, leave it connected.</li>
+                <li>Go to <strong>Home</strong> and click <strong>Change server</strong>.</li>
+                <li>If the new server is <strong>not</strong> Romania, Poland, Netherlands, or Mexico, wait <strong>1 minute 40 seconds</strong>, then click <strong>Change server</strong> again.</li>
+                <li>If the second change is still not allowed, wait <strong>1 minute 50 seconds</strong>, then click <strong>Change server</strong> a third time.</li>
+                <li>If you are still on a non-allowed country, click <strong>Disconnect</strong>, wait a moment, then click <strong>Connect</strong> to reconnect.</li>
+                <li>If it lands on the <strong>U.S.</strong> again, wait up to <strong>10 minutes</strong>, then restart from step 3.</li>
+              </ol>
+              <div class="step-desc">Allowed countries for Blofin: <strong>Romania, Poland, Netherlands, Mexico</strong>. Not allowed: <strong>Singapore, United States, Canada</strong>.</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Create your free Nous Portal API key</div>
+              <div class="step-desc">Go to <a href="https://portal.nousresearch.com/manage-subscription" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">portal.nousresearch.com/manage-subscription</a>. If not signed in, use <strong>Login</strong> in the portal navigation.</div>
+              <div class="step-desc"><strong>Click-by-click:</strong></div>
+              <ol class="howto-list">
+                <li>Open <strong>Plans</strong> if it is not already selected.</li>
+                <li>Select the <strong>Free $0</strong> plan.</li>
+                <li>Click <strong>Subscribe</strong> for the free plan if prompted.</li>
+                <li>After the plan is active, go to <strong>Account → API keys</strong> or the portal’s API keys section.</li>
+                <li>Click <strong>Create new API key</strong>.</li>
+                <li>Copy the key immediately and paste it into <strong>Settings → AI Credentials → Portal API Key</strong> in KnightTrader.</li>
+              </ol>
+              <div class="step-desc">Free tier is enough for Hermes cron trading. After pasting the key, use <strong>Test AI Credentials</strong> in the app.</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <div class="step-title">Create a Blofin account and API keys</div>
+              <div class="step-desc">Sign up at Blofin, verify your account, and create API keys. The app needs keys with <strong>Compendium + Trading + Transfer</strong> permissions.</div>
+              <ol class="howto-list">
+                <li>Go to <strong>Blofin</strong> and create an account.</li>
+                <li>Complete identity verification if prompted.</li>
+                <li>Open <strong>API Management</strong> and create a new API key.</li>
+                <li>Enable <strong>Compendium</strong>, <strong>Trading</strong>, and <strong>Transfer</strong> permissions.</li>
+                <li>Copy the API key, secret key, and passphrase.</li>
+                <li>Paste them into <strong>Setup</strong> in the app, or click <strong>Load from file…</strong> if you saved them.</li>
+                <li>Click <strong>Test Blofin Credentials</strong> and wait for a success message before continuing.</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <div class="step-title">Create a Coinbase account and buy crypto with your debit card</div>
+              <div class="step-desc">If you do not already have crypto, use Coinbase. This path is for someone who only has a debit card and knows nothing about crypto.</div>
+              <ol class="howto-list">
+                <li>Go to <strong>coinbase.com</strong> or download the Coinbase app.</li>
+                <li>Click <strong>Get started</strong>, enter your email, and create a strong password.</li>
+                <li>Verify your email by clicking the link Coinbase sends you.</li>
+                <li>Add your phone number and enable two-factor authentication.</li>
+                <li>Verify your identity: upload a government-issued photo ID and enter your personal details as prompted.</li>
+                <li>In Coinbase, go to <strong>Settings → Payment methods</strong> and add your debit card.</li>
+                <li>Buy a supported crypto such as <strong>USDC</strong> or <strong>BTC</strong> using your debit card. Expect higher card fees; keep the amount small for your first purchase.</li>
+                <li>After the purchase completes, open <strong>Portfolio</strong>, select the crypto you bought, and click <strong>Send</strong>.</li>
+                <li>Paste the Blofin deposit address for that crypto and choose the matching network exactly.</li>
+                <li>Preview the send, confirm the network fee, and send a small test amount first if possible.</li>
+              </ol>
+              <div class="step-desc">Important: if you send the wrong crypto or use the wrong network, the funds can be lost. Double-check the network and address before confirming.</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">7</div>
+            <div class="step-body">
+              <div class="step-title">Install Hermes and start the dashboard</div>
+              <div class="step-desc">In the <strong>Hermes</strong> tab, click <strong>Install Hermes</strong>, then <strong>Write Compendium File</strong>, then <strong>Start Dashboard + Gateway</strong>. This writes the credential file Hermes reads and starts the local dashboard on port <strong>9119</strong>.</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">8</div>
+            <div class="step-body">
+              <div class="step-title">Auto-configure the trading cron</div>
+              <div class="step-desc">In the <strong>Hermes</strong> tab, click <strong>Auto-Configure Cron</strong>. If auto-config is unavailable, copy the prompt shown and paste it into the Hermes dashboard manually. After that, the assistant trades on Blofin on the schedule.</div>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">9</div>
+            <div class="step-body">
+              <div class="step-title">Keep the computer awake and watch the first run</div>
+              <div class="step-desc">Confirm the power settings from step 2 are still set. Open <strong>Logs</strong> and the Hermes dashboard. Wait for the first scheduled run. If it fails, review the log message and fix the flagged item.</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       <!-- ── SETUP TAB ─────────────────────────────────────── -->
       <section id="tab-setup" class="tab-panel active">
         <div class="panel-header">
