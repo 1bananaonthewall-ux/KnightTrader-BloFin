@@ -58,6 +58,16 @@
                  ],
     "author":  "KnightTrader",
     "license":  "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/1bananaonthewall-ux/KnightTrader-BloFin.git"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "1bananaonthewall-ux",
+      "repo": "KnightTrader-BloFin",
+      "releaseType": "release"
+    },
     "allowScripts":  {
                          "electron@28.3.3":  true
                      }
