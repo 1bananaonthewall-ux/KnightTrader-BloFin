@@ -92,6 +92,7 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.version }}
           token: ${{ secrets.GH_TOKEN }}
+          repository: 1bananaonthewall-ux/KnightTrader-BloFin
 
       - uses: actions/setup-node@v4
         with:
@@ -117,6 +118,7 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.version }}
           token: ${{ secrets.GH_TOKEN }}
+          repository: 1bananaonthewall-ux/KnightTrader-BloFin
 
       - uses: actions/setup-node@v4
         with:
