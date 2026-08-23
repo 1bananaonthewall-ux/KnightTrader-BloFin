@@ -1167,6 +1167,56 @@ if (document.getElementById('btn-auth-logout')) {
   });
 }
 
+// Lock overlay buttons
+const btnLockRenew = document.getElementById('btn-lock-renew');
+const btnLockRecheck = document.getElementById('btn-lock-recheck');
+const btnLockSignout = document.getElementById('btn-lock-signout');
+const lockMessage = document.getElementById('lock-message');
+
+if (btnLockRenew) {
+  btnLockRenew.addEventListener('click', async () => {
+    try {
+      const result = await window.kt.authCreateCheckoutSession();
+      if (result?.ok && result.url) {
+        window.kt.openExternal(result.url);
+      } else {
+        if (lockMessage) lockMessage.textContent = result?.msg || 'Could not open checkout.';
+      }
+    } catch (e) {
+      if (lockMessage) lockMessage.textContent = 'Could not open checkout.';
+    }
+  });
+}
+if (btnLockRecheck) {
+  btnLockRecheck.addEventListener('click', async () => {
+    if (btnLockRecheck) btnLockRecheck.disabled = true;
+    if (lockMessage) lockMessage.textContent = 'Rechecking...';
+    try {
+      const status = await window.kt.authSubscriptionStatus();
+      if (status?.status === 'active') {
+        hideSubscriptionLock();
+        hideLoginOverlay();
+        authReady = true;
+        if (lockMessage) lockMessage.textContent = '';
+      } else {
+        if (lockMessage) lockMessage.textContent = status?.msg || 'Membership is still not active.';
+      }
+    } catch (e) {
+      if (lockMessage) lockMessage.textContent = 'Recheck failed. Try again.';
+    } finally {
+      if (btnLockRecheck) btnLockRecheck.disabled = false;
+    }
+  });
+}
+if (btnLockSignout) {
+  btnLockSignout.addEventListener('click', async () => {
+    await window.kt.authLogout();
+    authReady = false;
+    hideSubscriptionLock();
+    showLoginForm();
+  });
+}
+
 // ── VPN helper ───────────────────────────────────────────────
 function setVpnStatus(message, state) {
   if (!el.vpnStatus) return;
