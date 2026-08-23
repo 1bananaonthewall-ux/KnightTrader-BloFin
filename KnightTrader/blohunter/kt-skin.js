@@ -35,7 +35,7 @@
       next = next
         .replace(/Live extension log/gi, 'Hermes cron log')
         .replace(/Recent Activity/gi, 'Hermes Activity')
-        .replace(/welcome to blohunter/gi, 'Welcome to KnightTrader Blofin');
+        .replace(/welcome to blohunter/gi, 'Welcome to KnightTrader');
       if (next !== node.nodeValue) node.nodeValue = next;
       return;
     }
