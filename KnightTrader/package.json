@@ -1,25 +1,24 @@
 {
   "name": "knight-trader",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "KnightTrader — Hermes credential manager & launcher for Windows",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "build": "electron-builder",
-    "build:win": "electron-builder --win --publish always",
+    "build": "electron-builder --win --publish always --config.directories.output=C:\\Users\\mknig\\Downloads\\kt-build-out",
     "build:mac": "electron-builder --mac --publish always"
   },
   "build": {
     "appId": "com.knighttrader.blofin",
     "productName": "KnightTrader Blofin",
-    "asar": true,
+    "asar": false,
     "asarUnpack": [
       "**/node_modules/**",
       "**/*.node"
     ],
     "win": {
-      "target": "nsis",
+      "target": "zip",
       "icon": "assets/icon.ico"
     },
     "nsis": {

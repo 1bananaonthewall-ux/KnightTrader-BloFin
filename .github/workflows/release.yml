@@ -76,9 +76,9 @@ jobs:
             echo "version=$NEW" >> $GITHUB_OUTPUT
 
             git add KnightTrader/package.json KnightTrader/renderer/index.html
-            git commit -m "chore: bump version to $NEW [skip ci]"
+            git commit -m "chore: bump version to $NEW"
             git tag "$NEW"
-            git push origin HEAD:main --follow-tags
+            git push origin HEAD:${{ github.ref_name }} --follow-tags
 
             echo "tag_ref=refs/tags/$NEW" >> $GITHUB_OUTPUT
           fi
