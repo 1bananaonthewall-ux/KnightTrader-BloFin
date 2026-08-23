@@ -6,8 +6,8 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "build": "electron-builder --win --publish always --config.directories.output=C:\\Users\\mknig\\Downloads\\kt-build-out",
-    "build:mac": "electron-builder --mac --publish always"
+    "build": "electron-builder --win --config.directories.output=C:\\Users\\mknig\\Downloads\\kt-build-out",
+    "build:mac": "electron-builder --mac"
   },
   "build": {
     "appId": "com.knighttrader.blofin",
@@ -30,6 +30,7 @@
       "assets/**/*",
       "docs/**/*",
       "blohunter/**/*",
+      "blohunter-bridge.js",
       "node_modules/**/*",
       "package.json"
     ],
@@ -37,13 +38,7 @@
       "target": "nsis",
       "icon": "assets/icon.ico"
     },
-    "fileAssociations": [],
-    "publish": {
-      "provider": "github",
-      "owner": "1bananaonthewall-ux",
-      "repo": "KnightTrader-BloFin",
-      "releaseType": "release"
-    }
+    "fileAssociations": []
   },
   "dependencies": {
     "electron-store": "^8.1.0",
