@@ -13,18 +13,28 @@
   "build": {
     "appId": "com.knighttrader.blofin",
     "productName": "KnightTrader Blofin",
+    "asar": true,
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.ico"
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false
     },
     "mac": {
       "target": "dmg",
       "icon": "assets/icon.icns",
       "category": "public.app-category.finance"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "mknight2690-sys",
+      "repo": "KnightTrader-BloFin",
+      "releaseType": "release"
     }
   },
   "dependencies": {

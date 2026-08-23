@@ -1,6 +1,8 @@
 (() => {
-  const releaseApiUrl = 'https://api.github.com/repos/mknight2690-sys/KnightTrader-BloFin/releases/latest';
-  const releaseWebBase = 'https://github.com/mknight2690-sys/KnightTrader-BloFin/releases';
+  const owner = '1bananaonthewall-ux';
+  const repo = 'KnightTrader-BloFin';
+  const releaseApiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
+  const releaseWebBase = `https://github.com/${owner}/${repo}/releases`;
   let windowsUrl = `${releaseWebBase}/latest`;
   let macUrl = `${releaseWebBase}/latest`;
   const btnWindows = document.getElementById('btn-download-windows');
@@ -28,9 +30,9 @@
   async function updateDownloadLinks() {
     const release = await fetchLatestRelease();
     if (release?.assets?.length) {
-      const windowsAsset = findAsset(release.assets, /KnightTrader-Blofin-Setup-.*\.exe$/i)
+      const windowsAsset = findAsset(release.assets, /KnightTrader[-.]Blofin[-.]Setup.*\.exe$/i)
         || findAsset(release.assets, /\.exe$/i);
-      const macAsset = findAsset(release.assets, /KnightTrader-Blofin-.*\.dmg$/i)
+      const macAsset = findAsset(release.assets, /KnightTrader[-.]Blofin.*\.dmg$/i)
         || findAsset(release.assets, /\.dmg$/i);
       if (windowsAsset?.browser_download_url) {
         windowsUrl = windowsAsset.browser_download_url;
@@ -39,6 +41,10 @@
         macUrl = macAsset.browser_download_url;
       }
     }
+
+    const fallbackUrl = `${releaseWebBase}/latest`;
+    if (!windowsUrl || windowsUrl === `${releaseWebBase}/latest`) windowsUrl = fallbackUrl;
+    if (!macUrl || macUrl === `${releaseWebBase}/latest`) macUrl = fallbackUrl;
   }
 
   function triggerDownload(url) {

@@ -1876,16 +1876,24 @@ function registerIPC() {
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1060, height: 740, minWidth: 860, minHeight: 600,
-    frame: false, backgroundColor: '#090c10', show: false,
+    frame: false, backgroundColor: '#090c10', show: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true, nodeIntegration: false,
-      webviewTag: true
+      webviewTag: true,
+      // Hardened for Windows 10 compatibility
+      sandbox: true,
+      preload: path.join(__dirname, 'preload.js')
     },
     title: 'KnightTrader Blofin'
   });
   mainWindow.loadFile('renderer/index.html');
   mainWindow.once('ready-to-show', () => { mainWindow.show(); mainWindow.focus(); });
+  mainWindow.webContents.on('did-fail-load', (_e, code, desc) => {
+    appendLog(`⚠ Failed to load UI: ${code} - ${desc}`, 'warn');
+    mainWindow.show();
+    mainWindow.focus();
+  });
   mainWindow.on('closed', () => { mainWindow = null; });
   mainWindow.on('minimize', () => {
     mainWindow.hide();
