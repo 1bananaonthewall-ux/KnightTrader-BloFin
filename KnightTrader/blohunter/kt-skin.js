@@ -16,13 +16,15 @@
         /blohunter/i.test(text) ||
         /live extension log/i.test(text) ||
         /live activity log/i.test(text) ||
-        /^recent activity$/i.test(text.trim())
+        /^recent activity$/i.test(text.trim()) ||
+        /welcome to/i.test(text.trim())
       ) {
         el.textContent = text
           .replace(/BloHunter(?:\s+Connect)?/gi, BRAND)
           .replace(/Live extension log/gi, 'Hermes cron log')
           .replace(/Live activity log/gi, 'Hermes cron log')
-          .replace(/Recent Activity/gi, 'Hermes Activity');
+          .replace(/Recent Activity/gi, 'Hermes Activity')
+          .replace(/welcome to blohunter/gi, 'Welcome to KnightTrader Blofin');
       }
     });
   }
@@ -32,7 +34,8 @@
       let next = String(node.nodeValue || '').replace(/BloHunter(?:\s+Connect)?/gi, BRAND);
       next = next
         .replace(/Live extension log/gi, 'Hermes cron log')
-        .replace(/Recent Activity/gi, 'Hermes Activity');
+        .replace(/Recent Activity/gi, 'Hermes Activity')
+        .replace(/welcome to blohunter/gi, 'Welcome to KnightTrader Blofin');
       if (next !== node.nodeValue) node.nodeValue = next;
       return;
     }
