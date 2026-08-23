@@ -1,6 +1,6 @@
 {
     "name":  "knight-trader",
-    "version":  "1.0.13",
+    "version":  "1.0.14",
     "description":  "KnightTrader — Hermes credential manager \u0026 launcher for Windows",
     "main":  "main.js",
     "scripts":  {
@@ -58,16 +58,16 @@
                  ],
     "author":  "KnightTrader",
     "license":  "MIT",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/1bananaonthewall-ux/KnightTrader-BloFin.git"
-    },
-    "publish": {
-      "provider": "github",
-      "owner": "1bananaonthewall-ux",
-      "repo": "KnightTrader-BloFin",
-      "releaseType": "release"
-    },
+    "repository":  {
+                       "type":  "git",
+                       "url":  "https://github.com/1bananaonthewall-ux/KnightTrader-BloFin.git"
+                   },
+    "publish":  {
+                    "provider":  "github",
+                    "owner":  "1bananaonthewall-ux",
+                    "repo":  "KnightTrader-BloFin",
+                    "releaseType":  "release"
+                },
     "allowScripts":  {
                          "electron@28.3.3":  true
                      }
