@@ -1,62 +1,64 @@
 {
-  "name": "knight-trader",
-  "version": "1.0.12",
-  "description": "KnightTrader — Hermes credential manager & launcher for Windows",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "dev": "electron . --dev",
-    "build": "electron-builder --win --config.directories.output=C:\\Users\\mknig\\Downloads\\kt-build-out",
-    "build:win": "electron-builder --win --publish always --config.directories.output=C:\\Users\\mknig\\Downloads\\kt-build-out",
-    "build:mac": "electron-builder --mac --publish always"
-  },
-  "build": {
-    "appId": "com.knighttrader.blofin",
-    "productName": "KnightTrader Blofin",
-    "asar": true,
-    "asarUnpack": [
-      "**/node_modules/**",
-      "**/*.node",
-      "**/snapshot_blob.bin",
-      "**/v8_context_snapshot.bin",
-      "**/*.dll",
-      "**/*.pak",
-      "**/*.dat"
-    ],
-    "files": [
-      "*.js",
-      "renderer/**/*",
-      "assets/**/*",
-      "docs/**/*",
-      "blohunter/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
-    },
-    "fileAssociations": []
-  },
-  "dependencies": {
-    "electron-store": "^8.1.0",
-    "electron-updater": "^6.8.9",
-    "eventsource": "^5.1.0",
-    "node-cron": "^3.0.3"
-  },
-  "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-builder": "^24.9.1"
-  },
-  "keywords": [
-    "electron",
-    "trading",
-    "hermes",
-    "blofin"
-  ],
-  "author": "KnightTrader",
-  "license": "MIT",
-  "allowScripts": {
-    "electron@28.3.3": true
-  }
+    "name":  "knight-trader",
+    "version":  "1.0.13",
+    "description":  "KnightTrader — Hermes credential manager \u0026 launcher for Windows",
+    "main":  "main.js",
+    "scripts":  {
+                    "start":  "electron .",
+                    "dev":  "electron . --dev",
+                    "build":  "electron-builder --win --config.directories.output=C:\\Users\\mknig\\Downloads\\kt-build-out",
+                    "build:win":  "electron-builder --win --publish always --config.directories.output=C:\\Users\\mknig\\Downloads\\kt-build-out",
+                    "build:mac":  "electron-builder --mac --publish always"
+                },
+    "build":  {
+                  "appId":  "com.knighttrader.blofin",
+                  "productName":  "KnightTrader Blofin",
+                  "asar":  true,
+                  "asarUnpack":  [
+                                     "**/node_modules/**",
+                                     "**/*.node",
+                                     "**/snapshot_blob.bin",
+                                     "**/v8_context_snapshot.bin",
+                                     "**/*.dll",
+                                     "**/*.pak",
+                                     "**/*.dat"
+                                 ],
+                  "files":  [
+                                "*.js",
+                                "renderer/**/*",
+                                "assets/**/*",
+                                "docs/**/*",
+                                "blohunter/**/*",
+                                "node_modules/**/*",
+                                "package.json"
+                            ],
+                  "win":  {
+                              "target":  "nsis",
+                              "icon":  "assets/icon.ico"
+                          },
+                  "fileAssociations":  [
+
+                                       ]
+              },
+    "dependencies":  {
+                         "electron-store":  "^8.1.0",
+                         "electron-updater":  "^6.8.9",
+                         "eventsource":  "^5.1.0",
+                         "node-cron":  "^3.0.3"
+                     },
+    "devDependencies":  {
+                            "electron":  "^28.0.0",
+                            "electron-builder":  "^24.9.1"
+                        },
+    "keywords":  [
+                     "electron",
+                     "trading",
+                     "hermes",
+                     "blofin"
+                 ],
+    "author":  "KnightTrader",
+    "license":  "MIT",
+    "allowScripts":  {
+                         "electron@28.3.3":  true
+                     }
 }
