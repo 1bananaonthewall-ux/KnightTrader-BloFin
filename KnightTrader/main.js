@@ -629,12 +629,23 @@ function appendLog(msg, type = 'info') {
 }
 
 function buildTray() {
-  if (trayReady || appTray) return;
+  if (appTray) return;
   try {
-    const iconPath = path.join(__dirname, 'assets', 'tray-icon.png');
-    const icon = nativeImage.createFromPath(iconPath);
-    const image = icon.isEmpty() ? nativeImage.createEmpty() : icon;
-    trayReady = true;
+    const iconPaths = [
+      path.join(__dirname, 'assets', 'icon.png'),
+      path.join(__dirname, 'assets', 'icon.ico'),
+    ];
+    let image = nativeImage.createEmpty();
+    for (const iconPath of iconPaths) {
+      const icon = nativeImage.createFromPath(iconPath);
+      if (!icon.isEmpty()) {
+        image = icon;
+        break;
+      }
+    }
+    if (image.isEmpty()) {
+      image = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5gQWESo1yI6KEwAAAFZJREFUWMPt1zEOACAIA0D+/6cj2RkhsZkx29nZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnYIAQYAw9wJf1QAAAABJRU5ErkJggg==');
+    }
     appTray = new Tray(image);
     appTray.setToolTip('KnightTrader Blofin');
     const contextMenu = Menu.buildFromTemplate([
@@ -643,8 +654,14 @@ function buildTray() {
     ]);
     appTray.setContextMenu(contextMenu);
     appTray.on('double-click', restoreFromTray);
+    trayReady = true;
     appendLog('🧩 System tray ready — close button now minimizes to tray', 'info');
   } catch (e) {
+    trayReady = false;
+    if (appTray) {
+      try { appTray.destroy(); } catch {}
+      appTray = null;
+    }
     appendLog(`⚠ Tray init failed: ${e.message}`, 'warn');
   }
 }
