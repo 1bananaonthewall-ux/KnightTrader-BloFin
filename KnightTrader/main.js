@@ -1872,6 +1872,296 @@ function registerIPC() {
   });
 }
 
+// ── Membership auth ─────────────────────────────────────────────────────
+const STRIPE_SECRET_KEY = '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';
+const STRIPE_SECRET_BACKUP = 'jejj-cqib-ovhc-ltyo-qnyk';
+const MEMBERSHIP_PRICE_AMOUNT = 47;
+const MEMBERSHIP_CURRENCY = 'usd';
+const ALLOWED_USERS = [
+  { email: 'tails123@gmail.com', password: 'blohunterdaddy1!' },
+  { email: '1bananaonthewall@gmail.com', password: 'Carterjaxon15!' },
+];
+const AUTH_SESSION_PATH = path.join(app.getPath('userData'), 'kt-auth-session.enc');
+const SUBSCRIPTION_PATH = path.join(app.getPath('userData'), 'kt-subscription.json');
+const RENEWAL_URL = 'https://buy.stripe.com/example-renew';
+let authSession = null;
+function loadAuthSession() {
+  try {
+    if (fs.existsSync(AUTH_SESSION_PATH)) {
+      const raw = decryptData(fs.readFileSync(AUTH_SESSION_PATH, 'utf8'));
+      if (raw?.email && raw?.password) return raw;
+    }
+  } catch {}
+  return null;
+}
+function saveAuthSession(session) {
+  try { fs.writeFileSync(AUTH_SESSION_PATH, encryptData(session), 'utf8'); } catch {}
+}
+function clearAuthSession() {
+  try { fs.unlinkSync(AUTH_SESSION_PATH); } catch {}
+  authSession = null;
+}
+function loadSubscription() {
+  try {
+    if (fs.existsSync(SUBSCRIPTION_PATH)) return JSON.parse(fs.readFileSync(SUBSCRIPTION_PATH, 'utf8'));
+  } catch {}
+  return null;
+}
+function saveSubscription(data) {
+  try { fs.writeFileSync(SUBSCRIPTION_PATH, JSON.stringify(data || null), 'utf8'); } catch {}
+}
+function hashCredential(value) {
+  return Buffer.from(String(value || '').trim().toLowerCase()).toString('base64');
+}
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase();
+}
+function isAllowedUser(email, password) {
+  const targetEmail = normalizeEmail(email);
+  const targetPassword = String(password || '');
+  return ALLOWED_USERS.some(
+    (u) => normalizeEmail(u.email) === targetEmail && u.password === targetPassword
+  );
+}
+async function fetchJson(url, headers = {}) {
+  const effectiveHeaders = { ...headers, 'Stripe-Version': '2024-06-20' };
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers: effectiveHeaders }, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        try {
+          const text = Buffer.concat(chunks).toString('utf8');
+          resolve({ status: res.statusCode, data: text ? JSON.parse(text) : null });
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }).on('error', reject);
+  });
+}
+async function stripeRequest(path, method = 'GET', body = null) {
+  const secrets = [STRIPE_SECRET_KEY, STRIPE_SECRET_BACKUP].filter(Boolean);
+  let lastError = null;
+  for (const secret of secrets) {
+    const headers = { Authorization: `Bearer ${secret}` };
+    if (body && !Buffer.isBuffer(body) && typeof body === 'object') {
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      body = new URLSearchParams(body).toString();
+    } else if (body && typeof body === 'string') {
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    }
+    const url = `https://api.stripe.com/v1${path.startsWith('/') ? path : `/${path}`}`;
+    try {
+      const result = await new Promise((resolve, reject) => {
+        const req = (method === 'GET' ? https.get : (body ? https.request : https.get)).call(
+          https,
+          url,
+          { method, headers },
+          (res) => {
+            const chunks = [];
+            res.on('data', (chunk) => chunks.push(chunk));
+            res.on('end', () => {
+              const text = Buffer.concat(chunks).toString('utf8');
+              try {
+                resolve({ status: res.statusCode, data: text ? JSON.parse(text) : null });
+              } catch (err) {
+                reject(err);
+              }
+            });
+          }
+        );
+        if (body) req.write(body);
+        if (body) req.end();
+        req.on('error', reject);
+      });
+      if (result.status !== 401) return result;
+      lastError = result;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  if (lastError && typeof lastError === 'object' && lastError.status) {
+    return lastError;
+  }
+  const error = new Error(lastError?.message || 'Stripe request failed');
+  error.status = lastError?.status || 500;
+  throw error;
+}
+async function findStripeCustomerByEmail(email) {
+  let url = `/customers?email=${encodeURIComponent(email)}&limit=1`;
+  const result = await stripeRequest(url, 'GET');
+  if (!result.data?.data?.length) return null;
+  return result.data.data[0];
+}
+async function findActiveSubscriptionForCustomer(customerId) {
+  const result = await stripeRequest(`/subscriptions?customer=${customerId}&status=active&limit=1`, 'GET');
+  if (!result.data?.data?.length) return null;
+  return result.data.data[0];
+}
+async function getMembershipStatus(email, password) {
+  if (!isAllowedUser(email, password)) {
+    return { ok: false, msg: 'Invalid email or password.', status: 'invalid' };
+  }
+  const customer = await findStripeCustomerByEmail(email);
+  if (!customer) {
+    return { ok: true, msg: 'Membership email is valid. No Stripe customer found yet.', status: 'missing_customer' };
+  }
+  const subscription = await findActiveSubscriptionForCustomer(customer.id);
+  if (!subscription) {
+    return { ok: true, msg: 'Membership email is valid. No active subscription found.', status: 'inactive' };
+  }
+  return {
+    ok: true,
+    msg: 'Active membership confirmed.',
+    status: 'active',
+    customerId: customer.id,
+    subscriptionId: subscription.id,
+    currentPeriodEnd: subscription.current_period_end,
+  };
+}
+async function getSubscriptionStatus() {
+  const session = loadAuthSession();
+  if (!session?.email || !session?.password) {
+    return { ok: false, msg: 'Not signed in.', status: 'unknown' };
+  }
+  return getMembershipStatus(session.email, session.password);
+}
+async function refreshSubscriptionCache() {
+  const status = await getSubscriptionStatus();
+  saveSubscription({ refreshedAt: Date.now(), ...status });
+  return status;
+}
+async function requireActiveSubscription() {
+  const status = await refreshSubscriptionCache();
+  if (!status.ok) return status;
+  if (status.status === 'active') return status;
+  return { ok: false, msg: 'Active membership required.', status: status.status, ...status };
+}
+async function handleForgotPassword(email) {
+  const normalized = normalizeEmail(email);
+  if (!normalized) return { ok: false, msg: 'Enter the email for your account.' };
+  if (!ALLOWED_USERS.some((u) => normalizeEmail(u.email) === normalized)) {
+    return { ok: false, msg: 'If an account exists, a reset link has been sent.' };
+  }
+  const customer = await findStripeCustomerByEmail(normalized);
+  if (!customer) {
+    return { ok: false, msg: 'No Stripe account found for this email yet.' };
+  }
+  const result = await stripeRequest(`/customers/${customer.id}`, 'GET');
+  const customerData = result.data || {};
+  const updated = { ...customerData, metadata: { ...(customerData.metadata || {}), reset_requested_at: String(Date.now()) } };
+  const updateBody = new URLSearchParams();
+  Object.entries(updated).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && key !== 'id') updateBody.append(`customer[${key}]`, value);
+  });
+  const updateResult = await stripeRequest(`/customers/${customer.id}`, 'POST', updateBody.toString());
+  if (updateResult.status >= 400) {
+    return { ok: false, msg: 'Could not record reset request. Try again later.' };
+  }
+  appendLog(`🔑 Password reset requested for ${normalized}`, 'info');
+  return { ok: true, msg: 'Reset link sent. Check your email.' };
+}
+function startSubscriptionWatchdog() {
+  try {
+    setInterval(async () => {
+      const status = await getSubscriptionStatus();
+      if (!status || status.status === 'active') return;
+      appendLog(`🔒 Membership issue: ${status?.msg || 'inactive'}`, 'warn');
+      try {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.webContents.send('subscription-locked', { status });
+        }
+      } catch {}
+    }, 5 * 60 * 1000);
+  } catch {}
+}
+function createCheckoutSession(email) {
+  return new Promise((resolve, reject) => {
+    const body = new URLSearchParams();
+    body.append('mode', 'subscription');
+    body.append('customer_email', email);
+    body.append('success_url', `${app.getPath('userData')}/checkout-success.html`);
+    body.append('cancel_url', `${app.getPath('userData')}/checkout-cancel.html`);
+    body.append('line_items[0][price_data][currency]', MEMBERSHIP_CURRENCY);
+    body.append('line_items[0][price_data][recurring][interval]', 'month');
+    body.append('line_items[0][price_data][unit_amount]', String(MEMBERSHIP_PRICE_AMOUNT));
+    body.append('line_items[0][quantity]', '1');
+    const options = {
+      hostname: 'api.stripe.com',
+      path: '/v1/checkout/sessions',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(body.toString()),
+      },
+    };
+    const req = https.request(options, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        try {
+          const text = Buffer.concat(chunks).toString('utf8');
+          if (res.statusCode >= 400) return reject(new Error(text || 'Checkout session failed'));
+          resolve(JSON.parse(text));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+    req.on('error', reject);
+    req.write(body.toString());
+    req.end();
+  });
+}
+
+authSession = loadAuthSession();
+
+  ipcMain.handle('auth-login', async (_e, { email, password }) => {
+    const normalizedEmail = normalizeEmail(email);
+    const normalizedPassword = String(password || '');
+    if (!isAllowedUser(normalizedEmail, normalizedPassword)) {
+      return { ok: false, msg: 'Invalid email or password.' };
+    }
+    const membership = await getMembershipStatus(normalizedEmail, normalizedPassword);
+    if (!membership.ok) return membership;
+    authSession = { email: normalizedEmail, password: normalizedPassword };
+    saveAuthSession(authSession);
+    saveSubscription({ refreshedAt: Date.now(), ...membership });
+    return membership;
+  });
+  ipcMain.handle('auth-forgot-password', async (_e, email) => handleForgotPassword(email));
+  ipcMain.handle('auth-subscription-status', async () => {
+    const session = authSession || loadAuthSession();
+    if (!session?.email || !session?.password) {
+      return { ok: false, msg: 'Not signed in.', status: 'unknown' };
+    }
+    authSession = session;
+    const membership = await getMembershipStatus(session.email, session.password);
+    saveSubscription({ refreshedAt: Date.now(), ...membership });
+    return membership;
+  });
+  ipcMain.handle('auth-create-checkout-session', async (_e, email) => {
+    const session = authSession || loadAuthSession();
+    const targetEmail = normalizeEmail(email || session?.email);
+    if (!targetEmail || !isAllowedUser(targetEmail, session?.password || '')) {
+      return { ok: false, msg: 'Sign in with a valid membership email first.' };
+    }
+    try {
+      const checkout = await createCheckoutSession(targetEmail);
+      return { ok: true, url: checkout.url };
+    } catch (err) {
+      return { ok: false, msg: err?.message || 'Could not start checkout.' };
+    }
+  });
+  ipcMain.handle('auth-logout', () => {
+    clearAuthSession();
+    saveSubscription(null);
+    return { ok: true };
+  });
+  startSubscriptionWatchdog();
+
 // ── Window ─────────────────────────────────────────────────────────────────
 function createWindow() {
   mainWindow = new BrowserWindow({

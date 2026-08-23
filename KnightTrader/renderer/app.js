@@ -6,6 +6,7 @@ let newLogs = 0;
 let hermesInstalled = false;
 let dashboardRunning = false;
 let dashboardStartInFlight = false;
+let authReady = false;
 
 // ── DOM shortcuts ─────────────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -70,7 +71,136 @@ const el = {
   updateBannerText: $('update-banner-text'),
   btnRestartUpdate: $('btn-restart-update'),
   btnDismissUpdate: $('btn-dismiss-update'),
+
+  // Auth
+  loginOverlay: $('login-overlay'),
+  formLogin: $('form-login'),
+  formForgot: $('form-forgot'),
+  loginEmail: $('login-email'),
+  loginPassword: $('login-password'),
+  btnLogin: $('btn-login'),
+  loginError: $('login-error'),
+  btnForgot: $('btn-forgot'),
+  forgotEmail: $('forgot-email'),
+  forgotError: $('forgot-error'),
+  forgotSuccess: $('forgot-success'),
+  btnForgotSend: $('btn-forgot-send'),
+  btnForgotBack: $('btn-forgot-back'),
 };
+
+function setLoginError(message) {
+  if (!el.loginError) return;
+  el.loginError.textContent = message || '';
+}
+function setForgotError(message) {
+  if (!el.forgotError) return;
+  el.forgotError.textContent = message || '';
+}
+function setForgotSuccess(message) {
+  if (!el.forgotSuccess) return;
+  el.forgotSuccess.textContent = message || '';
+}
+function showLoginForm() {
+  if (el.loginOverlay) el.loginOverlay.classList.remove('hidden');
+  if (el.formLogin) el.formLogin.classList.remove('hidden');
+  if (el.formForgot) el.formForgot.classList.add('hidden');
+  setLoginError('');
+  setForgotError('');
+  setForgotSuccess('');
+}
+function showForgotForm() {
+  if (el.loginOverlay) el.loginOverlay.classList.remove('hidden');
+  if (el.formLogin) el.formLogin.classList.add('hidden');
+  if (el.formForgot) el.formForgot.classList.remove('hidden');
+  setLoginError('');
+  setForgotError('');
+  setForgotSuccess('');
+}
+function hideLoginOverlay() {
+  if (el.loginOverlay) el.loginOverlay.classList.add('hidden');
+}
+async function requireAuth() {
+  try {
+    const status = await window.kt.authSubscriptionStatus();
+    if (status?.status === 'active') {
+      authReady = true;
+      hideLoginOverlay();
+      return true;
+    }
+  } catch {}
+  authReady = false;
+  showLoginForm();
+  return false;
+}
+async function handleLoginSubmit(e) {
+  e.preventDefault();
+  setLoginError('');
+  const email = el.loginEmail?.value || '';
+  const password = el.loginPassword?.value || '';
+  if (!email || !password) {
+    setLoginError('Enter both email and password.');
+    return;
+  }
+  if (el.btnLogin) { el.btnLogin.disabled = true; el.btnLogin.textContent = 'Signing in...'; }
+  try {
+    const result = await window.kt.authLogin({ email, password });
+    if (!result?.ok || result.status !== 'active') {
+      setLoginError(result?.msg || 'Membership login failed.');
+      return;
+    }
+    authReady = true;
+    hideLoginOverlay();
+  } catch (err) {
+    setLoginError(err?.message || 'Login failed.');
+  } finally {
+    if (el.btnLogin) { el.btnLogin.disabled = false; el.btnLogin.textContent = 'Sign in'; }
+  }
+}
+async function handleForgotSubmit(e) {
+  e.preventDefault();
+  setForgotError('');
+  setForgotSuccess('');
+  const email = el.forgotEmail?.value || '';
+  if (!email) {
+    setForgotError('Enter the email for your account.');
+    return;
+  }
+  if (el.btnForgotSend) { el.btnForgotSend.disabled = true; el.btnForgotSend.textContent = 'Sending...'; }
+  try {
+    const result = await window.kt.authForgotPassword(email);
+    if (!result?.ok) {
+      setForgotError(result?.msg || 'Password reset failed.');
+      return;
+    }
+    setForgotSuccess(result.msg || 'If an account exists, a reset link has been sent.');
+    setForgotError('');
+  } catch (err) {
+    setForgotError(err?.message || 'Password reset failed.');
+  } finally {
+    if (el.btnForgotSend) { el.btnForgotSend.disabled = false; el.btnForgotSend.textContent = 'Send reset link'; }
+  }
+}
+function applySubscriptionLock(status) {
+  authReady = false;
+  showLoginForm();
+  if (el.statusLabel) el.statusLabel.textContent = 'Membership required';
+  if (el.statusPill) el.statusPill.classList.remove('running');
+  appendLogLine({ ts: new Date().toISOString(), level: 'warn', message: `🔒 ${status?.msg || 'Active membership required.'}` });
+}
+function openStripeCheckout() {
+  const email = el.loginEmail?.value || '';
+  if (!email) {
+    setLoginError('Enter your membership email before opening checkout.');
+    return;
+  }
+  window.kt.authCreateCheckoutSession(email).then((result) => {
+    if (result?.ok && result.url) {
+      window.kt.openExternal(result.url);
+    } else {
+      setLoginError(result?.msg || 'Could not open checkout.');
+    }
+  });
+}
 
 // ── Init ──────────────────────────────────────────────────────
 async function populateNousModels() {
@@ -105,6 +235,9 @@ async function populateNousModels() {
 }
 
 async function init() {
+  if (el.loginOverlay && !el.loginOverlay.classList.contains('hidden')) {
+    if (!(await requireAuth())) return;
+  }
   await populateNousModels();
   // Detect whether the preload bridge actually reached the renderer.
   if (!window.kt) {
@@ -942,6 +1075,44 @@ async function checkForUpdatesFromMenu() {
 
 if (el.btnCheckForUpdates) {
   el.btnCheckForUpdates.addEventListener('click', checkForUpdatesFromMenu);
+}
+
+if (el.btnForgot) {
+  el.btnForgot.addEventListener('click', () => showForgotForm());
+}
+if (el.btnForgotBack) {
+  el.btnForgotBack.addEventListener('click', () => showLoginForm());
+}
+if (el.formLogin) {
+  el.formLogin.addEventListener('submit', handleLoginSubmit);
+}
+if (el.formForgot) {
+  el.formForgot.addEventListener('submit', handleForgotSubmit);
+}
+if (window.kt?.onSubscriptionLocked) {
+  window.kt.onSubscriptionLocked((status) => applySubscriptionLock(status));
+}
+
+async function refreshMembershipUi() {
+  try {
+    const status = await window.kt.authSubscriptionStatus();
+    const statusEl = document.getElementById('membership-status');
+    const emailEl = document.getElementById('membership-email');
+    if (statusEl) statusEl.textContent = status?.status === 'active' ? 'Active' : 'Inactive';
+    if (emailEl && status?.email) emailEl.textContent = status.email;
+  } catch {}
+}
+
+if (document.getElementById('btn-renew-membership')) {
+  document.getElementById('btn-renew-membership').addEventListener('click', openStripeCheckout);
+}
+if (document.getElementById('btn-auth-logout')) {
+  document.getElementById('btn-auth-logout').addEventListener('click', async () => {
+    await window.kt.authLogout();
+    authReady = false;
+    hideLoginOverlay();
+    showLoginForm();
+  });
 }
 
 // ── Boot ─────────────────────────────────────────────────────

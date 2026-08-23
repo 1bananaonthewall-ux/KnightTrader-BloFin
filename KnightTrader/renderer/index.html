@@ -12,6 +12,43 @@
 </head>
 <body>
 
+  <!-- Login overlay -->
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-card">
+      <div class="login-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.5C16.5 22.15 20 17.25 20 12V6l-8-4z"/><path d="M9 12l2 2 4-4" stroke="#0b0d10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>
+          <div style="font-weight:700">KnightTrader BloFin</div>
+          <div style="font-size:11px;color:var(--text3)">Membership login</div>
+        </div>
+      </div>
+      <form id="form-login" class="login-form" novalidate>
+        <label class="field">
+          <span>Email</span>
+          <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" required />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required />
+        </label>
+        <div id="login-error" class="login-error" role="alert" aria-live="polite"></div>
+        <button type="submit" id="btn-login" class="btn-primary login-submit">Sign in</button>
+        <button type="button" id="btn-forgot" class="link-btn login-forgot">Forgot password?</button>
+      </form>
+      <form id="form-forgot" class="login-form hidden" novalidate>
+        <label class="field">
+          <span>Account email</span>
+          <input type="email" id="forgot-email" placeholder="you@example.com" autocomplete="email" required />
+        </label>
+        <div id="forgot-error" class="login-error" role="alert" aria-live="polite"></div>
+        <div id="forgot-success" class="login-success" role="status" aria-live="polite"></div>
+        <button type="submit" id="btn-forgot-send" class="btn-primary login-submit">Send reset link</button>
+        <button type="button" id="btn-forgot-back" class="link-btn login-forgot">Back to sign in</button>
+      </form>
+      <div class="login-footer">Requires active $47/mo membership.</div>
+    </div>
+  </div>
+
   <!-- Custom Titlebar -->
   <div id="titlebar">
     <div id="titlebar-drag">
@@ -424,6 +461,18 @@
             <button class="link-card" id="link-nous-portal-settings">🤖 Nous Portal</button>
             <button class="link-card" id="link-hermes-dashboard">🖥 Hermes Dashboard</button>
             <button class="link-card" id="link-hermes-docs">📚 Hermes Docs</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-icon">🔒</div><div class="card-title">Membership</div></div>
+          <div class="about-body">
+            <div class="about-row"><span>Status</span><span id="membership-status">Checking...</span></div>
+            <div class="about-row"><span>Account</span><span id="membership-email">-</span></div>
+            <div class="form-actions" style="padding:0">
+              <button type="button" id="btn-renew-membership" class="btn-secondary">Renew Membership</button>
+              <button type="button" id="btn-auth-logout" class="btn-secondary">Sign out</button>
+            </div>
           </div>
         </div>
 

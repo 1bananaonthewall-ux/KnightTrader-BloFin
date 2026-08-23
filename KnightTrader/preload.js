@@ -51,6 +51,14 @@ contextBridge.exposeInMainWorld('kt', {
   getTradingStatus: () => ipcRenderer.invoke('get-trading-status'),
   attachTradingWebview: (webContentsId) => ipcRenderer.invoke('attach-trading-webview', webContentsId),
 
+  // Membership auth
+  authLogin: (creds) => ipcRenderer.invoke('auth-login', creds),
+  authForgotPassword: (email) => ipcRenderer.invoke('auth-forgot-password', email),
+  authSubscriptionStatus: () => ipcRenderer.invoke('auth-subscription-status'),
+  authCreateCheckoutSession: (email) => ipcRenderer.invoke('auth-create-checkout-session', email),
+  authLogout: () => ipcRenderer.invoke('auth-logout'),
+  onSubscriptionLocked: (cb) => ipcRenderer.on('subscription-locked', (_e, status) => cb(status)),
+
   // Window controls
   minimize: () => ipcRenderer.send('window-minimize'),
   maximize: () => ipcRenderer.send('window-maximize'),
