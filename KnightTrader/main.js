@@ -2089,23 +2089,28 @@ async function handleForgotPassword(email) {
   if (!ALLOWED_USERS.some((u) => normalizeEmail(u.email) === normalized)) {
     return { ok: false, msg: 'If an account exists, a reset link has been sent.' };
   }
-  const customer = await findStripeCustomerByEmail(normalized);
-  if (!customer) {
-    return { ok: false, msg: 'No Stripe account found for this email yet.' };
+  try {
+    const customer = await findStripeCustomerByEmail(normalized);
+    if (!customer) {
+      return { ok: false, msg: 'No Stripe account found for this email yet.' };
+    }
+    const result = await stripeRequest(`/customers/${customer.id}`, 'GET');
+    const customerData = result.data || {};
+    const updated = { ...customerData, metadata: { ...(customerData.metadata || {}), reset_requested_at: String(Date.now()) } };
+    const updateBody = new URLSearchParams();
+    Object.entries(updated).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && key !== 'id') updateBody.append(`customer[${key}]`, value);
+    });
+    const updateResult = await stripeRequest(`/customers/${customer.id}`, 'POST', updateBody.toString());
+    if (updateResult.status >= 400) {
+      return { ok: false, msg: 'Could not record reset request. Try again later.' };
+    }
+    appendLog(`🔑 Password reset requested for ${normalized}`, 'info');
+    return { ok: true, msg: 'Reset link sent. Check your email.' };
+  } catch (err) {
+    appendLog(`⚠ Forgot password failed: ${err?.message || err}`, 'warn');
+    return { ok: false, msg: 'Reset is unavailable right now. Try again later.' };
   }
-  const result = await stripeRequest(`/customers/${customer.id}`, 'GET');
-  const customerData = result.data || {};
-  const updated = { ...customerData, metadata: { ...(customerData.metadata || {}), reset_requested_at: String(Date.now()) } };
-  const updateBody = new URLSearchParams();
-  Object.entries(updated).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && key !== 'id') updateBody.append(`customer[${key}]`, value);
-  });
-  const updateResult = await stripeRequest(`/customers/${customer.id}`, 'POST', updateBody.toString());
-  if (updateResult.status >= 400) {
-    return { ok: false, msg: 'Could not record reset request. Try again later.' };
-  }
-  appendLog(`🔑 Password reset requested for ${normalized}`, 'info');
-  return { ok: true, msg: 'Reset link sent. Check your email.' };
 }
 function startSubscriptionWatchdog() {
   try {
