@@ -24,14 +24,11 @@
       "**/*.dat"
     ],
     "files": [
-      "main.js",
-      "app.js",
-      "preload.js",
+      "*.js",
       "renderer/**/*",
       "assets/**/*",
       "docs/**/*",
       "blohunter/**/*",
-      "blohunter-bridge.js",
       "node_modules/**/*",
       "package.json"
     ],

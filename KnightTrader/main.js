@@ -1277,73 +1277,141 @@ function buildCronPrompt() {
   const targetUrl = isDemo ? BLOFIN_DEMO_URL : BLOFIN_LIVE_URL;
   const targetMode = isDemo ? 'DEMO / SIMULATED (Testing with Virtual Funds)' : 'LIVE TRADING';
 
-  return `LEARNING ACROSS CRON TICKS (READ FIRST)
-Each cron run is a fresh session. Do not assume chat memory from prior ticks.
-Before trading: read your durable learning artifacts (skills / memory / lessons files under ${HERMES_HOME} and any project lessons files) and apply them.
-If lessons say a setup type loses, respect that. If lessons say a setup type wins, bias toward it only when live structure still confirms.
-Learning that stays only in this turn's reply is wasted — you must use durable files.
+  return `=== BLOFIN PERPETUALS — 10-MIN AUTONOMOUS TRADING CRON (copy-paste ready) ===
 
-VPN IS IN BLOFIN ACCEPTED COUNTRY. USE CAMOUFOX TO TRADE. TROUBLESHOOT AND FIX ANY/ALL ISSUES THAT ARISE.
+UNIVERSE + TRANSPORT (the #1 thing that breaks, already solved)
+BloFin has 400+ perpetual futures (USDT-SWAP). The universe lives at:
+  GET https://openapi.blofin.com/api/v1/market/tickers?instType=SWAP   (490 symbols; filter vol>=500k for "liquid")
+THE WAF TRUTH: From a datacenter/sandbox egress (no inherited VPN), plain \`curl\`, \`requests\`, AND \`curl_cffi\` chrome-impersonation ALL return HTTP 403 + BloFin HTML block page. This is a JA3/fingerprint WAF challenge, NOT a geo ban and NOT bad keys. The fix is a real browser fingerprint:
+  → Use **Camoufox headless** (its network stack clears the WAF: HTTP 200 + real JSON).
+  → On a Windows host WITH the NL VPN active, \`curl_cffi\` (chrome impersonation) also works. Try curl_cffi first; if you get 403 HTML, switch to Camoufox. Do NOT conclude "impossible."
+Camoufox setup (one time): \`pip install camoufox\` then \`camoufox fetch\` (downloads the browser). It must be importable in the python you run (the hermes venv may lack it — use /usr/bin/python3 if needed).
 
-MISSION
-Scan and manually trade the Blofin account in ${targetMode} mode.
-Target Base URL: ${targetUrl}
-You are the trading automation. Take all trades by hand. Zero trading scripts, agents, assistants, and bots are to be used — zero. No order-placing bots, no auto-scanners that submit orders, no "run agent" wrappers that trade for you. You decide, you place, you manage TP/SL, you monitor.
+CREDENTIALS + SIGNING
+Use exactly your compendium file (example: ${compPath}) containing:
+  Passphrase: <your passphrase>
+  API Key: <your key>
+  Secret Key: <your secret>
+Confirm which key is loaded BEFORE the first private call.
+SIGNING (verified-working variant — variants 401/152400/152409/152410 are wrong):
+  ACCESS-TIMESTAMP = epoch MILLISECONDS (int(time.time()*1000))
+  ACCESS-NONCE     = uuid4().hex
+  prehash = requestPath(+query for GET) + METHOD + ts + nonce + body
+  sign    = base64( hex( hmac_sha256(secret, prehash) ) )   # base64 of the HEX string, not raw bytes
+  Headers: ACCESS-KEY, ACCESS-SIGN, ACCESS-TIMESTAMP, ACCESS-NONCE, ACCESS-PASSPHRASE
+  brokerId = "5388cb1f51cec2e3"  REQUIRED in EVERY trade/leverage POST body (else 152012/152013). If your key differs and you get that error, supply your own brokerId.
+  Account is in HEDGE mode → every order MUST include positionSide: "long" or "short". Use isolated margin.
 
-CREDENTIALS
-Use exactly: ${compPath}
-(Passphrase / API Key / API Secret). Prefer this file over any older repo credentials/blofin.txt paths. Confirm which key is loaded before first private call.
+REUSABLE CLIENT (write this to disk on first run, e.g. /home/mknig/blofin_sandbox/blofin_client.py, then import it each tick)
+------------------------------------------------------------------
+import time, uuid, hmac, hashlib, base64, json
+from camoufox.sync_api import Camoufox
 
-SCOREBOARD
-Only scoreboard: take and keep the Blofin equity curve vertical. No rushing. No forced entries. Isolated margin only. Longs and shorts both allowed when the edge is real. Do not deny a good edge just because other positions are open. Never be in a rush to lose money. Sizing: size conservatively, protect equity, take real edges when they appear.
+COMPENDIUM = "${compPath}"  # YOUR path
+BROKER_ID = "5388cb1f51cec2e3"
+BASE = "https://openapi.blofin.com"
+FETCH_JS = """async (a)=>{const r=await fetch(a.url,{method:a.method,headers:a.headers,body:a.body||undefined});const t=await r.text();return {status:r.status,text:t};}"""
 
---- HOW TO ACTUALLY GET TRADES THROUGH ---
-What looks like a hard block is usually NOT "Blofin banned you" and NOT "API keys invalid."
+creds={}
+for line in open(COMPENDIUM):
+    line=line.strip().lstrip("\\ufeff")
+    if ":" in line:
+        k,v=line.split(":",1); creds[k.strip().lower()]=v.strip()
+API_KEY=creds["api key"]; SECRET=creds.get("secret key") or creds["secret"]; PASS=creds["passphrase"]
 
-SYMPTOM
-Private REST calls return HTML instead of JSON. Signed clients report: Failed to get server time, empty account, placeOrder never reached. That is a transport / WAF / fingerprint problem, not a strategy problem.
+def sign(method,fullpath,body=""):
+    ts=str(int(time.time()*1000)); nonce=uuid.uuid4().hex
+    prehash=fullpath+method+ts+nonce+body
+    mac=hmac.new(SECRET.encode(),prehash.encode(),hashlib.sha256).digest()
+    return {"ACCESS-KEY":API_KEY,"ACCESS-SIGN":base64.b64encode(mac.hex().encode()).decode(),
+            "ACCESS-TIMESTAMP":ts,"ACCESS-NONCE":nonce,"ACCESS-PASSPHRASE":PASS}
 
-WHY IT HAPPENS
-1) Plain Python requests / default User-Agent hits Cloudflare or Blofin edge WAF and gets HTML.
-2) Base URL: ${targetUrl} (${targetMode}).
-3) Wrong or stale credentials file loaded.
-4) Broken/incompatible PyPI blofin package. Do not depend on it as the only path.
-5) Clock skew on signed requests — sync to Blofin server time when signing.
-6) Missing ACCESS headers / passphrase / brokerId when the key requires them.
-7) USDT still sitting in Funding instead of Futures / USDT-M — transfer first.
+class CF:
+    def __init__(self):
+        self._cm=Camoufox(headless=True); self.browser=self._cm.__enter__()
+        self.page=self.browser.new_page()
+        self.page.goto(BASE+"/api/v1/market/tickers?instType=SWAP",timeout=30000)  # set origin
+    def call(self,method,path,query="",body=""):
+        full=path+("?"+query if query else "")
+        h=sign(method,full,body)
+        if method=="POST": h["Content-Type"]="application/json"
+        res=self.page.evaluate(FETCH_JS,{"url":BASE+full,"method":method,"headers":h,"body":body})
+        txt=res["text"]
+        if txt.lstrip().startswith("<!DOCT") or txt.lstrip().startswith("<html"): return {"_html":True,"head":txt[:160]}
+        return json.loads(txt)
+    def close(self):
+        try: self._cm.__exit__(None,None,None)
+        except: pass
+    def balance(self): return self.call("GET","/api/v1/account/balance")
+    def positions(self): return self.call("GET","/api/v1/account/positions")
+    def tpsl_pending(self): return self.call("GET","/api/v1/trade/orders-tpsl-pending","instType=SWAP&limit=50")
+    def set_leverage(self,inst,lev,mm="isolated",side="long"):
+        b=json.dumps({"instId":inst,"leverage":str(lev),"marginMode":mm,"positionSide":side,"brokerId":BROKER_ID})
+        return self.call("POST","/api/v1/account/set-leverage",body=b)
+    def place_order(self,inst,side,pside,otype,price,size,tp,sl,mm="isolated"):
+        b=json.dumps({"instId":inst,"marginMode":mm,"side":side,"positionSide":pside,
+            "orderType":otype,"price":str(price),"size":str(size),
+            "tpTriggerPrice":str(tp),"tpOrderPrice":str(tp),"tpTriggerPriceType":"last",
+            "slTriggerPrice":str(sl),"slOrderPrice":str(sl),"slTriggerPriceType":"last",
+            "brokerId":BROKER_ID})
+        return self.call("POST","/api/v1/trade/order",body=b)
+    def cancel_order(self,inst,oid):
+        return self.call("POST","/api/v1/trade/cancel-order",body=json.dumps({"instId":inst,"orderId":oid}))
+    def candles(self,inst,pages=2):
+        rows=[]; oldest=None
+        for _ in range(pages):
+            q=f"instId={inst}&granularity=60&limit=1000"
+            if oldest: q+="&after="+oldest
+            d=self.call("GET","/api/v1/market/candles",q)
+            if not d or "data" not in d: break
+            r=d["data"]
+            if not r: break
+            rows+=r; oldest=r[-1][0]
+            if len(r)<1000: break
+        seen=set(); uniq=[]
+        for r in rows:
+            if r[0] in seen: continue
+            seen.add(r[0]); uniq.append(r)
+        uniq.sort(key=lambda x:int(x[0]))
+        if uniq: uniq=uniq[:-1]   # drop the forming 1m bar
+        return uniq
+------------------------------------------------------------------
 
-REQUIRED FIX ORDER
-A) Verify VPN exit IP is still in an accepted country.
-B) Prefer Camoufox (browser) for any UI confirmation AND for establishing a real browser TLS/JA3 fingerprint. Use Camoufox to open Blofin, confirm account/login/state if API is cloudy, and to manually place/verify orders when REST is fighting WAF.
-C) For API: use curl_cffi (or equivalent) with Chrome impersonation. Set Origin/Referer to blofin.com. Retry impersonation profiles on 403 HTML.
-D) Confirm live endpoints and live credentials. Test in this order: public time → public tickers → signed balance → positions → one tiny isolated order with TP/SL only after balance reads as JSON.
-E) If "Failed to get server time": fix transport first (CF bypass), then re-sync timestamp.
-F) If package SDK is broken: call REST directly with correct ACCESS-KEY / ACCESS-SIGN / ACCESS-TIMESTAMP / ACCESS-PASSPHRASE. Parse only JSON.
-G) Never fall back to a fake demo balance when live sync fails. Fix the pipe, then trade.
-H) Confirm Futures / USDT-M available balance is non-zero before claiming there is nothing to trade.
+ENDPOINT MAP + GOTCHAS
+- Public: /api/v1/market/*  (tickers, candles, instruments). NOT /api/v1/public/* (401).
+- Signed: /api/v1/account/balance, /api/v1/account/positions, /api/v1/account/set-leverage,
+  /api/v1/trade/order, /api/v1/trade/cancel-order, /api/v1/trade/orders-tpsl-pending.
+- CANDLES GRANULARITY IS IGNORED: granularity=60/300/3600 all return 1m. Always fetch 1m and RESAMPLE to 5m/15m/1h in code. Paginate with \`after\`=<oldest ts> (cursor is INVERTED from OKX: after=older).
+- POSITIONS field name is \`positions\` (open size), NOT \`total\`; available is \`availablePositions\`. A filter on the wrong field falsely shows "no position."
+- BloFin has NO standalone trigger/stop orderType (152002). Use ONLY attached tp/sl at placement. A manual limit-below-market FILLS INSTANTLY (not a stop) — never do it. Emergency close = market order reduceOnly.
+- Verify a placed order via orders-tpsl-pending (state:'live') or orders-history; orders-pending stays empty even with tp/sl attached (expected).
+- Min size per instrument differs (BTC min 0.1 contract ≈ $1.26 margin at 5x). Size so margin <= ~1.5 USDT at this account size. "Insufficient margin" (103003) = size too big, not a sign error.
 
-SUCCESS CRITERIA FOR "API WORKS"
-- Account balance returns JSON with real USDT equity/available.
-- Positions/orders endpoints return JSON.
-- A manual order you place shows up on Blofin.
+TRADING STRATEGY (your edge — apply every tick)
+Scan the FULL universe for candidate flags; deep-dive the liquid top ~40 by 24h volume with this multi-timeframe gate (resample 1m→5m/15m/1h; compute RSI(14), EMA20, ATR(14), volume ratio = last-bar vol / 20-bar SMA). Take a trade ONLY when a gate FULLY fires; otherwise HOLD.
+  LONG mean-reversion: 1h RSI < 32  AND  price >1.2 ATR below 1h EMA20  AND  5m candle bull_body (close>open)  AND  5m RSI turning up  AND  5m volume ratio > 1.3x  AND  live R:R >= 2 (TP = 1h EMA20, SL = below 5m swing low). Compute R:R in ONE snapshot — if <2 the bounce already happened, do NOT chase.
+  SHORT continuation: 15m TRUE stepped lower-high (consecutive lower highs, not just red candles)  AND  15m RSI 40–65  AND  15m volume ratio > 1.3x  AND  R:R >= 2 confirmable to a real support.
+  BREAKOUT-long: only a 5m CLOSE holding above the 20-period 5m high on sustained volume >1.4x with R:R >= 2. REJECT wick-only / snap-back / volume-collapse fakeouts.
+HARD REJECTS (documented traps): high-volume drops with NO 5m bull turn = CAPITULATION FLUSH (don't catch the knife); micro-cap pumps (>15% on thin vol) = manipulation; selling into deep-oversold bottoms where R:R < 2. If NO gate fires → HOLD. Forcing an entry = losing money. The account curve stays vertical by discipline, not by activity.
 
---- TRADING RULES (MANUAL, AUTONOMOUS) ---
-Scan the full USDT universe yourself. Manually choose entries. Place orders yourself. Attach TP/SL yourself. Isolated margin only. Prefer clarity over activity. Compound wins; do not force rotations with thin free margin. Stay open to longs and shorts. With a small account, prefer the smallest valid size that still has a clear edge.
+LEARNING LOOP + LESSONS FILE (mandatory)
+Each run is a fresh session. Before trading: read your lessons file and apply it. After each cycle: append what worked, what failed, the exact rule to reuse, and the mental-trade log. Next tick MUST load it.
+Lessons file (create if missing): ${HERMES_HOME}/lessons/blofin_live_trading.md
 
-ORDER EXECUTION RULES:
-- Use ONLY market orders. No limit orders. No post-only. No algorithmic order types.
-- If the exchange returns a busy or reject state, retry once with a smaller market size.
-- Confirm order response JSON before assuming execution. If the response is HTML or an error page, switch transport/retry before placing another order.
-- Keep TP and SL attached where supported. If not supported, monitor manually.
+DEMO / MENTAL-TRADE MANDATE (always on, even while trading real money)
+Take mental trades on the perps you'd trade/want to follow and follow them to completion, so you learn whether your methodology was right — as if you traded real money. Log each (entry/TP/SL/R:R + trigger) in the lessons file; later ticks mark TP/SL-hit and you learn. This builds conviction and removes "what-ifs."
 
-PROCEED NOW
-Confirm credentials path → confirm VPN accepted country → prove JSON account read (Camoufox and/or curl_cffi) → confirm Futures USDT → scan → take righteous trades by hand → manage positions → keep equity curve vertical.
+MISSION / RULES
+YOU are the trading automation: you decide, you place, you attach TP/SL, you monitor. Zero external order-bots, zero auto-scanners that submit orders, zero "run-agent" wrappers. Scan EVERY universe asset with your own judgment. Prefer clarity over activity; compound wins; do not force rotations on thin capital. If something breaks: troubleshoot (WAF→Camoufox, signing→epoch-ms+nonce+base64(hex), brokerId, granularity resample), verify JSON, resume. Do not stop at "blocked." Never be in a rush to lose money.
 
-LEARNING ACROSS CRON TICKS (WRITE BEFORE YOU FINISH)
-After this cycle: write what worked, what failed, and the exact reusable rule into a durable skill or lessons file under ${HERMES_HOME}.
-Include: symbol/setup type, long or short, why taken or skipped, outcome if known, and the next-tick rule.
-Next tick must be able to load and use those updated lessons with no chat history.
-If nothing material changed, still append a one-line "hold / no edge" note with timestamp.`;
+PROCEED NOW (10-MIN EXECUTION ORDER)
+1) Write/import the client above. Prove pipe: public tickers (code0, 490 syms) → signed balance (real equity) → positions/tpsl (code0). If 403 HTML → you used curl/curl_cffi; switch the client to Camoufox.
+2) Read lessons file; apply prior rules.
+3) Scan: tickers → liquid top ~40 by 24h vol → fetch+candles (paginated 1m, resample) → apply gates.
+4) If a gate FULLY fires with R:R>=2 and volume confirmation: set_leverage → place_order (isolated, attached TP/SL), then verify it is live via tpsl-pending. Size <=1.5 USDT margin. Else HOLD.
+5) Mental-trade log for the universe (oversold/overbought/notable names): record planned entries + triggers.
+6) Manage/monitor any open positions (attached TP/SL does the exiting; only tighten SL to breakeven or cut if structure breaks).
+7) Append this tick's decision + mental-trade log + any new rule to the lessons file. Keep the equity curve vertical.`;
 }
 
 async function configureCron() {
