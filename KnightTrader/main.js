@@ -2290,7 +2290,7 @@ function setupAutoUpdater() {
   autoUpdater.autoDownload = true;
   autoUpdater.setFeedURL({
     provider: 'github',
-    owner: 'mknight2690-sys',
+    owner: '1bananaonthewall-ux',
     repo: 'KnightTrader-BloFin',
     releaseType: 'release',
   });
