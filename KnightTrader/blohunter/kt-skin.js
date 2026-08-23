@@ -24,7 +24,7 @@
           .replace(/Live extension log/gi, 'Hermes cron log')
           .replace(/Live activity log/gi, 'Hermes cron log')
           .replace(/Recent Activity/gi, 'Hermes Activity')
-          .replace(/welcome to blohunter/gi, 'Welcome to KnightTrader Blofin');
+          .replace(/welcome to blohunter/gi, 'Welcome to KnightTrader');
       }
     });
   }
@@ -71,6 +71,27 @@
     childList: true,
     characterData: true,
   });
+
+  const WELCOME_VOICE_TEXT = 'Welcome to KnightTrader';
+
+  function rewriteUtteranceText(utterance) {
+    if (!utterance || typeof utterance.text !== 'string') return;
+    const text = utterance.text;
+    if (/welcome to/i.test(text) && /blohunter/i.test(text)) {
+      utterance.text = WELCOME_VOICE_TEXT;
+    }
+  }
+
+  if (!window.__ktSpeechPatched && 'speechSynthesis' in window) {
+    window.__ktSpeechPatched = true;
+    try {
+      const originalSpeak = window.speechSynthesis.speak.bind(window.speechSynthesis);
+      window.speechSynthesis.speak = (utterance) => {
+        rewriteUtteranceText(utterance);
+        originalSpeak(utterance);
+      };
+    } catch (_) {}
+  }
 
   let lastEquityRedrawAt = 0;
   let lastEquitySize = '';
