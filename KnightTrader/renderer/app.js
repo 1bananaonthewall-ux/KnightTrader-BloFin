@@ -12,6 +12,11 @@ let authReady = false;
 const $ = (id) => document.getElementById(id);
 const el = {
   minimize: $('btn-minimize'), maximize: $('btn-maximize'), close: $('btn-close'),
+
+  // VPN helper
+  vpnCountry: $('vpn-country'),
+  btnVpnGuide: $('btn-vpn-guide'),
+  vpnStatus: $('vpn-status'),
   navItems: document.querySelectorAll('.nav-item'),
   tabPanels: document.querySelectorAll('.tab-panel'),
   statusPill: $('status-pill'), statusOrb: $('status-orb'), statusLabel: $('status-label'),
@@ -229,9 +234,6 @@ async function enforceSubscriptionOnLaunch() {
 function pauseHermesForSubscription() {
   if (el.btnStopDashboard && !el.btnStopDashboard.classList.contains('hidden')) {
     el.btnStopDashboard.click();
-  }
-  if (el.btnStopTrading && !el.btnStopTrading.classList.contains('hidden')) {
-    el.btnStopTrading.click();
   }
 }
 
@@ -1146,6 +1148,37 @@ if (document.getElementById('btn-auth-logout')) {
     hideLoginOverlay();
     showLoginForm();
   });
+}
+
+// ── VPN helper ───────────────────────────────────────────────
+function setVpnStatus(message, state) {
+  if (!el.vpnStatus) return;
+  el.vpnStatus.textContent = message || '';
+  el.vpnStatus.className = 'step-status' + (state ? ` ${state}` : '');
+}
+
+function openVpnGuide() {
+  const guideUrl = 'https://protonvpn.com/free-vpn';
+  const country = el.vpnCountry?.value || 'random';
+  const isRandom = country === 'random';
+  const countryLabel = isRandom ? 'an allowed country' : `country code ${country}`;
+  const note = isRandom
+    ? ''
+    : ` Selected preferred exit: ${countryLabel}.`;
+  setVpnStatus(`Opening ProtonVPN guide for ${countryLabel}.${note}`, '');
+  window.kt.openExternal(guideUrl).catch(() => {});
+}
+
+if (el.btnVpnGuide) {
+  el.btnVpnGuide.addEventListener('click', () => openVpnGuide());
+}
+
+if (el.navItems) {
+  el.navItems.forEach((item) => item.addEventListener('click', () => {
+    if (item.dataset.tab === 'hermes' && el.vpnStatus && !el.vpnStatus.textContent.trim()) {
+      setVpnStatus('Use the Proton VPN helper below for free retry guidance.', '');
+    }
+  }));
 }
 
 // ── Boot ─────────────────────────────────────────────────────

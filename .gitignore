@@ -11,6 +11,9 @@ build/
 *.AppxBundle
 *.Appx
 *.asar
+KnightTrader/dist-*/
+KnightTrader/win-unpacked/
+KnightTrader/builder-debug.yml
 
 # Electron/CI artifacts
 release/

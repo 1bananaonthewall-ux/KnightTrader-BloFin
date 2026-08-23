@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
 const { BlohunterBridge } = require('./blohunter-bridge');
+const vpn = require('./vpn');
 const { spawn, execFileSync } = require('child_process');
 const crypto = require('crypto');
 const http = require('http');
@@ -1818,6 +1819,13 @@ function registerIPC() {
     autoUpdater.quitAndInstall();
   });
   ipcMain.handle('open-external',     (_e, url) => shell.openExternal(url));
+
+  // --- Proprietary VPN controller (WireGuard / ProtonVPN) ---
+  ipcMain.handle('vpn-status',        () => vpn.getStatus());
+  ipcMain.handle('vpn-detect',        () => vpn.detectBackends());
+  ipcMain.handle('vpn-connect',       (_e, code) => vpn.connectCountry(code));
+  ipcMain.handle('vpn-disconnect',    () => vpn.disconnect());
+  ipcMain.handle('vpn-allowed',       () => vpn.allowedCountryList());
 
   ipcMain.handle('get-blohunter-preload-path', () => pathToFileURL(path.join(__dirname, 'blohunter-preload.js')).href);
   ipcMain.handle('attach-trading-webview', (_e, webContentsId) => {

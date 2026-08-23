@@ -221,7 +221,7 @@
                 <li>If you are still on a non-allowed country, click <strong>Disconnect</strong>, wait a moment, then click <strong>Connect</strong> to reconnect.</li>
                 <li>If it lands on the <strong>U.S.</strong> again, wait up to <strong>10 minutes</strong>, then restart from step 3.</li>
               </ol>
-              <div class="step-desc">Allowed countries for Blofin: <strong>Romania, Poland, Netherlands, Mexico</strong>. Not allowed: <strong>Singapore, United States, Canada</strong>.</div>
+              <div class="step-desc">Allowed countries for Blofin: <strong>Romania, Poland, Netherlands, Mexico, Spain, Portugal</strong>. Not allowed: <strong>Singapore, United States, Canada</strong>.</div>
             </div>
           </div>
 
@@ -432,91 +432,11 @@
         </form>
       </section>
 
-      <!-- ── HOW-TO TAB ─────────────────────────────────────────── -->
-      <section id="tab-howto" class="tab-panel">
-        <div class="panel-header">
-          <h1>How-To</h1>
-          <p class="panel-sub">Follow this onboarding path in order. Use click-by-click steps for Nous Portal and ProtonVPN.</p>
-        </div>
-        <div class="steps-flow">
-
-          <div class="step-card">
-            <div class="step-num">1</div>
-            <div class="step-body">
-              <div class="step-title">Create / use your ProtonVPN free account</div>
-              <div class="step-desc">Go to <a href="https://protonvpn.com/free-vpn" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">protonvpn.com/free-vpn</a>, create a free Proton account, then install ProtonVPN on Windows. On first launch, sign in and connect. It usually lands on a nearby default server; if it lands on the U.S., that is acceptable while you work toward an allowed country.</div>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-num">2</div>
-            <div class="step-body">
-              <div class="step-title">Get an allowed Blofin country: free ProtonVPN routine</div>
-              <div class="step-desc">The free version assigns servers from its free pool: Netherlands, Japan, Romania, Poland, Norway, Switzerland, Singapore, Mexico, Canada, and the United States. You need one of the allowed countries for Blofin: <strong>Romania, Poland, Netherlands, or Mexico</strong>. Singapore, United States, and Canada are <strong>not allowed</strong> for trading.</div>
-              <div class="step-desc"><strong>Use this exact sequence:</strong></div>
-              <ol class="howto-list">
-                <li>Open <strong>ProtonVPN</strong> and connect if it is not already connected.</li>
-                <li>If it connects to the <strong>U.S.</strong>, leave it connected. That is only acceptable as a temporary wait state.</li>
-                <li>Go to the <strong>Home</strong> screen and click <strong>Change server</strong>.</li>
-                <li>If the new server is <strong>not</strong> Romania, Poland, Netherlands, or Mexico, wait <strong>1 minute 40 seconds</strong>, then click <strong>Change server</strong> again.</li>
-                <li>If the second change is still not an allowed country, wait <strong>1 minute 50 seconds</strong>, then try <strong>Change server</strong> a third time.</li>
-                <li>If you are still on a non-allowed country after the third change, click <strong>Disconnect</strong>, wait a moment, then click <strong>Connect</strong> to reconnect.</li>
-                <li>After that reconnect, if it lands on the <strong>U.S.</strong>, do not change again immediately. Wait up to <strong>10 minutes</strong> while connected to the U.S., then restart the change-server routine from step 3.</li>
-              </ol>
-              <div class="step-desc">Keep retrying this routine until ProtonVPN shows one of these locations: <strong>Romania, Poland, Netherlands, or Mexico</strong>.</div>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-num">3</div>
-            <div class="step-body">
-              <div class="step-title">Open Nous Portal and create your API key</div>
-              <div class="step-desc">Go to <a href="https://portal.nousresearch.com/manage-subscription" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">portal.nousresearch.com/manage-subscription</a>. If you are not signed in, use <strong>Login</strong> in the portal navigation and sign in with your Nous/Proton account.</div>
-              <div class="step-desc"><strong>Click-by-click:</strong></div>
-              <ol class="howto-list">
-                <li>In the portal, open <strong>Plans</strong> if it is not already selected.</li>
-                <li>Select the <strong>Free $0</strong> plan if you want the free tier.</li>
-                <li>Click <strong>Subscribe</strong> for the free plan if prompted.</li>
-                <li>After the plan is active, go to <strong>Account → API keys</strong> or the portal’s API keys section.</li>
-                <li>Click <strong>Create new API key</strong>.</li>
-                <li>Copy the key immediately and paste it into <strong>Settings → AI Credentials → Portal API Key</strong> in KnightTrader.</li>
-              </ol>
-              <div class="step-desc">Free tier is enough for Hermes cron trading. Use that key in the app, then test it with <strong>Test AI Credentials</strong>.</div>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-num">4</div>
-            <div class="step-body">
-              <div class="step-title">Add your Blofin API keys</div>
-              <div class="step-desc">In the <strong>Setup</strong> tab, enter your Blofin API credentials. Use either manual entry or <strong>Load from file…</strong>. Required permissions: <strong>Compendium + Trading + Transfer</strong>.</div>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-num">5</div>
-            <div class="step-body">
-              <div class="step-title">Install Hermes and start the dashboard</div>
-              <div class="step-desc">In the <strong>Hermes</strong> tab, click <strong>Install Hermes</strong>, then <strong>Write Compendium File</strong>, then <strong>Start Dashboard + Gateway</strong>. This writes the credential file Hermes reads and starts the local dashboard on port <strong>9119</strong>.</div>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-num">6</div>
-            <div class="step-body">
-              <div class="step-title">Auto-configure the trading cron</div>
-              <div class="step-desc">In the <strong>Hermes</strong> tab, click <strong>Auto-Configure Cron</strong>. If auto-config is unavailable, copy the prompt shown and paste it into the Hermes dashboard manually. After that, the assistant trades on Blofin on the schedule.</div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
       <!-- ── HERMES TAB ─────────────────────────────────────── -->
       <section id="tab-hermes" class="tab-panel">
         <div class="panel-header">
           <h1>Hermes Control</h1>
-          <p class="panel-sub">Install Hermes, start its dashboard, and auto-configure the 1-minute trading cron.</p>
+          <p class="panel-sub">Install Hermes, start its dashboard, and auto-configure the trading cron.</p>
         </div>
 
         <!-- Step cards -->
@@ -610,6 +530,40 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Proton VPN helper -->
+        <div class="card" style="margin-top:18px">
+          <div class="card-header">
+            <div class="card-icon" style="background:rgba(34,197,94,0.12);color:#22c55e">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div><div class="card-title">Proton VPN Helper</div><div class="card-desc">Guided free VPN flow to reach an allowed Blofin country.</div></div>
+          </div>
+          <div class="field-group">
+            <div class="field">
+              <label for="vpn-country">Preferred country</label>
+              <div class="select-wrap">
+                <select id="vpn-country">
+                  <option value="random">Random allowed country</option>
+                  <option value="RO">Romania</option>
+                  <option value="PL">Poland</option>
+                  <option value="NL">Netherlands</option>
+                  <option value="MX">Mexico</option>
+                  <option value="ES">Spain</option>
+                  <option value="PT">Portugal</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-full" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:6px">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text)">Free Proton VPN retry routine</div>
+                <div style="font-size:11px;color:var(--text3)">Change server → wait 1:40 → change server → wait 1:50 → reconnect → wait 10 min if U.S.</div>
+              </div>
+              <button type="button" id="btn-vpn-guide" class="btn-secondary">Open VPN Guide</button>
+            </div>
+            <div id="vpn-status" class="step-status" style="margin-top:8px"></div>
           </div>
         </div>
 

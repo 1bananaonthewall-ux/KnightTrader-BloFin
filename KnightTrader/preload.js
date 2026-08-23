@@ -62,5 +62,12 @@ contextBridge.exposeInMainWorld('kt', {
   // Window controls
   minimize: () => ipcRenderer.send('window-minimize'),
   maximize: () => ipcRenderer.send('window-maximize'),
-  close: () => ipcRenderer.send('window-close')
+  close: () => ipcRenderer.send('window-close'),
+
+  // VPN controller
+  vpnStatus: () => ipcRenderer.invoke('vpn-status'),
+  vpnDetect: () => ipcRenderer.invoke('vpn-detect'),
+  vpnConnect: (code) => ipcRenderer.invoke('vpn-connect', code),
+  vpnDisconnect: () => ipcRenderer.invoke('vpn-disconnect'),
+  vpnAllowed: () => ipcRenderer.invoke('vpn-allowed')
 });
