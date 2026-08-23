@@ -92,11 +92,11 @@
       </div>
 
       <ul id="nav-list">
-        <li class="nav-item" data-tab="howto">
+        <li class="nav-item active" data-tab="howto">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <span>How-To</span>
         </li>
-        <li class="nav-item active" data-tab="setup">
+        <li class="nav-item" data-tab="setup">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
           <span>Setup</span>
         </li>
@@ -598,6 +598,25 @@
             <p class="panel-sub">Positions, equity, signals, and voice — live from Blofin.</p>
           </div>
           <button type="button" id="btn-reload-trading" class="btn-secondary">Reload</button>
+        </div>
+        <div class="trading-monitor">
+          <div class="monitor-item">
+            <div class="monitor-label">Trading dashboard</div>
+            <div class="monitor-value" id="trading-dashboard-status">Not loaded yet</div>
+          </div>
+          <div class="monitor-item">
+            <div class="monitor-label">Last activity</div>
+            <div class="monitor-value" id="trading-activity-status">Waiting for Hermes</div>
+          </div>
+          <div class="monitor-item">
+            <div class="monitor-label">What to confirm</div>
+            <div class="monitor-value monitor-hint">
+              1. Equity updates in the dashboard<br>
+              2. Recent Activity shows a Hermes cron tick<br>
+              3. Open positions appear when a trade is placed<br>
+              4. If the dashboard is blank, open Hermes dashboard in browser from Hermes tab
+            </div>
+          </div>
         </div>
         <div id="trading-webview-wrap" class="trading-webview-wrap">
           <webview

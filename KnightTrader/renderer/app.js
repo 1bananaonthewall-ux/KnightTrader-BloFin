@@ -1,6 +1,6 @@
 /* ── KnightTrader App Logic v2 ─────────────────────────────── */
 
-let currentTab = 'setup';
+let currentTab = 'howto';
 let autoScroll = true;
 let newLogs = 0;
 let hermesInstalled = false;
@@ -578,17 +578,24 @@ let tradingLoaded = false;
 let tradingPreloadPath = '';
 let tradingInitPromise = null;
 
-function setTradingStatus(_text, _state) {
-  // Status pill was removed from UI; keep this as a safe no-op
-  // because load/error handlers still call it.
+function setTradingStatus(text, state) {
+  const statusEl = document.getElementById('trading-dashboard-status');
+  const activityEl = document.getElementById('trading-activity-status');
+  if (statusEl) statusEl.textContent = text || 'Not loaded yet';
+  if (statusEl) statusEl.className = 'monitor-value' + (state ? ` ${state}` : '');
+}
+
+function setTradingActivity(text) {
+  const el = document.getElementById('trading-activity-status');
+  if (el) el.textContent = text || 'Waiting for Hermes';
 }
 
 function showTradingError(message) {
-  // Surface trading errors in Logs instead of a removed inline banner.
   if (!message) return;
   try {
     appendLogLine({ ts: Date.now(), type: 'warn', msg: `[Trading] ${String(message)}` });
   } catch (_) {}
+  setTradingStatus('Load failed', 'error');
 }
 
 function guestHasPage(webview) {
@@ -634,21 +641,31 @@ function bindTradingWebview(webview) {
   webview.addEventListener('did-finish-load', async () => {
     try {
       const s = await window.kt.getTradingStatus();
-      setTradingStatus(s?.sseConnected ? 'Live · SSE connected' : 'Live', 'live');
+      if (s?.sseConnected) {
+        setTradingStatus('Live · SSE connected', 'ok');
+        setTradingActivity('Signal connected');
+      } else {
+        setTradingStatus('Live', 'pending');
+        setTradingActivity('Waiting for signal snapshot');
+      }
     } catch (_) {
-      setTradingStatus('Live', 'live');
+      setTradingStatus('Live', 'pending');
+      setTradingActivity('Waiting for signal snapshot');
     }
   });
   webview.addEventListener('did-fail-load', (e) => {
     if (e.errorCode === -3) return;
+    const reason = e.errorDescription || `Failed to load trading desk (${e.errorCode})`;
     setTradingStatus('Load failed', 'error');
-    showTradingError(e.errorDescription || `Failed to load trading desk (${e.errorCode})`);
+    setTradingActivity('Check Hermes dashboard');
+    showTradingError(`${reason}. If trading desk is unavailable, open the Hermes Dashboard in the Hermes tab.`);
   });
   webview.addEventListener('console-message', (e) => {
     if (e.level >= 2 && /unexpected token|chrome is not defined/i.test(e.message || '')) {
       setTradingStatus('Desk error', 'error');
+      setTradingActivity('Check Hermes dashboard');
       const where = [e.sourceId, Number.isFinite(e.line) ? `:${e.line}` : ''].join('');
-      showTradingError(where ? `${e.message} (${where})` : e.message);
+      showTradingError(`${e.message}${where ? ` (${where})` : ''}. If the trading desk cannot load, use the Hermes tab dashboard.`);
     }
   });
   return webview;

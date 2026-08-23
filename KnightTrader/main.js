@@ -1330,6 +1330,12 @@ SUCCESS CRITERIA FOR "API WORKS"
 --- TRADING RULES (MANUAL, AUTONOMOUS) ---
 Scan the full USDT universe yourself. Manually choose entries. Place orders yourself. Attach TP/SL yourself. Isolated margin only. Prefer clarity over activity. Compound wins; do not force rotations with thin free margin. Stay open to longs and shorts. With a small account, prefer the smallest valid size that still has a clear edge.
 
+ORDER EXECUTION RULES:
+- Use ONLY market orders. No limit orders. No post-only. No algorithmic order types.
+- If the exchange returns a busy or reject state, retry once with a smaller market size.
+- Confirm order response JSON before assuming execution. If the response is HTML or an error page, switch transport/retry before placing another order.
+- Keep TP and SL attached where supported. If not supported, monitor manually.
+
 PROCEED NOW
 Confirm credentials path → confirm VPN accepted country → prove JSON account read (Camoufox and/or curl_cffi) → confirm Futures USDT → scan → take righteous trades by hand → manage positions → keep equity curve vertical.
 

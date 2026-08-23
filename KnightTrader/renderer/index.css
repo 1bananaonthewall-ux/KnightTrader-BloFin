@@ -1315,6 +1315,40 @@ select { appearance: none; padding-right: 30px; }
   background: var(--bg);
   margin-bottom: 8px;
 }
+.trading-monitor {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+@media (max-width: 980px) { .trading-monitor { grid-template-columns: 1fr; } }
+.monitor-item {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.monitor-label {
+  color: var(--text3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.monitor-value {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.monitor-value.error { color: var(--error); }
+.monitor-value.ok { color: var(--good); }
+.monitor-value.pending { color: var(--accent2); }
+.monitor-hint {
+  font-weight: 400;
+  color: var(--text2);
+  line-height: 1.45;
+}
 #trading-webview {
   position: absolute;
   inset: 0;
