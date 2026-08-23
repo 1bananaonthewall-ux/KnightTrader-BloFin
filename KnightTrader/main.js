@@ -1890,8 +1890,8 @@ function registerIPC() {
 }
 
 // ── Membership auth ─────────────────────────────────────────────────────
-const STRIPE_SECRET_KEY = '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';
-const STRIPE_SECRET_BACKUP = 'jejj-cqib-ovhc-ltyo-qnyk';
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || '';
+const STRIPE_SECRET_BACKUP = process.env.STRIPE_SECRET_BACKUP || '';
 const MEMBERSHIP_PRICE_AMOUNT = 47;
 const MEMBERSHIP_CURRENCY = 'usd';
 const ALLOWED_USERS = [
