@@ -30,15 +30,19 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        working-directory: KnightTrader
         run: npm ci
 
       - name: Show electron-builder version
+        working-directory: KnightTrader
         run: npx electron-builder --version
 
       - name: Build and publish Windows
         if: matrix.os == 'windows-latest'
+        working-directory: KnightTrader
         run: npm run build:win
 
       - name: Build and publish Mac
         if: matrix.os == 'macos-latest'
+        working-directory: KnightTrader
         run: npm run build:mac
