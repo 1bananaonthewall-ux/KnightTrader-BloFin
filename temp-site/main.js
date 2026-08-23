@@ -3,10 +3,8 @@
   const repo = 'KnightTrader-BloFin';
   const releaseApiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
   const releaseWebBase = `https://github.com/${owner}/${repo}/releases`;
-  const windowsAssetUrl = 'https://github.com/1bananaonthewall-ux/KnightTrader-BloFin/releases/download/v1.0.9/KnightTrader.Blofin.Setup.1.0.9.exe';
-  const macAssetUrl = 'https://github.com/1bananaonthewall-ux/KnightTrader-BloFin/releases/download/v1.0.9/KnightTrader-Blofin-1.0.9-arm64.dmg';
-  let windowsUrl = windowsAssetUrl;
-  let macUrl = macAssetUrl;
+  let windowsUrl = null;
+  let macUrl = null;
   const ALLOWED_USERS = [
     { email: 'tails123@gmail.com', password: 'blohunterdaddy1!' },
     { email: '1bananaonthewall@gmail.com', password: 'Carterjaxon15!' },

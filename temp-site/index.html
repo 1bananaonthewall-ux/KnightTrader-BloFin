@@ -87,6 +87,9 @@
             <p>You do not want to trust a hosted bot with your capital. You want local logs, local credentials, and a dashboard you can watch.</p>
           </div>
         </div>
+        <div class="site-warn" style="margin-top:18px">
+          <strong>Before you start:</strong> use a <strong>Windows 11</strong> PC or a <strong>Mac</strong>. You need a debit card, an email you can access, about <strong>30–60 minutes</strong>, and the computer must stay awake while Hermes runs. If any of those are not ready, wait until they are.
+        </div>
       </div>
     </section>
 
@@ -100,34 +103,95 @@
             <div>
               <strong>Join membership for $47/month</strong>
               <p class="step-detail">Use your email and password to sign up on Stripe. That same email and password becomes your app login. No extra accounts.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> you see a Stripe confirmation page or email receipt. Write your email and password down.</p>
             </div>
           </li>
           <li>
             <span class="step-number">2</span>
             <div>
-              <strong>Download and install</strong>
-              <p class="step-detail">Download the Windows installer or Mac `.dmg`. Install it like any normal app. No developer tools needed.</p>
+              <strong>Sign in and download</strong>
+              <p class="step-detail">Come back to this site, sign in with your membership email and password, then download the Windows or Mac app.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> the download starts automatically. If it does not start, click the platform button again after signing in.</p>
             </div>
           </li>
           <li>
             <span class="step-number">3</span>
             <div>
-              <strong>Open the How-To tab</strong>
-              <p class="step-detail">The first tab you see is How-To. It walks you through ProtonVPN, Coinbase, Blofin, Nous Portal, Hermes setup, API keys, and power settings. Every step. Click by click.</p>
+              <strong>Install and open the app</strong>
+              <p class="step-detail">Install like a normal program. The first tab you see is How-To. It walks you through ProtonVPN, Coinbase, Blofin, Nous Portal, Hermes setup, API keys, and power settings. Every step. Click by click.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> the app opens and stays open. If it closes immediately, read the error text and fix the first item it mentions.</p>
             </div>
           </li>
           <li>
             <span class="step-number">4</span>
             <div>
-              <strong>We handle the hard parts</strong>
-              <p class="step-detail">One-click Defender exclusion. One-click Hermes install. One-click compendium write. One-click dashboard start. One-click cron config. You click. The app configures.</p>
+              <strong>Sign in to the app</strong>
+              <p class="step-detail">Use the same email and password you used on the website. If you forget it, click <strong>Forgot password?</strong>.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> the login overlay closes and you see the How-To tab.</p>
             </div>
           </li>
           <li>
             <span class="step-number">5</span>
             <div>
-              <strong>Hermes trades while you sleep</strong>
-              <p class="step-detail">The assistant reviews your BloFin account, decides, and acts on the schedule. You watch the dashboard and logs. You keep full control.</p>
+              <strong>Keep this computer awake</strong>
+              <p class="step-detail">If the computer sleeps, Hermes stops. Change these settings now so they do not surprise you later.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> you changed the screen and sleep timers to <strong>Never</strong> while plugged in.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">6</span>
+            <div>
+              <strong>Install ProtonVPN and reach an allowed country</strong>
+              <p class="step-detail">Use this only if Blofin is blocked in your country. The How-To tab includes exact clicks and wait times.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> ProtonVPN shows a country of <strong>Romania, Poland, Netherlands, or Mexico</strong>. Not allowed: <strong>Singapore, United States, Canada</strong>.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">7</span>
+            <div>
+              <strong>Create Nous Portal API key</strong>
+              <p class="step-detail">Hermes needs this key to think and trade. The free plan works.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> you pasted a key into the app <strong>Setup</strong> tab and <strong>Test AI Credentials</strong> said success.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">8</span>
+            <div>
+              <strong>Create Blofin account and API keys</strong>
+              <p class="step-detail">This is the exchange where Hermes trades. The app needs three values: API Key, Secret Key, and Passphrase.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> you pasted all three values into the app <strong>Setup</strong> tab and <strong>Test Blofin Credentials</strong> said success.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">9</span>
+            <div>
+              <strong>Save credentials and write the compendium file</strong>
+              <p class="step-detail">Saving writes the encrypted credentials locally. Writing the compendium creates the file Hermes reads.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> the app says <strong>Saved & compendium written</strong> or <strong>✓ Written</strong>.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">10</span>
+            <div>
+              <strong>Fund Blofin from your debit card</strong>
+              <p class="step-detail">Use Coinbase to buy crypto with your debit card, then send it to Blofin. The How-To tab includes exact screenshots and warnings so you do not send to the wrong network.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> Blofin <strong>Assets</strong> shows the coin you bought. Do not continue until you see it.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">11</span>
+            <div>
+              <strong>We handle the hard parts</strong>
+              <p class="step-detail">One-click Defender exclusion. One-click Hermes install. One-click compendium write. One-click dashboard start. One-click cron config. You click. The app configures.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> Hermes tab says <strong>✓ Installed</strong>, dashboard says <strong>✓ Dashboard + gateway ready</strong>, and cron says <strong>✅ Cron active — every 5 minutes!</strong>.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">12</span>
+            <div>
+              <strong>Watch Hermes trade</strong>
+              <p class="step-detail">Open the Trading tab and Logs tab. The dashboard shows account equity, positions, and recent cron activity. You monitor, inspect, and stay in control.</p>
+              <p class="step-detail"><strong>What success looks like:</strong> Trading tab says <strong>Live · SSE connected</strong>, Last activity says <strong>Signal connected</strong>, Recent Activity shows a cron tick, and equity updates.</p>
             </div>
           </li>
         </ol>
@@ -308,13 +372,19 @@
               <button type="submit" id="btn-site-forgot-send" class="btn-primary">Send reset link</button>
               <button type="button" id="btn-site-forgot-back" class="link-btn">Back to sign in</button>
             </form>
-            <div class="membership-footer">
-              <span>New here? </span>
-              <button type="button" id="btn-start-checkout" class="link-btn">Join membership — $47/mo</button>
-            </div>
+      <div class="membership-footer">
+        <span>New here? </span>
+        <button type="button" id="btn-start-checkout" class="link-btn">Join membership — $47/mo</button>
+      </div>
+      <div class="membership-next" style="margin-top:10px">
+        <strong>After you join:</strong> write your email and password down, then come back to this site and scroll to <strong>Login to download</strong>. Use the same email and password in the app.
+      </div>
           </div>
         </div>
         <p class="os-notice" style="text-align: center; margin-top: 10px;">Requires Windows 11 or later. Mac build is provided when available.</p>
+        <div class="membership-next" style="text-align: center; margin-top: 10px;">
+          <strong>After download:</strong> open the installer, install the app, then open <strong>KnightTrader BloFin</strong> from your Start menu or Applications folder. The first tab you see is <strong>How-To</strong> — follow it step by step.
+        </div>
       </div>
     </section>
 

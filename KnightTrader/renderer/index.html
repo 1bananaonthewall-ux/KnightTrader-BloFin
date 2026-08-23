@@ -121,7 +121,7 @@
       </ul>
 
       <div id="sidebar-footer">
-        <div class="version-tag" id="sidebar-version">v1.0.9</div>
+        <div class="version-tag" id="sidebar-version">v1.0.11</div>
         <button id="btn-open-blofin" class="link-btn">Blofin ↗</button>
       </div>
     </nav>
@@ -157,7 +157,7 @@
           </div>
           <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-            <span>v<span id="popup-app-version">1.0.0</span></span>
+            <span>v<span id="popup-app-version">1.0.11</span></span>
           </div>
           <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -225,6 +225,12 @@
                   <li>If macOS warns you, open <strong>System Settings → Privacy & Security</strong> and allow it.</li>
                 </ol>
                 <div class="step-desc">If the app opens, you are good. If it closes immediately, read the error text and fix the first item it mentions.</div>
+                <div class="step-desc"><strong>What success looks like:</strong></div>
+                <ol class="howto-list">
+                  <li>You see the KnightTrader login screen or the How-To tab.</li>
+                  <li>The app stays open. It does not close by itself.</li>
+                </ol>
+                <div class="step-desc">If it closes, take a screenshot of the error and fix that exact item before continuing.</div>
               </div>
             </div>
 
@@ -296,7 +302,7 @@
                   <li>If you are still not in an allowed country, click <strong>Disconnect</strong>, wait a moment, then click <strong>Connect</strong>.</li>
                   <li>If it connects to the <strong>United States</strong> again, wait up to <strong>10 minutes</strong>, then start again from step 7.</li>
                 </ol>
-                <div class="step-desc">Allowed countries: <strong>Romania, Poland, Netherlands, Mexico, Spain, Portugal</strong>. Not allowed: <strong>Singapore, United States, Canada</strong>.</div>
+                <div class="step-desc">Allowed countries: <strong>Romania, Poland, Netherlands, Mexico</strong>. Not allowed: <strong>Singapore, United States, Canada</strong>.</div>
               </div>
             </div>
 
@@ -558,26 +564,55 @@
               </div>
             </div>
 
-            <div class="step-card">
-              <div class="step-num">20</div>
-              <div class="step-body">
-                <div class="step-title">Confirm Hermes is actually trading</div>
-                <div class="step-desc">Do not assume it works. Verify these exact signals.</div>
-                <div class="step-desc"><strong>Checklist:</strong></div>
-                <ol class="howto-list">
-                  <li>Keep the computer awake using step 4.</li>
-                  <li>Open the app <strong>Trading</strong> tab.</li>
-                  <li>Confirm <strong>Trading dashboard</strong> updates.</li>
-                  <li>Confirm <strong>Last activity</strong> changes from <strong>Waiting for Hermes</strong>.</li>
-                  <li>Confirm <strong>Recent Activity</strong> shows a Hermes cron tick.</li>
-                  <li>If a trade happens, confirm <strong>Open positions</strong> appears.</li>
-                  <li>Open the app <strong>Logs</strong> tab.</li>
-                  <li>Look for successful cron activity.</li>
-                  <li>If nothing happens after a few minutes, open the <strong>Hermes dashboard</strong> in browser and inspect manually.</li>
-                </ol>
-                <div class="step-desc">If the Trading tab webview is blank, use the Hermes dashboard in the browser. The browser dashboard is the source of truth.</div>
-              </div>
+          <div class="step-card">
+            <div class="step-num">20</div>
+            <div class="step-body">
+              <div class="step-title">Confirm Hermes is actually trading</div>
+              <div class="step-desc">Do not assume it works. Verify these exact signals.</div>
+              <div class="step-desc"><strong>Checklist:</strong></div>
+              <ol class="howto-list">
+                <li>Keep the computer awake using step 4.</li>
+                <li>Open the app <strong>Trading</strong> tab.</li>
+                <li>Confirm <strong>Trading dashboard</strong> updates.</li>
+                <li>Confirm <strong>Last activity</strong> changes from <strong>Waiting for Hermes</strong>.</li>
+                <li>Confirm <strong>Recent Activity</strong> shows a Hermes cron tick.</li>
+                <li>If a trade happens, confirm <strong>Open positions</strong> appears.</li>
+                <li>Open the app <strong>Logs</strong> tab.</li>
+                <li>Look for successful cron activity.</li>
+                <li>If nothing happens after a few minutes, open the <strong>Hermes dashboard</strong> in browser and inspect manually.</li>
+              </ol>
+              <div class="step-desc">If the Trading tab webview is blank, use the Hermes dashboard in the browser. The browser dashboard is the source of truth.</div>
+              <div class="step-desc"><strong>What success looks like:</strong></div>
+              <ol class="howto-list">
+                <li>Trading dashboard says <strong>Live · SSE connected</strong> or <strong>Live</strong>.</li>
+                <li>Last activity says <strong>Signal connected</strong> or shows a recent timestamp.</li>
+                <li>Recent Activity shows a line that says something like <strong>cron tick succeeded</strong> or a trade message.</li>
+                <li>Open positions shows a position if a trade was placed.</li>
+                <li>Equity number changes over time.</li>
+              </ol>
+              <div class="step-desc">If any of these are missing, do not close the app. Open the Hermes dashboard in browser from the Hermes tab and check the assistant/cron logs there.</div>
             </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">21</div>
+            <div class="step-body">
+              <div class="step-title">If something breaks, fix the first error message</div>
+              <div class="step-desc">Do not restart from the beginning. Read the exact message in Logs or on the button status, then fix that exact item.</div>
+              <div class="step-desc"><strong>Common fixes:</strong></div>
+              <ol class="howto-list">
+                <li><strong>Login fails:</strong> retype email and password. Check caps lock. Use <strong>Forgot password?</strong> if needed.</li>
+                <li><strong>Blofin test fails:</strong> double-check API Key, Secret Key, and Passphrase. Make sure you copied all three.</li>
+                <li><strong>Nous test fails:</strong> verify you selected a free model and pasted the exact Portal API key.</li>
+                <li><strong>VPN is U.S.:</strong> wait the full 1:40 or 1:50, then change server again. Do not rush.</li>
+                <li><strong>Dashboard blank:</strong> open <strong>Open in Browser</strong> from the Hermes tab. The browser dashboard is the source of truth.</li>
+                <li><strong>No trades yet:</strong> confirm Blofin has Futures/USDT-M balance, VPN is in an allowed country, and dashboard says gateway is running.</li>
+                <li><strong>Cron not firing:</strong> click <strong>Auto-Configure Cron</strong> again, or paste the prompt into the Hermes dashboard manually.</li>
+                <li><strong>Computer slept:</strong> reopen the app, confirm dashboard is still running, and check Logs.</li>
+              </ol>
+              <div class="step-desc">If you are stuck for more than 10 minutes, stop and review the exact error text. The fix is almost always one field, one network, or one missed confirmation.</div>
+            </div>
+          </div>
 
           </div>
         </div>
@@ -826,8 +861,6 @@
                   <option value="PL">Poland</option>
                   <option value="NL">Netherlands</option>
                   <option value="MX">Mexico</option>
-                  <option value="ES">Spain</option>
-                  <option value="PT">Portugal</option>
                 </select>
               </div>
             </div>
@@ -952,7 +985,7 @@
         <div class="card">
           <div class="card-header"><div class="card-icon">ℹ</div><div class="card-title">About</div></div>
           <div class="about-body">
-            <div class="about-row"><span>App</span><span id="about-app-version">KnightTrader v1.0.9</span></div>
+            <div class="about-row"><span>App</span><span id="about-app-version">KnightTrader v1.0.11</span></div>
             <div class="about-row"><span>Engine</span><span>Electron 28 + Node.js</span></div>
             <div class="about-row"><span>Storage</span><span>AES-256-CBC encrypted</span></div>
             <div class="about-row"><span>Hermes</span><span id="about-hermes-ver">Checking...</span></div>
