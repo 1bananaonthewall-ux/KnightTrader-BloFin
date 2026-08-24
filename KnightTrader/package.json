@@ -1,6 +1,6 @@
 {
     "name":  "knight-trader",
-    "version":  "1.0.14",
+    "version":  "1.0.15",
     "description":  "KnightTrader — Hermes credential manager \u0026 launcher for Windows",
     "main":  "main.js",
     "scripts":  {
@@ -13,6 +13,7 @@
     "build":  {
                   "appId":  "com.knighttrader.blofin",
                   "productName":  "KnightTrader Blofin",
+                  "artifactName":  "KnightTrader-BloFin-Setup-${version}.${ext}",
                   "asar":  true,
                   "asarUnpack":  [
                                      "**/node_modules/**",
@@ -36,6 +37,11 @@
                               "target":  "nsis",
                               "icon":  "assets/icon.ico"
                           },
+                  "nsis":  {
+                               "artifactName":  "KnightTrader-BloFin-Setup-${version}.${ext}",
+                               "oneClick":  false,
+                               "perMachine":  false
+                           },
                   "fileAssociations":  [
 
                                        ]

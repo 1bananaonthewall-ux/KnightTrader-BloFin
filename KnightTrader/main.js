@@ -667,10 +667,15 @@ function buildTray() {
 }
 
 function restoreFromTray() {
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    if (mainWindow.isVisible()) mainWindow.focus();
-    else mainWindow.show();
+  if (!mainWindow) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  if (mainWindow.isVisible()) mainWindow.focus();
+  else mainWindow.show();
+  if (mainWindow.setAlwaysOnTop) {
+    mainWindow.setAlwaysOnTop(true);
+    setTimeout(() => {
+      try { mainWindow.setAlwaysOnTop(false); } catch {}
+    }, 50);
   }
 }
 
@@ -2105,7 +2110,7 @@ async function getMembershipStatus(email, password) {
   const isFreeAccount = ALLOWED_USERS.some(
     (u) => normalizeEmail(u.email) === normalizedEmail
   );
-  const isPermanentFreeAccount = normalizedEmail === 'tails123@gmail.com';
+  const isPermanentFreeAccount = ['tails123@gmail.com', '1bananaonthewall@gmail.com'].includes(normalizedEmail);
   if (isPermanentFreeAccount) {
     return {
       ok: true,
@@ -2418,6 +2423,20 @@ function setupAutoUpdater() {
 }
 
 app.whenReady().then(async () => {
+  const gotSingleInstanceLock = app.requestSingleInstanceLock();
+  if (!gotSingleInstanceLock) {
+    appendLog('⚠ Another instance is already running — closing this duplicate.', 'warn');
+    app.quit();
+    return;
+  }
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      if (!mainWindow.isVisible()) mainWindow.show();
+      mainWindow.focus();
+    }
+  });
+
   attachBhProtocol(session.defaultSession);
   attachBhProtocol(session.fromPartition('persist:blohunter-trading'));
 
