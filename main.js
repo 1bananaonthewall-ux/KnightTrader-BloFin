@@ -74,10 +74,18 @@
   }
 
   function triggerDownload(url) {
+    if (!url) return;
     try {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '';
+      a.rel = 'noopener noreferrer';
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch {
-      // ignore and fall through
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
   }
 
