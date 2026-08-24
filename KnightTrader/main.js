@@ -668,14 +668,12 @@ function buildTray() {
 
 function restoreFromTray() {
   if (!mainWindow) return;
-  if (mainWindow.isMinimized()) mainWindow.restore();
-  if (mainWindow.isVisible()) mainWindow.focus();
-  else mainWindow.show();
-  if (mainWindow.setAlwaysOnTop) {
-    mainWindow.setAlwaysOnTop(true);
-    setTimeout(() => {
-      try { mainWindow.setAlwaysOnTop(false); } catch {}
-    }, 50);
+  try {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    else if (!mainWindow.isVisible()) mainWindow.show();
+    mainWindow.focus();
+  } catch (e) {
+    appendLog(`⚠ Tray restore failed: ${e.message}`, 'warn');
   }
 }
 
@@ -1847,6 +1845,23 @@ function factoryResetLocalState() {
 
 function registerIPC() {
   ipcMain.handle('get-credentials',   () => storeData);
+  ipcMain.handle('announce-voice', (_e, text) => {
+    const msg = String(text || '').trim();
+    if (!msg) return;
+    if (process.platform === 'win32') {
+      try {
+        const ps = `New-Object -ComObject SAPI.SpVoice | ForEach-Object { $_.Speak(${JSON.stringify(msg)}, 1) }`;
+        spawn('powershell.exe', ['-NoProfile', '-Command', ps], { windowsHide: true });
+      } catch (_) {}
+      return;
+    }
+    try {
+      const u = new SpeechSynthesisUtterance(msg);
+      speechSynthesis.speak(u);
+    } catch (_) {
+      appendLog(`🔊 Voice: ${msg}`, 'info');
+    }
+  });
   ipcMain.handle('save-credentials', async (_e, data) => {
     storeData = migrateStoreData({ ...storeData, ...data });
     saveStore(storeData);

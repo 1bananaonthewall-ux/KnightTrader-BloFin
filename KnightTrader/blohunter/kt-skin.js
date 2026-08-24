@@ -72,14 +72,14 @@
     characterData: true,
   });
 
-  const WELCOME_VOICE_TEXT = 'Welcome to KnightTrader';
-
-  function rewriteUtteranceText(utterance) {
-    if (!utterance || typeof utterance.text !== 'string') return;
-    const text = utterance.text;
-    if (/welcome to/i.test(text) && /blohunter/i.test(text)) {
-      utterance.text = WELCOME_VOICE_TEXT;
+  function announce(text) {
+    const msg = String(text || '').trim();
+    if (!msg) return;
+    if (/welcome to/i.test(msg) && /blohunter/i.test(msg)) {
+      window.kt?.announceVoice?.(WELCOME_VOICE_TEXT);
+      return;
     }
+    window.kt?.announceVoice?.(msg);
   }
 
   if (!window.__ktSpeechPatched && 'speechSynthesis' in window) {
@@ -87,7 +87,9 @@
     try {
       const originalSpeak = window.speechSynthesis.speak.bind(window.speechSynthesis);
       window.speechSynthesis.speak = (utterance) => {
-        rewriteUtteranceText(utterance);
+        if (utterance && typeof utterance.text === 'string') {
+          announce(utterance.text);
+        }
         originalSpeak(utterance);
       };
     } catch (_) {}

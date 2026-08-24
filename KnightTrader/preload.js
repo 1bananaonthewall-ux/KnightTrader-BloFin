@@ -43,6 +43,7 @@ contextBridge.exposeInMainWorld('kt', {
 
   // Utilities
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
+  announceVoice: (text) => ipcRenderer.invoke('announce-voice', text),
 
   // Trading / BloHunter
   getBlohunterPreloadPath: () => ipcRenderer.invoke('get-blohunter-preload-path'),
