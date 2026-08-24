@@ -1033,6 +1033,23 @@ class BlohunterBridge {
       // Re-seed equity from cron last_tick.json every 5 minutes
       if (this.equitySeedTimer) clearInterval(this.equitySeedTimer);
       this.equitySeedTimer = setInterval(() => runSeed(), 5 * 60 * 1000);
+      // Refresh live equity from dashboard data every 30 seconds
+      if (this.liveEquityTimer) clearInterval(this.liveEquityTimer);
+      this.liveEquityTimer = setInterval(async () => {
+        try {
+          const snapshot = await this.dispatchRuntimeMessage({ type: 'get-dashboard-data' });
+          if (snapshot?.ok && Number(snapshot.data?.balances?.totalEquity) > 0) {
+            const equity = Number(snapshot.data.balances.totalEquity);
+            const settled = Number(snapshot.data.balances.settledEquity || equity);
+            const statePath = path.join(this.connectRoot, 'src', 'trading', 'state.js');
+            const state = await import(pathToFileURL(statePath).href);
+            const existing = await state.getAccountEquityHistory();
+            const merged = mergeEquityRangeAnchors(existing, equity, settled, Date.now());
+            this.storage.setArea('local', { [ACCOUNT_EQUITY_HISTORY_KEY]: merged });
+            this.nudgeEquityChart();
+          }
+        } catch {}
+      }, 30 * 1000);
       return { ok: true, url: this.getDashboardUrl(), root: this.connectRoot };
     } catch (err) {
       this.log('[BloHunter] start failed:', err.message);
@@ -1048,6 +1065,10 @@ class BlohunterBridge {
     if (this.gateTimer) {
       clearInterval(this.gateTimer);
       this.gateTimer = null;
+    }
+    if (this.liveEquityTimer) {
+      clearInterval(this.liveEquityTimer);
+      this.liveEquityTimer = null;
     }
     if (this.equitySeedTimer) {
       clearInterval(this.equitySeedTimer);
