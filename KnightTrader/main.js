@@ -667,13 +667,24 @@ function buildTray() {
 }
 
 function restoreFromTray() {
-  if (!mainWindow) return;
+  if (!mainWindow || mainWindow.isDestroyed()) return;
   try {
     if (mainWindow.isMinimized()) mainWindow.restore();
-    else if (!mainWindow.isVisible()) mainWindow.show();
+    if (!mainWindow.isVisible()) mainWindow.show();
     mainWindow.focus();
+    refreshTradingWebviewAfterRestore();
   } catch (e) {
     appendLog(`⚠ Tray restore failed: ${e.message}`, 'warn');
+  }
+}
+
+function refreshTradingWebviewAfterRestore() {
+  try {
+    if (mainWindow && !mainWindow.isDestroyed() && mainWindow.webContents && !mainWindow.webContents.isDestroyed()) {
+      mainWindow.webContents.send('kt-restore-trading-webview');
+    }
+  } catch (e) {
+    appendLog(`ℹ Trading webview refresh skipped: ${e.message}`, 'info');
   }
 }
 
@@ -2445,11 +2456,7 @@ app.whenReady().then(async () => {
     return;
   }
   app.on('second-instance', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      if (!mainWindow.isVisible()) mainWindow.show();
-      mainWindow.focus();
-    }
+    restoreFromTray();
   });
 
   attachBhProtocol(session.defaultSession);

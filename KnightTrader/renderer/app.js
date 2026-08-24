@@ -755,6 +755,32 @@ async function initTradingTab() {
   return tradingInitPromise;
 }
 
+function handleTrayRestore() {
+  try {
+    if (!currentTab || currentTab === 'trading') {
+      if (guestHasPage(el.tradingWebview)) {
+        loadTradingDesk(true).catch(() => {});
+      } else {
+        initTradingTab();
+      }
+    }
+  } catch (_) {}
+}
+
+if (window.kt?.onLogLine) {
+  window.kt.onLogLine(() => {});
+}
+
+if (window.kt?.onUpdateError) {
+  window.kt.onUpdateError(() => {});
+}
+
+try {
+  if (window.ipcRenderer?.on) {
+    window.ipcRenderer.on('kt-restore-trading-webview', handleTrayRestore);
+  }
+} catch (_) {}
+
 if (el.btnReloadTrading) {
   el.btnReloadTrading.addEventListener('click', () => loadTradingDesk(true).catch(() => {}));
 }

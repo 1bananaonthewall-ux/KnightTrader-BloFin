@@ -75,8 +75,8 @@
   function announce(text) {
     const msg = String(text || '').trim();
     if (!msg) return;
-    if (/welcome to/i.test(msg) && /blohunter/i.test(msg)) {
-      window.kt?.announceVoice?.(WELCOME_VOICE_TEXT);
+    if (/welcome to/i.test(msg)) {
+      window.kt?.announceVoice?.('Welcome to KnightTrader Blofin');
       return;
     }
     window.kt?.announceVoice?.(msg);
