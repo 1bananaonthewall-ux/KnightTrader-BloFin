@@ -149,6 +149,30 @@ a { color: var(--accent); }
   padding: 16px 18px;
   text-align: left;
 }
+.hero-quote {
+  margin: 22px auto 18px;
+  max-width: 860px;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.hero-quote p {
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.65;
+}
+.hero-quote p + p {
+  margin-top: 10px;
+}
+.hero-quote footer {
+  margin-top: 12px;
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 600;
+}
 .hero-path-title {
   color: var(--text);
   font-weight: 700;
