@@ -91,8 +91,19 @@
                 <span class="text-xs text-[var(--muted)] mono" id="refreshHint">500ms</span>
             </div>
             <div class="flex gap-2">
-                <button onclick="launchBot()" class="bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">Launch</button>
-                <button onclick="stopBot()" class="bg-rose-700 hover:bg-rose-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">Stop</button>
+                <button id="launchBtn" onclick="launchBot()" class="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white transition-all duration-200 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-[0.98] shadow-lg shadow-emerald-900/30 border border-emerald-400/20">
+                    <span class="relative flex h-2.5 w-2.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-300"></span>
+                    </span>
+                    <span>Start Trading</span>
+                </button>
+                <button id="stopBtn" onclick="stopBot()" class="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white transition-all duration-200 bg-gradient-to-r from-rose-700 to-pink-700 hover:from-rose-600 hover:to-pink-600 active:scale-[0.98] shadow-lg shadow-rose-900/30 border border-rose-400/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="6" y="6" width="12" height="12" rx="2" />
+                    </svg>
+                    <span>Stop Trading</span>
+                </button>
             </div>
         </div>
     </header>

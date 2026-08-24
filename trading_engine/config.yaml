@@ -1,0 +1,40 @@
+trading:
+  mode: demo  # live | demo
+  loop_interval_seconds: 60
+  loop_jitter_seconds: 3
+  max_decisions_per_tick: 5
+
+model:
+  provider: nous_portal
+  api_key: sk-nous-G5fUj1TcUqaFEXtBt6XozCQQL6LWHoRE
+  base_url: https://portal.nousresearch.com/v1
+  model: stepfun/step-3.7-flash
+  timeout_seconds: 45
+  cheap_model: stepfun/step-3.7-flash
+
+risk:
+  risk_per_trade_pct: 0.01
+  leverage: 10
+  stop_loss_pct: 0.03
+  take_profit_pct: 0.25
+  max_positions: 15
+  max_margin_util_pct: 0.85
+
+blofin:
+  api_key: ""
+  secret_key: ""
+  passphrase: ""
+  credential_file: C:\Users\mknig\Downloads\1B Blofin API New.txt
+  rest_base: https://api.blofin.com
+  broker_id: 5388cb1f
+  universe_refresh_minutes: 60
+
+journal:
+  path: data/journal.sqlite
+  summary_compress_every_n_ticks: 60
+  summary_compress_after_ticks: 30
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  reload: false

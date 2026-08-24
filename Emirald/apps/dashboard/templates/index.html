@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emirald</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg0: #070b12;
+            --bg1: #0d1321;
+            --bg2: #111827;
+            --line: #1f2d45;
+            --text: #eaf0ff;
+            --muted: #7e92b8;
+            --accent: #38c9a7;
+            --good: #34d399;
+            --bad: #ff6b81;
+            --warn: #f5c542;
+        }
+        body {
+            font-family: "DM Sans", system-ui, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 600px at 0% -20%, #10203a 0%, transparent 55%),
+                radial-gradient(900px 500px at 100% 10%, #0e2a30 0%, transparent 50%),
+                var(--bg0);
+            min-height: 100vh;
+        }
+        .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+        .panel {
+            background: color-mix(in srgb, var(--bg1) 92%, transparent);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .panel-inner {
+            background: color-mix(in srgb, var(--bg2) 88%, transparent);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+        }
+        .status-pulse { animation: pulse 1.1s ease-in-out infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
+        }
+        .slide-num {
+            display: inline-block;
+            transition: transform 220ms cubic-bezier(.2,.8,.2,1), color 220ms ease, opacity 220ms ease;
+            will-change: transform;
+        }
+        .slide-num.bump {
+            transform: translateY(-5px);
+            opacity: 0.6;
+        }
+        .row-in {
+            animation: rowIn 360ms cubic-bezier(.2,.8,.2,1) both;
+        }
+        @keyframes rowIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .log-container {
+            font-family: "JetBrains Mono", ui-monospace, monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: #2f4263 transparent;
+        }
+        .badge-live {
+            background: linear-gradient(90deg, #3b1d2a, #2a153d);
+            border: 1px solid #a33d55;
+            color: #ffd6de;
+        }
+        .badge-demo {
+            background: linear-gradient(90deg, #164e4a, #1d3b5c);
+            border: 1px solid #2f6f68;
+            color: #9ff3e8;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #0d8a6f, #0a7b8c);
+            border: 1px solid #28e0c0;
+            color: #eafff8;
+        }
+        .btn-primary:hover { background: linear-gradient(90deg, #0aa17f, #0c8fa0); }
+        .btn-danger {
+            background: linear-gradient(90deg, #8a2035, #7a1f55);
+            border: 1px solid #ff5f7a;
+            color: #ffeaf2;
+        }
+        .btn-danger:hover { background: linear-gradient(90deg, #a32840, #8e2566); }
+    </style>
+</head>
+<body>
+    <header class="border-b border-[var(--line)] px-6 py-4 sticky top-0 z-20 bg-[color-mix(in_srgb,var(--bg0)_86%,transparent)] backdrop-blur">
+        <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-wrap">
+                <h1 class="text-2xl font-bold tracking-tight">Emirald</h1>
+                <span id="modeBadge" class="badge-live px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">live</span>
+                <span id="statusBadge" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-800 text-slate-300">
+                    <span id="statusDot" class="w-2 h-2 mr-2 bg-slate-400 rounded-full"></span>
+                    <span id="statusText">Stopped</span>
+                </span>
+                <span class="text-xs text-[var(--muted)] mono" id="refreshHint">--</span>
+            </div>
+            <div class="flex gap-2">
+                <button id="tradeToggle" onclick="toggleTrade()" class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 active:scale-[0.98] shadow-lg shadow-emerald-900/30">
+                    <span id="tradeDot" class="relative flex h-2.5 w-2.5">
+                      <span id="tradePing" class="hidden absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span id="tradeCore" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-300"></span>
+                    </span>
+                    <span id="tradeLabel">Start Trading</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1400px] mx-auto px-6 py-6 space-y-6">
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="panel p-5">
+                <div class="text-[var(--muted)] text-sm">Total Equity</div>
+                <div id="equity" class="text-3xl font-bold mt-2 slide-num mono">--</div>
+                <div class="text-[var(--muted)] text-xs mt-1">Live Account Value</div>
+            </div>
+            <div class="panel p-5">
+                <div class="text-[var(--muted)] text-sm">Unrealized P&L</div>
+                <div id="sessionPnl" class="text-3xl font-bold mt-2 slide-num mono">--</div>
+                <div class="text-[var(--muted)] text-xs mt-1">Active positions MTM</div>
+            </div>
+            <div class="panel p-5">
+                <div class="text-[var(--muted)] text-sm">Open Positions</div>
+                <div id="openLots" class="text-3xl font-bold mt-2 slide-num">--</div>
+                <div class="text-[var(--muted)] text-xs mt-1">Live Blofin lots</div>
+            </div>
+            <div class="panel p-5">
+                <div class="text-[var(--muted)] text-sm">Universe</div>
+                <div id="universeCount" class="text-3xl font-bold mt-2 slide-num">--</div>
+                <div class="text-[var(--muted)] text-xs mt-1">Blofin USDT perps</div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="panel p-4">
+                <div class="text-[var(--muted)] text-xs">Available</div>
+                <div id="available" class="text-xl font-semibold mt-1 slide-num mono">--</div>
+            </div>
+            <div class="panel p-4">
+                <div class="text-[var(--muted)] text-xs">Margin used</div>
+                <div id="marginUsed" class="text-xl font-semibold mt-1 slide-num mono">--</div>
+            </div>
+            <div class="panel p-4">
+                <div class="text-[var(--muted)] text-xs">Unrealized</div>
+                <div id="unrealized" class="text-xl font-semibold mt-1 slide-num mono">--</div>
+            </div>
+            <div class="panel p-4">
+                <div class="text-[var(--muted)] text-xs">Trades / tick</div>
+                <div class="text-xl font-semibold mt-1 mono">
+                    <span id="totalTrades" class="slide-num">--</span>
+                    <span class="text-[var(--muted)] text-sm"> / </span>
+                    <span id="lastTick" class="slide-num text-[var(--muted)]">--</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <div class="panel p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">Open Positions</h2>
+                    <span id="updatedAgo" class="text-xs text-[var(--muted)] mono"></span>
+                </div>
+                <div class="panel-inner overflow-hidden">
+                    <div class="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-[var(--muted)] border-b border-[var(--line)]">
+                        <div class="col-span-3">Contract</div>
+                        <div class="col-span-2">Side</div>
+                        <div class="col-span-2 text-right">Amount</div>
+                        <div class="col-span-2 text-right">Mark Price</div>
+                        <div class="col-span-2 text-right">Margin</div>
+                        <div class="col-span-1 text-right">Lev</div>
+                    </div>
+                    <div id="positionsInfo" class="max-h-72 overflow-y-auto scroll-container">
+                        <div class="px-4 py-3 text-sm text-[var(--muted)]">0 active</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">Recent Exits</h2>
+                    <span class="text-xs text-[var(--muted)]">closed trade P&L</span>
+                </div>
+                <div class="panel-inner overflow-hidden">
+                    <div class="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-[var(--muted)] border-b border-[var(--line)]">
+                        <div class="col-span-3">Time</div>
+                        <div class="col-span-2">Symbol</div>
+                        <div class="col-span-2 text-right">Size / Price</div>
+                        <div class="col-span-2 text-right">PnL</div>
+                        <div class="col-span-2 text-right">Action</div>
+                        <div class="col-span-1 text-right">Lev</div>
+                    </div>
+                    <div id="exitsInfo" class="max-h-72 overflow-y-auto scroll-container">
+                        <div class="px-4 py-3 text-sm text-[var(--muted)]">0 closed</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <div class="panel p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">Autonomous AI Decision Stream</h2>
+                    <span id="aiHint" class="text-xs text-[var(--muted)] mono">idle</span>
+                </div>
+                <div id="decisionStream" class="log-container scroll-container bg-black/30 rounded-xl p-4 h-72 overflow-y-auto text-slate-300">
+                    Waiting for live decisions…
+                </div>
+            </div>
+            <div class="panel p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">Execution Order Journal</h2>
+                    <span id="journalUpdated" class="text-xs text-[var(--muted)] mono"></span>
+                </div>
+                <div class="panel-inner overflow-hidden">
+                    <div class="grid grid-cols-12 gap-2 px-4 py-2 text-xs text-[var(--muted)] border-b border-[var(--line)]">
+                        <div class="col-span-3">Time</div>
+                        <div class="col-span-2">Symbol</div>
+                        <div class="col-span-2 text-right">Side</div>
+                        <div class="col-span-2 text-right">Size / Price</div>
+                        <div class="col-span-2 text-right">PnL</div>
+                        <div class="col-span-1 text-right">Lev</div>
+                    </div>
+                    <div id="journalInfo" class="max-h-72 overflow-y-auto scroll-container">
+                        <div class="px-4 py-3 text-sm text-[var(--muted)]">No trades yet</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div class="xl:col-span-2 panel p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">Account</h2>
+                    <span id="accountUpdated" class="text-xs text-[var(--muted)] mono"></span>
+                </div>
+                <div class="panel-inner p-4">
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <div class="text-[var(--muted)]">Equity</div>
+                            <div id="acctEquity" class="mono font-semibold">--</div>
+                        </div>
+                        <div>
+                            <div class="text-[var(--muted)]">Available</div>
+                            <div id="acctAvailable" class="mono font-semibold">--</div>
+                        </div>
+                        <div>
+                            <div class="text-[var(--muted)]">Margin used</div>
+                            <div id="acctMargin" class="mono font-semibold">--</div>
+                        </div>
+                        <div>
+                            <div class="text-[var(--muted)]">Unrealized P&L</div>
+                            <div id="acctUnrealized" class="mono font-semibold">--</div>
+                        </div>
+                        <div>
+                            <div class="text-[var(--muted)]">Realized P&L</div>
+                            <div id="acctRealized" class="mono font-semibold">--</div>
+                        </div>
+                        <div>
+                            <div class="text-[var(--muted)]">Universe / tick</div>
+                            <div id="acctMeta" class="mono font-semibold">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel p-6">
+                <h2 class="text-lg font-semibold mb-4">Live Logs</h2>
+                <div id="logContainer" class="log-container scroll-container bg-black/30 rounded-xl p-4 h-72 overflow-y-auto text-slate-300">
+                    Waiting for logs…
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-[var(--line)] mt-10">
+        <div class="max-w-[1400px] mx-auto px-6 py-4 text-center text-sm text-[var(--muted)]">
+            Emirald LIVE — real Blofin USDT account · full universe · UI 500ms
+        </div>
+    </footer>
+
+    <script>
+        const REFRESH_MS = 500;
+        let timer = null;
+        let prev = {};
+        let inFlight = false;
+        let slideTimers = {};
+        let lastTradeId = 0;
+        let lastLogHash = "";
+        let lastDecisionHash = "";
+
+        function init() {
+            updateOverview();
+            scheduleRefresh();
+        }
+
+        function scheduleRefresh() {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(async () => {
+                await updateOverview();
+                scheduleRefresh();
+            }, REFRESH_MS);
+        }
+
+        function setSlide(id, value, { colorize = false } = {}) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const next = value == null || value === undefined || Number.isNaN(value) ? "--" : String(value);
+            if (prev[id] === next) return;
+            const changed = prev[id] !== undefined;
+            prev[id] = next;
+            el.textContent = next;
+            if (colorize && next !== "--") {
+                const n = parseFloat(String(next).replace(/[^0-9.\-+]/g, ""));
+                el.style.color = n > 0 ? "var(--good)" : n < 0 ? "var(--bad)" : "var(--text)";
+            }
+            if (!changed) return;
+            el.classList.remove("bump");
+            void el.offsetWidth;
+            el.classList.add("bump");
+            if (slideTimers[id]) clearTimeout(slideTimers[id]);
+            slideTimers[id] = setTimeout(() => el.classList.remove("bump"), 220);
+        }
+
+        function fmtMoney(v, digits = 2) {
+            if (v === null || v === undefined || Number.isNaN(Number(v))) return "--";
+            const n = Number(v);
+            const sign = n >= 0 ? "+" : "";
+            return `${sign}${n.toFixed(digits)}`;
+        }
+
+        function fmtPlain(v, digits = 2) {
+            if (v === null || v === undefined || Number.isNaN(Number(v))) return "--";
+            return Number(v).toFixed(digits);
+        }
+
+        async function updateOverview() {
+            if (inFlight) return;
+            inFlight = true;
+            const t0 = performance.now();
+            try {
+                const res = await fetch("/api/overview?_=" + Date.now(), { cache: "no-store" });
+                if (!res.ok) return;
+                const data = await res.json();
+                const acct = data.account || {};
+
+                setSlide("equity", acct.equity ? fmtMoney(acct.equity, 2) : "--", { colorize: true });
+                setSlide("sessionPnl", acct.session_pnl != null ? fmtMoney(acct.session_pnl, 2) : "--", { colorize: true });
+                setSlide("openLots", data.stats.open_lots ?? "--");
+                setSlide("universeCount", acct.universe_count ?? "--");
+                setSlide("available", acct.available ? fmtMoney(acct.available, 2) : "--", { colorize: true });
+                setSlide("marginUsed", acct.margin_used ? fmtMoney(acct.margin_used, 2) : "--", { colorize: true });
+                setSlide("unrealized", acct.unrealized_pnl ? fmtMoney(acct.unrealized_pnl, 2) : "--", { colorize: true });
+                setSlide("totalTrades", data.stats.total_trades ?? "--");
+                setSlide("lastTick", acct.last_tick ?? "--");
+
+                const statusText = document.getElementById("statusText");
+                const statusDot = document.getElementById("statusDot");
+                const modeBadge = document.getElementById("modeBadge");
+                const tradeLabel = document.getElementById("tradeLabel");
+                const tradeCore = document.getElementById("tradeCore");
+                const tradePing = document.getElementById("tradePing");
+                const tradeBtn = document.getElementById("tradeToggle");
+                const aiHint = document.getElementById("aiHint");
+
+                const running = !!data.running;
+                if (statusText) statusText.textContent = running ? "Running" : "Stopped";
+                if (statusDot) {
+                    statusDot.className = running
+                        ? "w-2 h-2 mr-2 bg-emerald-400 rounded-full status-pulse"
+                        : "w-2 h-2 mr-2 bg-slate-400 rounded-full";
+                }
+                if (modeBadge) {
+                    modeBadge.textContent = data.mode || "live";
+                    modeBadge.className = data.mode === "demo"
+                        ? "badge-demo px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide"
+                        : "badge-live px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide";
+                }
+                if (tradeLabel) tradeLabel.textContent = running ? "Stop Trading" : "Start Trading";
+                if (tradeBtn) {
+                    tradeBtn.className = running
+                        ? "btn-danger inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 active:scale-[0.98] shadow-lg shadow-rose-900/30"
+                        : "btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 active:scale-[0.98] shadow-lg shadow-emerald-900/30";
+                }
+                if (tradeCore) tradeCore.className = running
+                    ? "relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-300"
+                    : "relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-300";
+                if (tradePing) tradePing.className = running
+                    ? "animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"
+                    : "hidden absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+                if (aiHint) aiHint.textContent = running ? `thinking · tick ${acct.last_tick || 0}` : "idle";
+
+                const updatedAgo = document.getElementById("updatedAgo");
+                if (updatedAgo && acct.updated_at) {
+                    const dt = Math.max(0, Math.round((Date.now() / 1000) - acct.updated_at));
+                    updatedAgo.textContent = dt < 2 ? "just now" : `${dt}s ago`;
+                }
+
+                const accountUpdated = document.getElementById("accountUpdated");
+                if (accountUpdated && acct.updated_at) {
+                    accountUpdated.textContent = new Date(acct.updated_at * 1000).toLocaleTimeString();
+                }
+
+                const acctEquity = document.getElementById("acctEquity");
+                const acctAvailable = document.getElementById("acctAvailable");
+                const acctMargin = document.getElementById("acctMargin");
+                const acctUnrealized = document.getElementById("acctUnrealized");
+                const acctRealized = document.getElementById("acctRealized");
+                const acctMeta = document.getElementById("acctMeta");
+                if (acctEquity) acctEquity.textContent = fmtMoney(acct.equity, 2) + " USDT";
+                if (acctAvailable) acctAvailable.textContent = fmtMoney(acct.available, 2) + " USDT";
+                if (acctMargin) acctMargin.textContent = fmtMoney(acct.margin_used, 2) + " USDT";
+                if (acctUnrealized) acctUnrealized.textContent = fmtMoney(acct.unrealized_pnl, 2) + " USDT";
+                if (acctRealized) acctRealized.textContent = fmtMoney(acct.realized_pnl, 2) + " USDT";
+                if (acctMeta) acctMeta.textContent = `${acct.universe_count || 0} instruments · tick ${acct.last_tick || 0}`;
+
+                const positionsInfo = document.getElementById("positionsInfo");
+                if (positionsInfo) {
+                    const positions = data.positions || [];
+                    if (!positions.length) {
+                        positionsInfo.innerHTML = '<div class="px-4 py-3 text-sm text-[var(--muted)]">0 active</div>';
+                    } else {
+                        positionsInfo.innerHTML = positions.map((p, idx) => `
+                            <div class="row-in flex items-center justify-between px-4 py-3 text-sm" style="animation-delay:${idx * 25}ms">
+                                <div>
+                                    <div class="font-semibold">${p.instId}</div>
+                                    <div class="text-xs text-[var(--muted)]">entry ${fmtPlain(p.entry_px)} · mark ${fmtPlain(p.mark_px)}</div>
+                                </div>
+                                <div class="text-right mono text-sm">
+                                    <div>${p.sz} · ${p.side}</div>
+                                    <div class="text-[var(--muted)]">margin ${fmtMoney(p.margin)} · lev ${p.leverage ?? "--"}x</div>
+                                </div>
+                            </div>
+                        `).join("");
+                    }
+                }
+
+                const exitsInfo = document.getElementById("exitsInfo");
+                if (exitsInfo) {
+                    const rows = data.exits || [];
+                    if (!rows.length) {
+                        exitsInfo.innerHTML = '<div class="px-4 py-3 text-sm text-[var(--muted)]">0 closed</div>';
+                    } else {
+                        exitsInfo.innerHTML = rows.map((t, idx) => `
+                            <div class="row-in flex items-center justify-between px-4 py-3 text-sm" style="animation-delay:${idx * 20}ms">
+                                <div>
+                                    <div class="font-semibold">${new Date(t.ts).toLocaleTimeString()} · ${t.instId} ${t.action}</div>
+                                    <div class="text-xs text-[var(--muted)]">${t.side} · size ${t.sz} · price ${t.px || "--"}</div>
+                                </div>
+                                <div class="text-right mono text-sm">
+                                    <div class="${Number(t.pnl_usdt) > 0 ? "text-emerald-300" : Number(t.pnl_usdt) < 0 ? "text-rose-300" : "text-slate-300"}">${fmtMoney(t.pnl_usdt, 4)}</div>
+                                    <div class="text-[var(--muted)]">${t.leverage ?? "--"}x</div>
+                                </div>
+                            </div>
+                        `).join("");
+                    }
+                }
+
+                const decisionStream = document.getElementById("decisionStream");
+                if (decisionStream && data.decisions && data.decisions.length) {
+                    const joined = data.decisions.join("\n");
+                    if (joined !== lastDecisionHash) {
+                        lastDecisionHash = joined;
+                        decisionStream.textContent = joined;
+                        decisionStream.scrollTop = decisionStream.scrollHeight;
+                    }
+                    if (aiHint && joined.trim()) {
+                        aiHint.textContent = `thinking · tick ${acct.last_tick || 0}`;
+                    }
+                }
+
+                const journalInfo = document.getElementById("journalInfo");
+                if (journalInfo) {
+                    const trades = data.trades || [];
+                    const top = trades.slice(0, 20);
+                    const currentCount = top.length;
+                    const changed = currentCount !== lastTradeCount || (currentCount > 0 && top[0].id !== lastTradeId);
+                    lastTradeCount = currentCount;
+                    if (currentCount > 0) { lastTradeId = top[0].id; }
+                    if (!currentCount) {
+                        journalInfo.innerHTML = '<div class="px-4 py-3 text-sm text-[var(--muted)]">No trades yet</div>';
+                    } else {
+                        journalInfo.innerHTML = top.map((t, idx) => {
+                            const pnlColor = t.pnl_usdt == null ? "" : (Number(t.pnl_usdt) > 0 ? "text-emerald-300" : Number(t.pnl_usdt) < 0 ? "text-rose-300" : "text-slate-300");
+                            const anim = changed ? ` row-in` : ``;
+                            const delay = changed ? ` style="animation-delay:${idx * 20}ms"` : ``;
+                            return `
+                            <div class="${anim} flex items-center justify-between px-4 py-3 text-sm"${delay}>
+                                <div>
+                                    <div class="font-semibold">${new Date(t.ts).toLocaleTimeString()} · ${t.instId} ${t.action}</div>
+                                    <div class="text-xs text-[var(--muted)]">${t.side} · size ${t.sz} · price ${t.px || "--"}</div>
+                                </div>
+                                <div class="text-right mono text-sm">
+                                    <div class="${pnlColor}">${t.pnl_usdt == null ? "--" : fmtMoney(t.pnl_usdt, 4)}</div>
+                                    <div class="text-[var(--muted)]">${t.leverage ?? "--"}x</div>
+                                </div>
+                            </div>
+                        `}).join("");
+                    }
+                }
+
+                const logContainer = document.getElementById("logContainer");
+                if (logContainer) {
+                    const tail = (data.log_tail || "").trim();
+                    const current = tail ? tail : "Waiting for logs…";
+                    if (current !== lastLogHash) {
+                        lastLogHash = current;
+                        logContainer.textContent = current;
+                        logContainer.scrollTop = logContainer.scrollHeight;
+                    }
+                }
+
+                const journalUpdated = document.getElementById("journalUpdated");
+                if (journalUpdated && data.trades && data.trades.length) {
+                    journalUpdated.textContent = new Date(data.trades[0].ts).toLocaleTimeString();
+                }
+
+                const refreshHint = document.getElementById("refreshHint");
+                if (refreshHint) {
+                    const dt = performance.now() - t0;
+                    refreshHint.textContent = `${Math.round(dt)}ms`;
+                }
+            } catch (e) {
+            } finally {
+                inFlight = false;
+            }
+        }
+
+        async function toggleTrade() {
+            const btn = document.getElementById("tradeToggle");
+            if (btn) btn.disabled = true;
+            try {
+                const running = document.getElementById("statusText")?.textContent === "Running";
+                const endpoint = running ? "/api/stop" : "/api/start_trading";
+                const res = await fetch(endpoint, { method: "POST" });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok || data.status === "error") {
+                    alert(data.detail || data.status || "Failed.");
+                }
+            } catch (e) {
+                alert("Failed.");
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

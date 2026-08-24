@@ -27,6 +27,7 @@ if sys.platform == "win32":
 
 PID_FILE = Path(".hermes.pid")
 DASH_PID_FILE = Path(".hermes_dashboard.pid")
+DASHBOARD_LOCK_FILE = Path(".hermes_dashboard.lock")
 DASHBOARD_PORT = 8766
 DASHBOARD_URL = f"http://127.0.0.1:{DASHBOARD_PORT}/"
 LOG_TAIL_LINES = 400
@@ -170,6 +171,8 @@ def _dashboard_up() -> bool:
 
 
 def _start_dashboard(root: Path) -> subprocess.Popen | None:
+    if not _claim_dashboard_singleton(root):
+        return None
     if _dashboard_up():
         return None
     # Free wrong listeners on Hermes port only.
@@ -222,6 +225,7 @@ def _start_dashboard(root: Path) -> subprocess.Popen | None:
         if proc.poll() is not None:
             break
         time.sleep(0.4)
+    _clear_pid(root / DASHBOARD_LOCK_FILE)
     return proc
 
 
@@ -277,6 +281,19 @@ def _gui_lock_path(root: Path) -> Path:
 def _claim_gui_singleton(root: Path) -> bool:
     """Return True if this process owns the GUI. If another live GUI exists, False."""
     lock = _gui_lock_path(root)
+    existing = _read_pid(lock)
+    if existing and existing != os.getpid() and _pid_alive(existing):
+        return False
+    _write_pid(lock, os.getpid())
+    return True
+
+
+def _dashboard_lock_path(root: Path) -> Path:
+    return DASHBOARD_LOCK_FILE
+
+
+def _claim_dashboard_singleton(root: Path) -> bool:
+    lock = root / DASHBOARD_LOCK_FILE
     existing = _read_pid(lock)
     if existing and existing != os.getpid() and _pid_alive(existing):
         return False
@@ -354,7 +371,7 @@ class HermesGUI(tk.Tk):
         self.attributes("-topmost", True)
         self.after(400, lambda: self.attributes("-topmost", False))
         if auto_start:
-            self.after(200, lambda: self._launch_all(prompt_stop=False))
+            self.after(200, lambda: self._launch_dashboard_only(prompt_stop=False))
 
     def _mode_label(self) -> str:
         try:
@@ -395,7 +412,7 @@ class HermesGUI(tk.Tk):
 
         btns = ttk.Frame(state_frame)
         btns.grid(row=0, column=2, rowspan=4, padx=12, pady=8, sticky="ns")
-        ttk.Button(btns, text="Launch all", command=lambda: self._launch_all(prompt_stop=True)).pack(fill="x", pady=4)
+        ttk.Button(btns, text="Launch all", command=lambda: self._launch_dashboard_only(prompt_stop=True)).pack(fill="x", pady=4)
         ttk.Button(btns, text="Open dashboard", command=_open_dashboard_browser).pack(fill="x", pady=4)
         ttk.Button(btns, text="Stop agent", command=self._stop).pack(fill="x", pady=4)
 
@@ -412,16 +429,16 @@ class HermesGUI(tk.Tk):
         help_text.pack(fill="both", expand=True)
         help_text.insert(
             "1.0",
-            "Launch all starts:\n"
-            f"1) Dashboard at {DASHBOARD_URL} (500ms refresh, live Blofin numbers)\n"
-            "2) Detached agent process (python -m hermes_trader) in LIVE mode\n"
-            "3) This control room\n\n"
+            "Launcher behavior:\n"
+            f"1) Opens dashboard at {DASHBOARD_URL}\n"
+            "2) Does NOT start the agent automatically\n"
+            "3) Click Start Trading in the dashboard to begin live trading\n\n"
             "Use Stop Hermes desktop shortcut to kill agent + dashboard.\n"
             "Do not use port 8765 — that is LLM KnightTrader.\n",
         )
         help_text.configure(state="disabled")
 
-    def _launch_all(self, *, prompt_stop: bool = True):
+    def _launch_dashboard_only(self, *, prompt_stop: bool = True):
         self._allow_restart = True
         self.status_var.set("launching dashboard…")
         self.update_idletasks()
@@ -437,47 +454,9 @@ class HermesGUI(tk.Tk):
             self.dash_var.set(f"Dashboard error: {exc}")
             messagebox.showerror("Hermes", f"Dashboard launch failed: {exc}")
 
-        # Prefer keeping a healthy agent alive — do not kill/relaunch on every open.
-        existing = _existing_agent_pid(self.root)
-        if existing:
-            _write_pid(self.root / PID_FILE, existing)
-            self.bot_process = None  # detached; tracked via PID file
-            self._agent_pid = existing
-            self.status_var.set("running")
-            self.live_var.set(f"Agent: already running (PID {existing})")
-            self.after(1500, self._poll_bot)
-            return
-
-        if self.bot_process and self.bot_process.poll() is None:
-            self.status_var.set("running")
-            self.live_var.set(f"Agent: already running (PID {self.bot_process.pid})")
-            self.after(1500, self._poll_bot)
-            return
-
-        self.status_var.set("launching agent…")
-        self.update_idletasks()
-        try:
-            if prompt_stop:
-                # Manual "Launch all": only stop if user confirms when something stale exists.
-                stale = _find_hermes_agent_pids(self.root)
-                if stale:
-                    joined = ", ".join(str(p) for p in stale)
-                    if not messagebox.askyesno(
-                        "Hermes",
-                        f"Found leftover agent PID(s) {joined}. Kill and relaunch?",
-                    ):
-                        self.status_var.set("stopped")
-                        return
-                    for pid in stale:
-                        _terminate_pid(pid)
-            self.bot_process = _start_bot(self.root)
-            self._agent_pid = self.bot_process.pid
-            self.status_var.set("running")
-            self.live_var.set(f"Agent: PID {self.bot_process.pid}")
-            self.after(1500, self._poll_bot)
-        except Exception as exc:
-            self.status_var.set("error")
-            messagebox.showerror("Hermes", f"Agent launch failed: {exc}")
+        # Default launcher flow: dashboard only.
+        self.status_var.set("dashboard_only")
+        self.live_var.set("Agent: idle — click Start Trading")
 
     def _stop(self):
         self._allow_restart = False
@@ -613,13 +592,11 @@ def main(argv: list[str] | None = None) -> int:
 
     if not _claim_gui_singleton(working):
         _focus_existing_gui(working)
-        # Still ensure dashboard/agent are up without stacking GUIs.
+        # Ensure dashboard is up, but do NOT start agent automatically.
         if not args.no_auto_start:
             try:
                 if not _dashboard_up():
                     _start_dashboard(working)
-                if not _existing_agent_pid(working):
-                    _start_bot(working)
                 if _dashboard_up():
                     _open_dashboard_browser()
             except Exception:

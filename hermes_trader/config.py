@@ -1,6 +1,7 @@
 """Configuration loading: .env for secrets, config.yaml for behavior."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Literal
 
@@ -87,12 +88,17 @@ class LoggingConfig(BaseModel):
     file: str = "./data/hermes.log"
 
 
+class BlofinConfig(BaseModel):
+    credential_file: str = r"C:\Users\mknig\Downloads\1B Blofin API New.txt"
+
+
 class AppConfig(BaseModel):
     exchange: Literal["blofin"] = "blofin"
     mode: Literal["isolated", "cross", "cash"] = "isolated"
     universe: str = "all_usdt_perps"
     trading_mode: Literal["live", "demo"] = "demo"
 
+    blofin: BlofinConfig = Field(default_factory=BlofinConfig)
     loop: LoopConfig = LoopConfig()
     llm: LLMConfig = LLMConfig()
     journal: JournalConfig = JournalConfig()
@@ -109,8 +115,41 @@ class AppConfig(BaseModel):
         return cls.model_validate(data)
 
 
+def _parse_credential_file(path: str) -> dict[str, str]:
+    p = os.path.expanduser(path)
+    if not Path(p).exists():
+        return {}
+    out: dict[str, str] = {}
+    try:
+        for raw in Path(p).read_text(encoding="utf-8").splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#") or ":" not in line:
+                continue
+            k, v = line.split(":", 1)
+            out[k.strip().lower()] = v.strip()
+    except Exception:
+        pass
+    return out
+
+
 def load_all(yaml_path: str | Path = "config.yaml") -> tuple[Secrets, AppConfig]:
-    """Load both. Secrets come from .env, behavior from yaml."""
-    secrets = Secrets()  # type: ignore[call-arg]
+    """Load behavior from yaml, then secrets from .env with credential-file fallback."""
     config = AppConfig.from_yaml(yaml_path)
-    return secrets, config
+    try:
+        secrets = Secrets()  # type: ignore[call-arg]
+        missing = [name for name in ("blofin_api_key", "blofin_api_secret", "nous_portal_key") if not getattr(secrets, name, "")]
+        if missing:
+            raise ValueError(f"Missing env vars: {missing}")
+        return secrets, config
+    except Exception:
+        creds = _parse_credential_file(config.blofin.credential_file)
+        if not creds:
+            raise
+        secrets = Secrets(  # type: ignore[call-arg]
+            blofin_api_key=creds.get("api key", ""),
+            blofin_api_secret=creds.get("secret key", ""),
+            blofin_passphrase=creds.get("passphrase", ""),
+            blofin_broker_id=creds.get("broker id", ""),
+            nous_portal_key=creds.get("nous portal key", ""),
+        )
+        return secrets, config

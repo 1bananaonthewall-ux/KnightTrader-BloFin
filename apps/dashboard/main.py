@@ -491,13 +491,59 @@ async def api_overview():
     )
 
 
+@app.post("/api/start_trading")
+async def api_start_trading():
+    try:
+        pid = _read_pid(PID_FILE)
+        if pid is not None and _is_process_alive(pid):
+            return JSONResponse({"status": "already_running", "pid": pid})
+        py = BASE_DIR / ".venv" / "Scripts" / "python.exe"
+        if not py.exists():
+            py = Path(sys.executable)
+        creation = 0
+        if sys.platform == "win32":
+            creation = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS | subprocess.CREATE_NO_WINDOW  # type: ignore[attr-defined]
+        data = BASE_DIR / "data"
+        data.mkdir(parents=True, exist_ok=True)
+        stdout_path = data / "agent_stdout.log"
+        stderr_path = data / "agent_stderr.log"
+        stdout_f = open(stdout_path, "a", encoding="utf-8")  # noqa: SIM115
+        stderr_f = open(stderr_path, "a", encoding="utf-8")  # noqa: SIM115
+        cmd = [
+            str(py),
+            "-u",
+            "-m",
+            "hermes_trader",
+        ]
+        env = {
+            **os.environ,
+            "HERMES_HOME": str(BASE_DIR),
+            "PYTHONUTF8": "1",
+            "PYTHONIOENCODING": "utf-8",
+        }
+        popen_kwargs: dict[str, object] = {
+            "cwd": str(BASE_DIR),
+            "env": env,
+            "stdout": stdout_f,
+            "stderr": stderr_f,
+        }
+        if sys.platform == "win32":
+            popen_kwargs["close_fds"] = True  # type: ignore[arg-type]
+            popen_kwargs["creationflags"] = creation  # type: ignore[arg-type]
+        proc = subprocess.Popen(cmd, **popen_kwargs)  # type: ignore[arg-type]
+        with open(BASE_DIR / PID_FILE, "w", encoding="utf-8") as fh:
+            fh.write(f"{proc.pid}\n")
+        return JSONResponse({"status": "started", "mode": _trading_mode(), "pid": proc.pid})
+    except Exception as exc:
+        return JSONResponse({"status": "error", "detail": str(exc)}, status_code=500)
+
+
 @app.post("/api/launch")
 async def api_launch():
     try:
         pid = _read_pid(PID_FILE)
         if pid is not None and _is_process_alive(pid):
             return JSONResponse({"status": "already_running", "pid": pid})
-        # Visible control room + agent console (python.exe, not pythonw).
         py = BASE_DIR / ".venv" / "Scripts" / "python.exe"
         if not py.exists():
             py = Path(sys.executable)
@@ -508,6 +554,7 @@ async def api_launch():
             [
                 str(py),
                 str(BASE_DIR / "scripts" / "launch_hermes_gui.py"),
+                "--no-auto-start",
                 "--working-dir",
                 str(BASE_DIR),
             ],
@@ -531,6 +578,12 @@ async def api_stop():
             check=False,
             capture_output=True,
         )
+        lock = BASE_DIR / ".hermes_dashboard.lock"
+        if lock.exists():
+            try:
+                lock.unlink()
+            except Exception:
+                pass
         return JSONResponse({"status": "stopped"})
     except Exception as exc:
         return JSONResponse({"status": "error", "detail": str(exc)}, status_code=500)

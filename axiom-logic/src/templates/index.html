@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Axiom Logic Trading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --surface-2: #243447;
+      --border: #334155;
+      --text: #E2E8F0;
+      --muted: #94A3B8;
+      --accent: #F59E0B;
+      --accent-2: #06B6D4;
+      --positive: #10B981;
+      --negative: #EF4444;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .brand {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      letter-spacing: 0.5px;
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+      padding: 16px;
+    }
+    @media (min-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(12, 1fr);
+        padding: 24px;
+      }
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .title {
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
+    }
+    .value {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    .metric-ok { color: var(--positive); }
+    .metric-bad { color: var(--negative); }
+    .metric-amber { color: var(--accent); }
+    .metric-cyan { color: var(--accent-2); }
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      background: var(--surface-2);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--positive);
+      box-shadow: 0 0 8px var(--positive);
+    }
+    .m1 { grid-column: span 12; }
+    .m2 { grid-column: span 12; }
+    .m3 { grid-column: span 12; }
+    .m4 { grid-column: span 12; }
+    @media (min-width: 768px) {
+      .m1 { grid-column: span 3; }
+      .m2 { grid-column: span 3; }
+      .m3 { grid-column: span 3; }
+      .m4 { grid-column: span 3; }
+    }
+    .chart-wrap { grid-column: span 12; min-height: 380px; }
+    .positions { grid-column: span 12; }
+    .orders { grid-column: span 12; }
+    .ai { grid-column: span 12; }
+    @media (min-width: 768px) {
+      .chart-wrap { grid-column: span 8; }
+      .positions { grid-column: span 4; }
+      .orders { grid-column: span 6; }
+      .ai { grid-column: span 6; min-height: 360px; }
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    th { color: var(--muted); font-weight: 600; }
+    tr:hover td { background: #1a2538; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .tab {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .tab.active { background: #1f2d42; color: var(--text); border-color: var(--accent-2); }
+    .ai-box {
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      height: 320px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+    .ai-box .hl { color: var(--accent); }
+    .ai-box .ok { color: var(--positive); }
+    .ai-box .err { color: var(--negative); }
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .topbar h1 { font-size: 18px; margin: 0; }
+    .controls { display:flex; align-items:center; gap:10px; }
+    #control-status { min-width: 72px; text-align: center; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="topbar">
+      <div>
+        <div class="brand" style="font-size: 18px; color: var(--accent);">Axiom Logic Trading</div>
+        <div style="font-size: 11px; color: var(--muted);">Autonomous Perpetual Futures Engine</div>
+      </div>
+      <div class="pill" style="gap:10px; border-color: #0F172A; background: #0F172A; padding-left:0;">
+        <button id="start-btn" onclick="sendControl('start')" style="background:#10B981;color:#0F172A;border:0;border-radius:999px;padding:10px 16px;font-weight:700;cursor:pointer;">Start</button>
+        <button id="stop-btn" onclick="sendControl('stop')" style="background:#EF4444;color:#0F172A;border:0;border-radius:999px;padding:10px 16px;font-weight:700;cursor:pointer;">Stop</button>
+        <span id="control-status" style="color:#F59E0B;font-weight:600;">Stopped</span>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap: wrap;">
+        <div class="pill"><span class="dot"></span><span id="bot-status">Idle</span></div>
+        <div class="pill"><span>Mode</span><strong id="mode-badge">demo</strong></div>
+        <div class="pill"><span>Updated</span><strong id="updated-at">--</strong></div>
+      </div>
+    </div>
+  </header>
+  <main class="grid">
+    <section class="card m1">
+      <div class="title">Equity</div>
+      <div class="value" id="equity">--</div>
+    </section>
+    <section class="card m2">
+      <div class="title">Available</div>
+      <div class="value metric-ok" id="available">--</div>
+    </section>
+    <section class="card m3">
+      <div class="title">Margin Used</div>
+      <div class="value metric-amber" id="margin">--</div>
+    </section>
+    <section class="card m4">
+      <div class="title">Unrealized PnL</div>
+      <div class="value" id="unrealized">--</div>
+    </section>
+    <section class="card chart-wrap">
+      <div class="title">P&L / Equity</div>
+      <canvas id="chart" style="max-height: 360px;"></canvas>
+    </section>
+    <section class="card positions">
+      <div class="title">Positions</div>
+      <div class="tabs">
+        <div class="tab active">Active</div>
+        <div class="tab">Orders</div>
+        <div class="tab">Recent</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="positions-table">
+          <thead>
+            <tr><th>Instrument</th><th>Side</th><th>Size</th><th>Entry</th><th>Mark</th><th>Lev</th><th>Liq</th><th>uPnL</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card orders">
+      <div class="title">Orders</div>
+      <div style="overflow-x:auto;">
+        <table id="orders-table">
+          <thead>
+            <tr><th>Time</th><th>Inst</th><th>Side</th><th>Type</th><th>Size</th><th>Px</th><th>Status</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card ai">
+      <div class="title">AI Reasoning</div>
+      <div class="ai-box" id="ai-box">Waiting for tick...</div>
+    </section>
+  </main>
+  <script>
+    const fmtNum = (n, d=2) => (Number(n||0)).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d});
+    const fmtSign = (n) => `${Number(n||0)>=0?'+':''}${fmtNum(n)}`;
+    const ctx = document.getElementById('chart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: { labels: [], datasets: [{ label: 'Equity', data: [], borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.15)', tension: 0.25, fill: true, pointRadius: 0, borderWidth: 2 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { x: { display: false }, y: { grid: { color: '#334155' }, ticks: { color: '#94A3B8' } } },
+        plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
+      }
+    });
+    async function load() {
+      const [snap, trades, decision, health] = await Promise.all([
+        fetch('/api/snapshot').then(r=>r.json()),
+        fetch('/api/trades?limit=50').then(r=>r.json()),
+        fetch('/api/decision').then(r=>r.json()),
+        fetch('/api/health').then(r=>r.json()).catch(()=>({status:'unknown'}))
+      ]);
+      document.getElementById('equity').textContent = fmtNum(snap.equity);
+      document.getElementById('available').textContent = fmtNum(snap.available_balance);
+      document.getElementById('margin').textContent = fmtNum(snap.margin_used);
+      const unrl = Number(snap.unrealized_pnl||0);
+      const unrlEl = document.getElementById('unrealized');
+      unrlEl.textContent = fmtSign(unrl);
+      unrlEl.className = 'value ' + (unrl>=0?'metric-ok':'metric-bad');
+      const rows = (snap.positions||[]).map(p => {
+        const pnl = Number(p.unrealized_pnl||0);
+        return `<tr><td>${p.instId}</td><td>${p.side}</td><td>${p.sz}</td><td>${p.entry_px}</td><td>${p.mark_px}</td><td>${p.leverage}</td><td>${p.liq_px}</td><td class="${pnl>=0?'metric-ok':'metric-bad'}">${fmtSign(pnl)}</td></tr>`;
+      }).join('') || '<tr><td colspan="8" style="color:#94A3B8">No active positions</td></tr>';
+      document.querySelector('#positions-table tbody').innerHTML = rows;
+      document.getElementById('ai-box').innerHTML = (decision.raw||'No decision this tick.').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      document.getElementById('updated-at').textContent = new Date().toLocaleTimeString();
+      const status = (health.status === 'ok') ? 'Running' : 'Stopped';
+      document.getElementById('control-status').textContent = status;
+      document.getElementById('bot-status').textContent = status;
+      chart.data.labels.push(new Date().toLocaleTimeString());
+      chart.data.datasets[0].data.push(Number(snap.equity||0));
+      if (chart.data.labels.length > 60) { chart.data.labels.shift(); chart.data.datasets[0].data.shift(); }
+      chart.update();
+    }
+    async function sendControl(action) {
+      const btn = document.getElementById(action === 'start' ? 'start-btn' : 'stop-btn');
+      btn.disabled = true;
+      const res = await fetch(`/api/control/${action}`).then(r=>r.json());
+      document.getElementById('control-status').textContent = action === 'start' ? 'Starting...' : 'Stopping...';
+      btn.disabled = false;
+    }
+    setInterval(load, 3000);
+    load();
+  </script>
+</body>
+</html>
