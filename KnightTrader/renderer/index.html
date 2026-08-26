@@ -142,7 +142,7 @@
       </ul>
 
       <div id="sidebar-footer">
-        <div class="version-tag" id="sidebar-version">v1.1.9</div>
+        <div class="version-tag" id="sidebar-version">v1.1.10</div>
         <button id="btn-open-blofin" class="link-btn">Blofin ↗</button>
       </div>
     </nav>
@@ -178,7 +178,7 @@
           </div>
           <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-            <span>v<span id="popup-app-version">1.1.9</span></span>
+            <span>v<span id="popup-app-version">1.1.10</span></span>
           </div>
           <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -336,8 +336,8 @@
             <div class="step-card">
               <div class="step-num">6</div>
               <div class="step-body">
-                <div class="step-title">Create your free Nous Portal API key</div>
-                <div class="step-desc">Hermes needs this key to think and trade. The free plan works.</div>
+                <div class="step-title">Create your Nous Portal API key</div>
+                <div class="step-desc">Hermes needs this key to think and trade. After you sign up for Nous Portal, add at least <strong>$5 in credits</strong>. Then create the API key and paste it into the app.</div>
                 <div class="step-desc"><strong>Click by click:</strong></div>
                 <ol class="howto-list">
                   <li>Open <strong>portal.nousresearch.com/manage-subscription</strong>.</li>
@@ -578,7 +578,7 @@
               <div class="step-num">19</div>
               <div class="step-body">
                 <div class="step-title">Auto-configure the trading cron</div>
-                <div class="step-desc">This tells Hermes to scan Blofin and trade every 5 minutes using market orders.</div>
+                <div class="step-desc">This tells Hermes to scan Blofin and trade every 10 minutes using market orders.</div>
                 <ol class="howto-list">
                   <li>In the app <strong>Hermes</strong> tab, click <strong>Auto-Configure Cron</strong>.</li>
                   <li>If it succeeds, the cron is active.</li>
@@ -672,7 +672,7 @@
                   <input type="password" id="nous-api-key" placeholder="Paste key from portal.nousresearch.com" autocomplete="off" spellcheck="false"/>
                   <button type="button" class="toggle-vis" data-target="nous-api-key">👁</button>
                 </div>
-                <div class="field-hint">Sign in at Nous Portal → Account → API keys. Free tier works for cron trading.</div>
+                <div class="field-hint">Sign in at Nous Portal → Account → API keys. After signup, add at least $5 in credits, then create the key.</div>
               </div>
               <div class="field">
                 <label for="nous-model">Nous Model</label>
@@ -772,7 +772,7 @@
       <section id="tab-hermes" class="tab-panel">
         <div class="panel-header">
           <h1>Hermes Control</h1>
-          <p class="panel-sub">Install Hermes, start its dashboard, and auto-configure the trading cron.</p>
+          <p class="panel-sub">Install Hermes, start its dashboard, and set it to trade on your Blofin account.</p>
         </div>
 
         <!-- Step cards -->
@@ -848,7 +848,7 @@
           <div class="step-card" id="step-cron">
             <div class="step-num">4</div>
             <div class="step-body">
-              <div class="step-title">Configure 5-Minute Cron</div>
+              <div class="step-title">Configure 10-Minute Cron</div>
               <div class="step-desc">Auto-creates the <code>blofin-equity-vertical</code> cron in Hermes with the full trading prompt.</div>
               <div class="step-actions">
                 <button id="btn-configure-cron" class="btn-primary" disabled>
@@ -1011,7 +1011,7 @@
         <div class="card">
           <div class="card-header"><div class="card-icon">ℹ</div><div class="card-title">About</div></div>
           <div class="about-body">
-            <div class="about-row"><span>App</span><span id="about-app-version">KnightTrader v1.1.9</span></div>
+            <div class="about-row"><span>App</span><span id="about-app-version">KnightTrader v1.1.10</span></div>
             <div class="about-row"><span>Engine</span><span>Electron 28 + Node.js</span></div>
             <div class="about-row"><span>Storage</span><span>AES-256-CBC encrypted</span></div>
             <div class="about-row"><span>Hermes</span><span id="about-hermes-ver">Checking...</span></div>

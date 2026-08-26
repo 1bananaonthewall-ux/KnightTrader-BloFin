@@ -997,8 +997,8 @@ el.btnConfigureCron.addEventListener('click', async () => {
   const result = await window.kt.configureCron();
   if (result.ok) {
     el.cronStatus.textContent = result.updated
-      ? '✅ Cron updated — every 5 minutes!'
-      : '✅ Cron active — every 5 minutes!';
+      ? '✅ Cron updated — every 10 minutes!'
+      : '✅ Cron active — every 10 minutes!';
     el.cronStatus.style.color = 'var(--good)';
     el.manualPromptWrap.classList.add('hidden');
   } else {
