@@ -1021,7 +1021,13 @@ async function waitForDashboardPort(maxMs = 480000) {
   const start = Date.now();
   let lastBeat = 0;
   while (Date.now() - start < maxMs) {
-    if ((await probeDashboardPort()).ok) return true;
+    for (const port of DASHBOARD_PORT_CANDIDATES) {
+      const result = await probeDashboardPort(port, DASHBOARD_PORT_PROBE_TIMEOUT);
+      if (result.ok) {
+        activeDashboardPort = result.port;
+        return true;
+      }
+    }
     if (!isDashboardProcessAlive() && Date.now() - start > 4000) {
       const tail = dashboardLastOutput.slice(-8).join(' | ');
       appendLog(`⚠ Dashboard process exited before it was ready${tail ? `: ${tail}` : ''}`, 'error');
@@ -1198,14 +1204,16 @@ async function startHermesDashboard() {
   ensureHermesExecutableRunnable(installStatus.path);
   dashboardReady = false;
 
-  if (await probeDashboardPort()) {
+  const existing = await probeDashboardPort();
+  if (existing.ok) {
+    activeDashboardPort = existing.port;
     appendLog('ℹ Dashboard already listening — ensuring gateway is running…', 'info');
     return ensureDashboardAndGateway();
   }
 
   if (!isDashboardProcessAlive()) {
     dashboardLastOutput = [];
-    appendLog('▶ Starting Hermes dashboard + gateway on port 9119…', 'info');
+    appendLog('▶ Starting Hermes dashboard + gateway…', 'info');
     appendLog(`  Using: ${installStatus.path}`, 'info');
     if (!hermesWebDistReady()) {
       appendLog('  First start builds the Hermes web UI (can take a few minutes)…', 'info');
@@ -1226,14 +1234,18 @@ async function startHermesDashboard() {
     hermesDashProcess.stderr.on('data', (d) => rememberDashboardOutput(d, 'warn'));
     hermesDashProcess.on('error', (e) => appendLog(`Dashboard error: ${e.message}`, 'error'));
     hermesDashProcess.on('close', async (code) => {
-    hermesDashProcess = null;
-      if (await probeDashboardPort()) return;
-    dashboardReady = false;
+      hermesDashProcess = null;
+      const after = await probeDashboardPort();
+      if (after.ok) {
+        activeDashboardPort = after.port;
+        return;
+      }
+      dashboardReady = false;
       appendLog(`◼ Hermes dashboard stopped (code ${normalizeProcessExitCode(code)})`, code === 0 ? 'info' : 'error');
-    mainWindow?.webContents?.send('dashboard-stopped', {});
-  });
+      mainWindow?.webContents?.send('dashboard-stopped', {});
+    });
   } else {
-    appendLog('ℹ Hermes dashboard is still starting — waiting for port 9119…', 'info');
+    appendLog('ℹ Hermes dashboard is still starting…', 'info');
   }
 
   return ensureDashboardAndGateway();
@@ -1931,7 +1943,6 @@ function registerIPC() {
     app.relaunch();
     app.quit();
   });
-  ipcMain.handle('get-app-version', () => app.getVersion());
   ipcMain.handle('quit-and-install-update', () => {
     autoUpdater.quitAndInstall();
   });
