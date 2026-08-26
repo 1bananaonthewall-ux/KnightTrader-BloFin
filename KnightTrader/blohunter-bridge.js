@@ -1183,10 +1183,24 @@ class BlohunterBridge {
         }
       });
 
-      const listen = (port) => {
+      const PREFERRED_PORTS = [9119, 9120, 9121, 9122];
+      const listen = (index) => {
+        if (index >= PREFERRED_PORTS.length) {
+          server.once('error', (err) => {
+            reject(err);
+          });
+          server.listen(0, '127.0.0.1', () => {
+            this.httpServer = server;
+            this.httpPort = server.address().port;
+            this.log(`[BloHunter] Desk server http://127.0.0.1:${this.httpPort}`);
+            resolve(this.httpPort);
+          });
+          return;
+        }
+        const port = PREFERRED_PORTS[index];
         server.once('error', (err) => {
-          if (err.code === 'EADDRINUSE' && port === 9120) {
-            listen(0);
+          if (err.code === 'EADDRINUSE') {
+            listen(index + 1);
             return;
           }
           reject(err);
@@ -1198,7 +1212,7 @@ class BlohunterBridge {
           resolve(this.httpPort);
         });
       };
-      listen(9120);
+      listen(0);
     });
   }
 

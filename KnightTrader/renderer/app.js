@@ -1192,6 +1192,26 @@ if (document.getElementById('btn-auth-logout')) {
     showLoginForm();
   });
 }
+if (document.getElementById('btn-factory-reset')) {
+  document.getElementById('btn-factory-reset').addEventListener('click', async () => {
+    const confirmed = confirm('Wipe all local data and restart the app? This removes credentials, Hermes sandbox, trading cache, and webview data.');
+    if (!confirmed) return;
+    const btn = document.getElementById('btn-factory-reset');
+    if (btn) { btn.disabled = true; btn.textContent = 'Wiping...'; }
+    try {
+      await window.kt.factoryReset();
+    } catch {}
+    try {
+      await window.kt.authLogout();
+    } catch {}
+    authReady = false;
+    hideLoginOverlay();
+    showLoginForm();
+    try {
+      await window.kt.relaunchApp();
+    } catch {}
+  });
+}
 
 // Lock overlay buttons
 const btnLockRenew = document.getElementById('btn-lock-renew');

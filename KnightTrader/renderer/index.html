@@ -1011,10 +1011,18 @@
         <div class="card">
           <div class="card-header"><div class="card-icon">ℹ</div><div class="card-title">About</div></div>
           <div class="about-body">
-            <div class="about-row"><span>App</span><span id="about-app-version">KnightTrader v1.1.1</span></div>
+            <div class="about-row"><span>App</span><span id="about-app-version">KnightTrader v1.1.2</span></div>
             <div class="about-row"><span>Engine</span><span>Electron 28 + Node.js</span></div>
             <div class="about-row"><span>Storage</span><span>AES-256-CBC encrypted</span></div>
             <div class="about-row"><span>Hermes</span><span id="about-hermes-ver">Checking...</span></div>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: var(--error)">
+          <div class="card-header"><div class="card-icon" style="color: var(--error)">⚠</div><div class="card-title">Danger Zone</div></div>
+          <div class="about-body">
+            <div class="step-desc" style="margin-bottom:10px">This will wipe local credentials, Hermes sandbox, trading cache, and webview data. The app will restart automatically.</div>
+            <button type="button" id="btn-factory-reset" class="btn-primary" style="background: var(--error); border-color: var(--error);">Wipe &amp; Reinstall</button>
           </div>
         </div>
       </section>

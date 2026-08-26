@@ -54,13 +54,16 @@ const NOUS_INFERENCE_URL = 'https://inference-api.nousresearch.com/v1/chat/compl
 const NOUS_INFERENCE_BASE = 'https://inference-api.nousresearch.com/v1';
 const NOUS_RECOMMENDED_MODELS_URL = 'https://portal.nousresearch.com/api/nous/recommended-models';
 const DASHBOARD_PORT = 9119;
-const DASHBOARD_PORT_CANDIDATES = [DASHBOARD_PORT, 9120];
+const DASHBOARD_PORT_CANDIDATES = [DASHBOARD_PORT, 9120, 9121, 9122];
 const DASHBOARD_PORT_PROBE_TIMEOUT = 1200;
 const DASHBOARD_PORT_START_TIMEOUT = 20000;
 const GATEWAY_READY_TIMEOUT = 90000;
 let activeDashboardPort = null;
 function getDashboardBaseUrl(port) {
   return `http://127.0.0.1:${port || activeDashboardPort || DASHBOARD_PORT}`;
+}
+function getActiveDashboardPort() {
+  return activeDashboardPort || DASHBOARD_PORT;
 }
 
 // ── Sandboxed Hermes paths (inside app userData — never system-wide) ────────
@@ -876,21 +879,20 @@ function probeDashboardPort(port, timeoutMs = 1500) {
   return new Promise((resolve) => {
     const req = http.get(`http://127.0.0.1:${targetPort}/api/health`, (res) => {
       res.resume();
-      resolve(true);
+      resolve({ ok: true, port: targetPort });
     });
-    req.on('error', () => resolve(false));
+    req.on('error', () => resolve({ ok: false, port: targetPort }));
     req.setTimeout(timeoutMs, () => {
       req.destroy();
-      resolve(false);
+      resolve({ ok: false, port: targetPort });
     });
   });
 }
 
 async function findAvailableDashboardPort() {
   for (const port of DASHBOARD_PORT_CANDIDATES) {
-    if (await probeDashboardPort(port, DASHBOARD_PORT_PROBE_TIMEOUT)) {
-      return port;
-    }
+    const result = await probeDashboardPort(port, DASHBOARD_PORT_PROBE_TIMEOUT);
+    if (result.ok) return result.port;
   }
   return null;
 }
@@ -1019,7 +1021,7 @@ async function waitForDashboardPort(maxMs = 480000) {
   const start = Date.now();
   let lastBeat = 0;
   while (Date.now() - start < maxMs) {
-    if (await probeDashboardPort()) return true;
+    if ((await probeDashboardPort()).ok) return true;
     if (!isDashboardProcessAlive() && Date.now() - start > 4000) {
       const tail = dashboardLastOutput.slice(-8).join(' | ');
       appendLog(`⚠ Dashboard process exited before it was ready${tail ? `: ${tail}` : ''}`, 'error');
@@ -1118,12 +1120,13 @@ async function ensureGatewayRunning(token) {
 async function ensureDashboardAndGateway() {
   const portReady = await waitForDashboardPort();
   if (!portReady) {
+    const activePort = getActiveDashboardPort();
     const tail = dashboardLastOutput.slice(-6).join(' | ');
     return {
       ok: false,
       msg: tail
-        ? `Dashboard did not respond on port 9119. ${tail}`
-        : 'Dashboard did not respond on port 9119',
+        ? `Dashboard did not respond on port ${activePort}. ${tail}`
+        : `Dashboard did not respond on port ${activePort}`,
     };
   }
 
@@ -1918,6 +1921,15 @@ function registerIPC() {
     } catch (err) {
       return { ok: false, error: err?.message || String(err) };
     }
+  });
+  ipcMain.handle('get-app-version', () => app.getVersion());
+  ipcMain.handle('factory-reset', async () => {
+    const result = factoryResetLocalState();
+    return result;
+  });
+  ipcMain.handle('relaunch-app', () => {
+    app.relaunch();
+    app.quit();
   });
   ipcMain.handle('get-app-version', () => app.getVersion());
   ipcMain.handle('quit-and-install-update', () => {
