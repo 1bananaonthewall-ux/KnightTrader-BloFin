@@ -102,11 +102,17 @@ jobs:
         working-directory: KnightTrader
         run: npm ci
 
-      - name: Build and publish Windows
+      - name: Build Windows artifact
         working-directory: KnightTrader
-        run: npm run build:win
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run build:win:artifact
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: win-exe
+          path: |
+            KnightTrader/dist/**/*.exe
+            KnightTrader/dist/**/*.blockmap
+          retention-days: 7
 
   build-mac:
     needs: prepare
@@ -130,8 +136,6 @@ jobs:
       - name: Build Mac artifact
         working-directory: KnightTrader
         run: npm run build:mac:artifact
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
