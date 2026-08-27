@@ -107,9 +107,24 @@ async function downloadPendingUpdate() {
   appendLog(`⬇ Update ready: ${pendingUpdateRelease.tag_name || pendingUpdateRelease.name}`, 'success');
   return dest;
 }
+function forceQuitApp() {
+  try {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      try { mainWindow.destroy(); } catch {}
+    }
+  } catch {}
+  try {
+    if (appTray) {
+      try { appTray.destroy(); } catch {}
+      appTray = null;
+      trayReady = false;
+    }
+  } catch {}
+}
 async function quitAndInstallFromMain() {
   try {
     const installerPath = await downloadPendingUpdate();
+    forceQuitApp();
     app.relaunch({ args: [installerPath] });
     app.quit();
   } catch (err) {
