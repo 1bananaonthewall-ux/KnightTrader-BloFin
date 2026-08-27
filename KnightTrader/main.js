@@ -9,7 +9,115 @@ const crypto = require('crypto');
 const http = require('http');
 const https = require('https');
 const os = require('os');
-const { autoUpdater } = require('electron-updater');
+
+const UPDATE_OWNER = '1bananaonthewall-ux';
+const UPDATE_REPO = 'KnightTrader-BloFin';
+const UPDATE_RELEASE_API = `https://api.github.com/repos/${UPDATE_OWNER}/${UPDATE_REPO}/releases/latest`;
+let pendingUpdateRelease = null;
+
+function normalizeVersion(raw) {
+  return String(raw || '').replace(/^v/, '').trim();
+}
+function parseSemver(raw) {
+  const v = normalizeVersion(raw);
+  const m = v.match(/(\d+)\.(\d+)\.(\d+)/);
+  if (!m) return null;
+  return { major: Number(m[1]), minor: Number(m[2]), patch: Number(m[3]), raw: v };
+}
+function versionGt(a, b) {
+  const av = parseSemver(a);
+  const bv = parseSemver(b);
+  if (!av || !bv) return String(a).trim() !== String(b).trim();
+  if (av.major !== bv.major) return av.major > bv.major;
+  if (av.minor !== bv.minor) return av.minor > bv.minor;
+  return av.patch > bv.patch;
+}
+function findWindowsAsset(release) {
+  if (!Array.isArray(release.assets)) return null;
+  return release.assets.find((asset) => /\.exe$/i.test(asset.name) || /setup/i.test(asset.name)) || null;
+}
+async function fetchLatestRelease() {
+  const resp = await fetch(UPDATE_RELEASE_API, {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'KnightTrader-BloFin',
+    },
+  });
+  if (!resp.ok) throw new Error(`GitHub release check failed: ${resp.status} ${resp.statusText}`);
+  return await resp.json();
+}
+async function downloadFileToPath(url, dest) {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(dest);
+    const streamUrl = new URL(url);
+    const req = https.request(streamUrl, { method: 'GET' }, (res) => {
+      if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        https.get(res.headers.location, (follow) => {
+          follow.pipe(file);
+          follow.on('error', reject);
+        });
+        return;
+      }
+      if (res.statusCode && res.statusCode >= 400) {
+        reject(new Error(`Update download failed: ${res.statusCode}`));
+        return;
+      }
+      res.pipe(file);
+      res.on('error', reject);
+    });
+    req.on('error', reject);
+    file.on('finish', () => {
+      file.close();
+      resolve(dest);
+    });
+  });
+}
+function broadcastUpdate(channel, payload) {
+  for (const wc of webContents.getAllWebContents()) wc.send(channel, payload);
+}
+async function checkForUpdatesFromMain() {
+  appendLog('🔎 Checking for updates…', 'info');
+  try {
+    const release = await fetchLatestRelease();
+    const latestVersion = normalizeVersion(release.tag_name || release.name || '');
+    const currentVersion = normalizeVersion(app.getVersion());
+    const asset = findWindowsAsset(release);
+    if (!latestVersion || versionGt(latestVersion, currentVersion)) {
+      pendingUpdateRelease = release;
+      appendLog(`⬆ Update available: ${latestVersion || release.tag_name}`, 'success');
+      broadcastUpdate('update-available', { version: latestVersion || release.tag_name, release });
+    } else {
+      pendingUpdateRelease = null;
+      appendLog(`✅ Up to date: ${currentVersion}`, 'info');
+      broadcastUpdate('update-not-available', { version: currentVersion, release });
+    }
+  } catch (err) {
+    pendingUpdateRelease = null;
+    appendLog(`⚠ Update check failed: ${err?.message || err}`, 'warn');
+    broadcastUpdate('update-error', err);
+  }
+}
+async function downloadPendingUpdate() {
+  if (!pendingUpdateRelease) throw new Error('No update is available');
+  const asset = findWindowsAsset(pendingUpdateRelease);
+  if (!asset) throw new Error('No Windows installer in the latest release');
+  const dest = path.join(app.getPath('temp'), `KnightTrader-Update-${Date.now()}.exe`);
+  appendLog(`⬇ Downloading update: ${asset.name}`, 'info');
+  await downloadFileToPath(asset.browser_download_url || asset.url, dest);
+  appendLog(`⬇ Update ready: ${pendingUpdateRelease.tag_name || pendingUpdateRelease.name}`, 'success');
+  return dest;
+}
+async function quitAndInstallFromMain() {
+  try {
+    const installerPath = await downloadPendingUpdate();
+    app.relaunch({ args: [installerPath] });
+    app.quit();
+  } catch (err) {
+    appendLog(`⚠ Install update failed: ${err?.message || err}`, 'warn');
+    broadcastUpdate('update-error', err);
+    throw err;
+  }
+}
 
 const BLOHUNTER_SRC = path.join(os.homedir(), 'Downloads', 'blohunter-connect', 'src');
 let blohunterWatcherReady = false;
@@ -1926,13 +2034,8 @@ function registerIPC() {
   ipcMain.handle('get-logs',          () => logBuffer);
   ipcMain.handle('clear-logs',        () => { logBuffer = []; return { ok: true }; });
   ipcMain.handle('check-for-updates', async () => {
-    if (!autoUpdater) return { ok: false, error: 'Auto-updater is unavailable' };
-    try {
-      await autoUpdater.checkForUpdates();
-      return { ok: true };
-    } catch (err) {
-      return { ok: false, error: err?.message || String(err) };
-    }
+    await checkForUpdatesFromMain();
+    return { ok: true };
   });
   ipcMain.handle('get-app-version', () => app.getVersion());
   ipcMain.handle('factory-reset', async () => {
@@ -1943,8 +2046,8 @@ function registerIPC() {
     app.relaunch();
     app.quit();
   });
-  ipcMain.handle('quit-and-install-update', () => {
-    autoUpdater.quitAndInstall();
+  ipcMain.handle('quit-and-install-update', async () => {
+    await quitAndInstallFromMain();
   });
   ipcMain.handle('open-external',     (_e, url) => shell.openExternal(url));
 
@@ -2438,39 +2541,6 @@ function attachBhProtocol(ses) {
   ses.protocol.handle('bh', handleBhProtocol);
 }
 
-function setupAutoUpdater() {
-  if (!autoUpdater) return;
-  autoUpdater.autoDownload = true;
-  autoUpdater.setFeedURL({
-    provider: 'github',
-    owner: '1bananaonthewall-ux',
-    repo: 'KnightTrader-BloFin',
-    releaseType: 'release',
-  });
-  autoUpdater.on('update-available', (info) => {
-    appendLog(`⬆ Update available: ${info.version}`, 'success');
-    for (const wc of webContents.getAllWebContents()) wc.send('update-available', info);
-  });
-  autoUpdater.on('update-not-available', (info) => {
-    appendLog(`✅ Up to date: ${info.version}`, 'info');
-    for (const wc of webContents.getAllWebContents()) wc.send('update-not-available', info);
-  });
-  autoUpdater.on('update-downloaded', (info) => {
-    appendLog(`⬇ Update ready: ${info.version}`, 'success');
-    for (const wc of webContents.getAllWebContents()) wc.send('update-downloaded', info);
-  });
-  autoUpdater.on('error', (err) => {
-    appendLog(`⚠ Auto-update error: ${err?.message || err}`, 'warn');
-    for (const wc of webContents.getAllWebContents()) wc.send('update-error', err);
-  });
-  setTimeout(() => {
-    appendLog('🔎 Checking for updates…', 'info');
-    autoUpdater.checkForUpdates().catch((err) => {
-      appendLog(`⚠ Update check failed: ${err?.message || err}`, 'warn');
-    });
-  }, 5000);
-}
-
 app.whenReady().then(async () => {
   const gotSingleInstanceLock = app.requestSingleInstanceLock();
   if (!gotSingleInstanceLock) {
@@ -2496,6 +2566,6 @@ app.whenReady().then(async () => {
   if (bhRoot) appendLog(`📈 BloHunter Connect: ${bhRoot}`, 'info');
   else appendLog('⚠ BloHunter Connect not found — Trading tab needs Downloads\\blohunter-connect', 'warn');
   startBlohunterHotReloadWatcher();
-  setupAutoUpdater();
+  checkForUpdatesFromMain();
 });
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });

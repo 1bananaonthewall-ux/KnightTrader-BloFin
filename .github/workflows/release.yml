@@ -87,7 +87,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./temp-site
+          publish_dir: ./.pages
           destination_dir: .
           keep_files: true
 
@@ -119,8 +119,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.event.inputs.tag || github.ref_name }}
         run: |
-          $ErrorActionPreference = 'Stop'
-          $win = Get-ChildItem -Recurse -File artifacts/win | Select-Object -First 1
-          $mac = Get-ChildItem -Recurse -File artifacts/mac | Select-Object -First 1
-          if ($win) { gh release upload $env:TAG $win.Path --repo $env:GITHUB_REPOSITORY }
-          if ($mac) { gh release upload $env:TAG $mac.Path --repo $env:GITHUB_REPOSITORY }
+          win=$(find artifacts/win -type f | head -n 1 || true)
+          mac=$(find artifacts/mac -type f | head -n 1 || true)
+          if [ -n "$win" ]; then gh release upload "$TAG" "$win" --repo "$GITHUB_REPOSITORY"; fi
+          if [ -n "$mac" ]; then gh release upload "$TAG" "$mac" --repo "$GITHUB_REPOSITORY"; fi

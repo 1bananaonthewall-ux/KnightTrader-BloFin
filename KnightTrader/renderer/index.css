@@ -1364,36 +1364,10 @@ select { appearance: none; padding-right: 30px; }
   position: absolute;
   left: 18px;
   bottom: 18px;
-  z-index: 220;
+  z-index: 9999;
+  isolation: isolate;
+  transform: translateZ(0);
 }
-.popup-trigger {
-  appearance: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--panel);
-  border: 1px solid var(--border2);
-  border-radius: 99px;
-  color: var(--text3);
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 7px 12px;
-  cursor: pointer;
-  transition: all var(--transition);
-  box-shadow: var(--shadow-sm);
-}
-.popup-trigger:hover {
-  border-color: var(--accent-glow);
-  color: var(--accent);
-  background: var(--accent-dim);
-}
-.popup-trigger[aria-expanded="true"] {
-  border-color: var(--accent-glow);
-  color: var(--accent);
-  background: var(--accent-dim);
-}
-
 .popup-menu {
   position: absolute;
   left: 0;
@@ -1406,6 +1380,8 @@ select { appearance: none; padding-right: 30px; }
   padding: 8px;
   transform-origin: bottom left;
   transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 .popup-menu.hidden {
   display: none;
