@@ -179,8 +179,8 @@ async function handleForgotSubmit(e) {
     }
     setForgotSuccess(result.msg || 'If an account exists, a reset link has been sent.');
     setForgotError('');
-  } catch (err) {
-    setForgotError(err?.message || 'Password reset failed.');
+  } catch (e) {
+    setForgotError(e?.message || 'Password reset failed.');
   } finally {
     if (el.btnForgotSend) { el.btnForgotSend.disabled = false; el.btnForgotSend.textContent = 'Send reset link'; }
   }
