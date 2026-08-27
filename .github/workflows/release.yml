@@ -8,8 +8,8 @@ on:
     inputs:
       tag:
         description: 'Tag to build'
-        required: true
-        default: 'v1.1.9'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -117,7 +117,7 @@ jobs:
       - name: Publish release assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+          TAG: ${{ github.event_name == 'push' && github.ref_name || github.event.inputs.tag }}
         run: |
           win=$(find artifacts/win -type f | head -n 1 || true)
           mac=$(find artifacts/mac -type f | head -n 1 || true)
