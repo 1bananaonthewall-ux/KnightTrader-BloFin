@@ -736,6 +736,7 @@ async function loadTradingDesk(forceReload = false) {
   tradingLoaded = true;
 }
 
+let tradingFirstLoadWelcomed = false;
 async function initTradingTab() {
   if (tradingInitPromise) return tradingInitPromise;
   if (tradingLoaded && guestHasPage(el.tradingWebview)) {
@@ -748,7 +749,13 @@ async function initTradingTab() {
   }
 
   tradingInitPromise = (async () => {
-    try { await loadTradingDesk(false); } catch (_) {}
+    try {
+      await loadTradingDesk(false);
+      if (!tradingFirstLoadWelcomed) {
+        tradingFirstLoadWelcomed = true;
+        window.kt?.announceVoice?.('Welcome to KnightTrader Blofin').catch(() => {});
+      }
+    } catch (_) {}
     finally { tradingInitPromise = null; }
   })();
 
@@ -1096,11 +1103,91 @@ window.kt.onUpdateError((error) => {
 });
 
 // ── Update popup menu ───────────────────────────────────────────
+const POPUP_HTML = `
+  <button id="btn-check-for-updates" class="popup-menu-item" role="menuitem">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    <span>Check for updates</span>
+  </button>
+  <div class="popup-separator"></div>
+  <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <span>KnightTrader BloFin</span>
+  </div>
+  <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    <span>v<span id="popup-app-version">${el.popupAppVersion?.textContent || '1.1.10'}</span></span>
+  </div>
+  <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <span id="popup-update-status">${el.popupUpdateStatus?.textContent || 'Updates are automatic'}</span>
+  </div>
+`;
+
 function setPopupOpen(open) {
   if (!el.popupLauncher || !el.popupMenu) return;
-  el.popupMenu.classList.toggle('hidden', !open);
-  if (el.btnPopupTrigger) el.btnPopupTrigger.setAttribute('aria-expanded', String(open));
+  if (open) {
+    if (el.hermesWebview) el.hermesWebview.classList.add('webview-parked');
+    if (el.tradingWebview) el.tradingWebview.classList.add('webview-parked');
+  } else {
+    if (el.hermesWebview) el.hermesWebview.classList.remove('webview-parked');
+    if (el.tradingWebview) el.tradingWebview.classList.remove('webview-parked');
+  }
+
+  const show = () => {
+    el.popupMenu.classList.toggle('hidden', false);
+    if (el.btnPopupTrigger) el.btnPopupTrigger.setAttribute('aria-expanded', 'true');
+    el.popupMenu.innerHTML = POPUP_HTML;
+    const newBtn = el.popupMenu.querySelector('#btn-check-for-updates');
+    if (newBtn) newBtn.addEventListener('click', checkForUpdatesFromMenu);
+  };
+  const hide = () => {
+    el.popupMenu.classList.toggle('hidden', true);
+    if (el.btnPopupTrigger) el.btnPopupTrigger.setAttribute('aria-expanded', 'false');
+  };
+
+  if (open) {
+    hide();
+    if (requestAnimationFrame) requestAnimationFrame(() => requestAnimationFrame(show));
+    else show();
+  } else {
+    hide();
+  }
 }
+
+let popupObserver = null;
+let popupRestoring = false;
+function restorePopupMenu() {
+  if (!el.popupMenu || popupRestoring) return;
+  const html = el.popupMenu.innerHTML || '';
+  const hasCheckBtn = !!el.popupMenu.querySelector('#btn-check-for-updates');
+  const hasVersion = !!el.popupMenu.querySelector('#popup-app-version');
+  const hasStatus = !!el.popupMenu.querySelector('#popup-update-status');
+  const structurallyIntact = hasCheckBtn && hasVersion && hasStatus;
+  const looksLikeRawHtml = /<[^>]+>/.test(html) && !structurallyIntact;
+  if (!looksLikeRawHtml) return;
+  popupRestoring = true;
+  try {
+    el.popupMenu.innerHTML = POPUP_HTML;
+    const newBtn = el.popupMenu.querySelector('#btn-check-for-updates');
+    if (newBtn) {
+      newBtn.addEventListener('click', checkForUpdatesFromMenu);
+    }
+  } finally {
+    popupRestoring = false;
+  }
+}
+function startPopupRestoreWatch() {
+  if (popupObserver || !el.popupMenu) return;
+  restorePopupMenu();
+  popupObserver = new MutationObserver((mutations) => {
+    if (!el.popupMenu || el.popupMenu.classList.contains('hidden')) return;
+    const menuChanged = mutations.some((m) => m.type === 'childList' || m.type === 'attributes');
+    if (!menuChanged) return;
+    restorePopupMenu();
+  });
+  popupObserver.observe(el.popupMenu, { attributes: true, childList: true, subtree: true, characterData: true });
+}
+startPopupRestoreWatch();
 
 function togglePopupMenu() {
   if (!el.popupLauncher || !el.popupMenu) return;
@@ -1148,6 +1235,11 @@ async function checkForUpdatesFromMenu() {
     if (el.popupUpdateStatus) el.popupUpdateStatus.textContent = msg;
   } finally {
     if (el.btnCheckForUpdates) el.btnCheckForUpdates.disabled = false;
+    setTimeout(() => {
+      if (el.popupUpdateStatus && el.popupUpdateStatus.textContent === 'Checking for updates…') {
+        el.popupUpdateStatus.textContent = 'Updates are automatic';
+      }
+    }, 1500);
   }
 }
 

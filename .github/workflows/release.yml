@@ -90,3 +90,37 @@ jobs:
           publish_dir: ./temp-site
           destination_dir: .
           keep_files: true
+
+  release-publish:
+    needs: [build-win, build-mac]
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref_name }}
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: win-exe
+          path: artifacts/win
+
+      - name: Download Mac artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mac-dmg
+          path: artifacts/mac
+
+      - name: Publish release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $win = Get-ChildItem -Recurse -File artifacts/win | Select-Object -First 1
+          $mac = Get-ChildItem -Recurse -File artifacts/mac | Select-Object -First 1
+          if ($win) { gh release upload $env:TAG $win.Path --repo $env:GITHUB_REPOSITORY }
+          if ($mac) { gh release upload $env:TAG $mac.Path --repo $env:GITHUB_REPOSITORY }

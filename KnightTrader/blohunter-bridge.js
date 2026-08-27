@@ -823,29 +823,30 @@ class BlohunterBridge {
     if (!data.balances || typeof data.balances !== 'object') {
       data.balances = {};
     }
-    const accountRows = Array.isArray(data.balances.account) ? data.balances.account : [];
+    const liveEquity = Number(data.balances.totalEquity);
     const liveAvailable = this.liveAvailableFromSnapshot(data);
     const lastTick = this.readHermesLastTick();
 
-    // When BloHunter stream snapshots are stale, use Hermes cron balance truth.
-    if (lastTick) {
-      if (!(Number(data.balances.totalEquity) > 0) && lastTick.equity > 0) {
-        data.balances.totalEquity = lastTick.equity;
-      }
-      if (!(Number(data.balances.totalAvailable) > 0) && lastTick.avail >= 0) {
-        data.balances.totalAvailable = lastTick.avail;
-      }
-      // If snapshot claims "all funds used" while cron shows free margin, prefer cron.
-      if (lastTick.avail > 0 && Number(data.balances.totalAvailable) <= 0) {
-        data.balances.totalAvailable = lastTick.avail;
-      }
+  if (lastTick) {
+    if (!(liveEquity > 0) && lastTick.equity > 0) {
+      data.balances.totalEquity = lastTick.equity;
     }
+    if (!(liveAvailable > 0) && lastTick.avail > 0) {
+      data.balances.totalAvailable = lastTick.avail;
+    }
+  }
+  if (!(Number(data.balances.totalAvailable) > 0) && liveAvailable > 0) {
+    data.balances.totalAvailable = liveAvailable;
+  }
 
-    if (!(Number(data.balances.totalAvailable) > 0) && liveAvailable > 0) {
-      data.balances.totalAvailable = liveAvailable;
-    }
-    const equity = Number(data.balances.totalEquity);
-    const liveBalance = accountRows.length > 0 || liveAvailable > 0 || equity > 0;
+  const equity = Number(data.balances.totalEquity);
+  const accountRows = Array.isArray(data.balances.account) ? data.balances.account : [];
+  const hasValidLiveEquity = Number.isFinite(equity) && equity > 0;
+  if (!hasValidLiveEquity && lastTick && lastTick.equity > 0) {
+    data.balances.totalEquity = lastTick.equity;
+  }
+
+  const liveBalance = accountRows.length > 0 || liveAvailable > 0 || Number(data.balances.totalEquity) > 0;
     if (liveBalance && accountRows.length > 0) {
       const now = await this.markBlofinApiHealthy();
       if (data.profile && typeof data.profile === 'object') {
@@ -868,7 +869,6 @@ class BlohunterBridge {
       }
     }
 
-    // Flaky positions reads should not red-banner a desk that already has equity.
     if (
       data.errorMessage &&
       /open positions/i.test(String(data.errorMessage)) &&
@@ -880,6 +880,7 @@ class BlohunterBridge {
     }
 
     data.recentActivity = this.readHermesActivityEntries();
+    this.log(`[BloHunter] Snapshot equity=${equity} avail=${data.balances.totalAvailable} rows=${accountRows.length} liveAvail=${liveAvailable}`);
     return result;
   }
 
