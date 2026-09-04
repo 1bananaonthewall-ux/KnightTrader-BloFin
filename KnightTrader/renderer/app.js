@@ -7,6 +7,7 @@ let hermesInstalled = false;
 let dashboardRunning = false;
 let dashboardStartInFlight = false;
 let authReady = false;
+let cachedAppVersion = '';
 
 // ── DOM shortcuts ─────────────────────────────────────────────
 const $ = (id) => document.getElementById(id);
@@ -283,7 +284,15 @@ async function init() {
     const appVersion = await window.kt.getAppVersion();
     const normalized = appVersion ? String(appVersion).replace(/^v/, '') : '';
     const label = normalized ? `v${normalized}` : '1.0.0';
-    if (el.popupAppVersion) el.popupAppVersion.textContent = normalized;
+    // The popup menu is rendered on demand, so its #popup-app-version
+    // node may not exist yet. Write to whatever live node we can find,
+    // and also remember the version so buildPopupMenu() can use it later.
+    if (normalized) {
+      const liveVersionNode = el.popupMenu?.querySelector('#popup-app-version');
+      if (liveVersionNode) liveVersionNode.textContent = normalized;
+      // Stash on a module-scoped var so buildPopupMenu() picks it up.
+      cachedAppVersion = normalized;
+    }
     if (el.sidebarVersion) el.sidebarVersion.textContent = label;
     if (el.aboutAppVersion) el.aboutAppVersion.textContent = `KnightTrader ${label}`;
   } catch (e) {}
@@ -1088,40 +1097,81 @@ if (el.btnDismissUpdate) {
 
 window.kt.onUpdateAvailable((info) => {
   setUpdateBannerVisible(true, 'Update available', 'Restart to install the latest version.');
-  if (el.popupUpdateStatus) el.popupUpdateStatus.textContent = 'Update available — restart to install';
+  setPopupUpdateStatus('Update available — restart to install');
 });
 window.kt.onUpdateNotAvailable((info) => {
-  if (el.popupUpdateStatus) el.popupUpdateStatus.textContent = 'You’re on the latest version';
+  setPopupUpdateStatus('You’re on the latest version');
 });
 window.kt.onUpdateDownloaded((info) => {
   setUpdateBannerVisible(true, 'Update ready', 'Restart to apply the latest version.');
-  if (el.popupUpdateStatus) el.popupUpdateStatus.textContent = 'Update ready — restart to install';
+  setPopupUpdateStatus('Update ready — restart to install');
 });
 window.kt.onUpdateError((error) => {
-  const msg = error?.message || String(error || 'Update failed');
-  if (el.popupUpdateStatus) el.popupUpdateStatus.textContent = msg;
+  let msg = 'Update failed';
+  if (error && typeof error === 'object') {
+    msg = error.message || error.error || JSON.stringify(error);
+  } else if (typeof error === 'string') {
+    msg = error;
+  } else if (error != null) {
+    msg = String(error);
+  }
+  setPopupUpdateStatus(msg);
 });
 
 // ── Update popup menu ───────────────────────────────────────────
-const POPUP_HTML = `
-  <button id="btn-check-for-updates" class="popup-menu-item" role="menuitem">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-    <span>Check for updates</span>
-  </button>
-  <div class="popup-separator"></div>
-  <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-    <span>KnightTrader BloFin</span>
-  </div>
-  <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-    <span>v<span id="popup-app-version">${el.popupAppVersion?.textContent || '1.1.10'}</span></span>
-  </div>
-  <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-    <span id="popup-update-status">${el.popupUpdateStatus?.textContent || 'Updates are automatic'}</span>
-  </div>
-`;
+//
+// The bottom-left menu (#popup-menu) is rendered once on first show and
+// then left alone. The previous implementation rebuilt the menu's
+// innerHTML on every open, which detached the cached
+// el.btnCheckForUpdates / el.popupUpdateStatus / el.popupAppVersion
+// references and made the "Check for updates" button visually dead.
+// We now use event delegation on #popup-menu and re-query the live
+// status elements on every update so they always land on the visible
+// node.
+
+const POPUP_MENU_BUILT = { value: false };
+const DEFAULT_UPDATE_STATUS = 'Updates are automatic';
+
+function buildPopupMenu() {
+  if (!el.popupMenu || POPUP_MENU_BUILT.value) return;
+  // Render once. Subsequent opens will refresh the status text only.
+  const currentVersion = cachedAppVersion || '';
+  const initialStatus = DEFAULT_UPDATE_STATUS;
+  el.popupMenu.innerHTML = `
+    <button id="btn-check-for-updates" class="popup-menu-item" role="menuitem" type="button">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      <span>Check for updates</span>
+    </button>
+    <div class="popup-separator"></div>
+    <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span>KnightTrader BloFin</span>
+    </div>
+    <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <span>v<span id="popup-app-version">${currentVersion || '1.1.17'}</span></span>
+    </div>
+    <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span id="popup-update-status">${initialStatus}</span>
+    </div>
+  `;
+  // Re-resolve cached references to the live (now populated) DOM nodes.
+  el.btnCheckForUpdates = el.popupMenu.querySelector('#btn-check-for-updates');
+  el.popupUpdateStatus = el.popupMenu.querySelector('#popup-update-status');
+  el.popupAppVersion = el.popupMenu.querySelector('#popup-app-version');
+  POPUP_MENU_BUILT.value = true;
+}
+
+function setPopupUpdateStatus(text) {
+  const node = el.popupMenu?.querySelector('#popup-update-status') || el.popupUpdateStatus;
+  if (node) node.textContent = text;
+}
+
+function setPopupUpdateButtonDisabled(disabled) {
+  const node = el.popupMenu?.querySelector('#btn-check-for-updates') || el.btnCheckForUpdates;
+  if (node) node.disabled = !!disabled;
+}
 
 function setPopupOpen(open) {
   if (!el.popupLauncher || !el.popupMenu) return;
@@ -1136,9 +1186,7 @@ function setPopupOpen(open) {
   const show = () => {
     el.popupMenu.classList.toggle('hidden', false);
     if (el.btnPopupTrigger) el.btnPopupTrigger.setAttribute('aria-expanded', 'true');
-    el.popupMenu.innerHTML = POPUP_HTML;
-    const newBtn = el.popupMenu.querySelector('#btn-check-for-updates');
-    if (newBtn) newBtn.addEventListener('click', checkForUpdatesFromMenu);
+    if (!POPUP_MENU_BUILT.value) buildPopupMenu();
   };
   const hide = () => {
     el.popupMenu.classList.toggle('hidden', true);
@@ -1153,41 +1201,6 @@ function setPopupOpen(open) {
     hide();
   }
 }
-
-let popupObserver = null;
-let popupRestoring = false;
-function restorePopupMenu() {
-  if (!el.popupMenu || popupRestoring) return;
-  const html = el.popupMenu.innerHTML || '';
-  const hasCheckBtn = !!el.popupMenu.querySelector('#btn-check-for-updates');
-  const hasVersion = !!el.popupMenu.querySelector('#popup-app-version');
-  const hasStatus = !!el.popupMenu.querySelector('#popup-update-status');
-  const structurallyIntact = hasCheckBtn && hasVersion && hasStatus;
-  const looksLikeRawHtml = /<[^>]+>/.test(html) && !structurallyIntact;
-  if (!looksLikeRawHtml) return;
-  popupRestoring = true;
-  try {
-    el.popupMenu.innerHTML = POPUP_HTML;
-    const newBtn = el.popupMenu.querySelector('#btn-check-for-updates');
-    if (newBtn) {
-      newBtn.addEventListener('click', checkForUpdatesFromMenu);
-    }
-  } finally {
-    popupRestoring = false;
-  }
-}
-function startPopupRestoreWatch() {
-  if (popupObserver || !el.popupMenu) return;
-  restorePopupMenu();
-  popupObserver = new MutationObserver((mutations) => {
-    if (!el.popupMenu || el.popupMenu.classList.contains('hidden')) return;
-    const menuChanged = mutations.some((m) => m.type === 'childList' || m.type === 'attributes');
-    if (!menuChanged) return;
-    restorePopupMenu();
-  });
-  popupObserver.observe(el.popupMenu, { attributes: true, childList: true, subtree: true, characterData: true });
-}
-startPopupRestoreWatch();
 
 function togglePopupMenu() {
   if (!el.popupLauncher || !el.popupMenu) return;
@@ -1208,6 +1221,21 @@ if (el.popupLauncher) {
   });
 }
 
+// Single delegated listener for any click inside the menu. Survives any
+// future menu-content refresh because the parent element never changes.
+if (el.popupMenu) {
+  el.popupMenu.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    const btn = target.closest('#btn-check-for-updates');
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      checkForUpdatesFromMenu();
+    }
+  });
+}
+
 document.addEventListener('click', (e) => {
   if (!el.popupMenu?.classList.contains('hidden')) {
     const inside = el.popupLauncher?.contains(e.target);
@@ -1222,29 +1250,22 @@ document.addEventListener('keydown', (e) => {
 });
 
 async function checkForUpdatesFromMenu() {
-  if (el.popupUpdateStatus) {
-    el.popupUpdateStatus.textContent = 'Checking for updates…';
-  }
-  if (el.btnCheckForUpdates) {
-    el.btnCheckForUpdates.disabled = true;
-  }
+  setPopupUpdateStatus('Checking for updates…');
+  setPopupUpdateButtonDisabled(true);
   try {
     await window.kt.checkForUpdates();
   } catch (e) {
     const msg = e?.message || 'Update check failed';
-    if (el.popupUpdateStatus) el.popupUpdateStatus.textContent = msg;
+    setPopupUpdateStatus(msg);
   } finally {
-    if (el.btnCheckForUpdates) el.btnCheckForUpdates.disabled = false;
+    setPopupUpdateButtonDisabled(false);
     setTimeout(() => {
-      if (el.popupUpdateStatus && el.popupUpdateStatus.textContent === 'Checking for updates…') {
-        el.popupUpdateStatus.textContent = 'Updates are automatic';
+      const node = el.popupMenu?.querySelector('#popup-update-status');
+      if (node && node.textContent === 'Checking for updates…') {
+        node.textContent = DEFAULT_UPDATE_STATUS;
       }
     }, 1500);
   }
-}
-
-if (el.btnCheckForUpdates) {
-  el.btnCheckForUpdates.addEventListener('click', checkForUpdatesFromMenu);
 }
 
 if (el.btnForgot) {

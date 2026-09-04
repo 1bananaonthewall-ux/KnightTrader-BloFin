@@ -166,24 +166,8 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="18" r="1.5"/></svg>
           <span>Menu</span>
         </button>
-        <div id="popup-menu" class="popup-menu hidden" role="menu">
-          <button id="btn-check-for-updates" class="popup-menu-item" role="menuitem">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-            <span>Check for updates</span>
-          </button>
-          <div class="popup-separator"></div>
-          <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            <span>KnightTrader BloFin</span>
-          </div>
-          <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-            <span>v<span id="popup-app-version">1.1.15</span></span>
-          </div>
-          <div class="popup-menu-item popup-menu-item-disabled" aria-disabled="true">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <span id="popup-update-status">Updates are automatic</span>
-          </div>
+        <div id="popup-menu" class="popup-menu hidden" role="menu" aria-label="App menu">
+          <!-- Populated by setPopupOpen() in renderer/app.js -->
         </div>
       </div>
       <!-- ── End popup menu button ─────────────────────────────── -->
